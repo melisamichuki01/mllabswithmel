@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Novice to Ninja — MLlabswithMel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #faf9ff;
+  --surface:   #f3f0ff;
+  --surface-2: #ede9ff;
+  --purple:    #7f77dd;
+  --purple-dk: #534ab7;
+  --purple-lt: #e8e5ff;
+  --teal:      #1d9e75;
+  --teal-lt:   #d4f0e6;
+  --coral:     #d85a30;
+  --coral-lt:  #faecea;
+  --amber:     #ba7517;
+  --amber-lt:  #fef3dc;
+  --text:      #1a1633;
+  --muted:     #6b5fa8;
+  --faint:     #9b94cc;
+  --code-bg:   #ede9ff;
+  --code-text: #534ab7;
+  --border:    #c4bde8;
+  --border-lt: #e2defc;
+}
+
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.05rem; line-height: 1.75; }
+
+/* ---- HEADER ---- */
+.site-header { background: var(--surface); border-bottom: 2px solid var(--purple); padding: 3rem 1.5rem 2.5rem; text-align: center; }
+.site-header .brand { font-size: .85rem; font-weight: 700; color: var(--purple-dk); letter-spacing: .1em; text-transform: uppercase; margin-bottom: .6rem; }
+.site-header h1 { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 700; line-height: 1.15; color: var(--text); margin-bottom: .7rem; }
+.site-header h1 em { color: var(--purple); font-style: normal; }
+.site-header .subtitle { color: var(--muted); font-size: 1.05rem; max-width: 600px; margin: 0 auto 1.2rem; }
+.tag-row { display: flex; flex-wrap: wrap; gap: .5rem; justify-content: center; margin-top: 1rem; }
+.tag { background: var(--purple-lt); color: var(--purple-dk); font-size: .75rem; font-weight: 600; padding: .2rem .75rem; border-radius: 999px; font-family: 'JetBrains Mono', monospace; }
+
+/* ---- HERO INTRO ---- */
+.hero-intro { max-width: 720px; margin: 3rem auto 0; padding: 0 1.5rem; text-align: center; }
+.hero-intro h2 { font-size: 1.5rem; font-weight: 700; color: var(--text); margin-bottom: .8rem; }
+.hero-intro p { color: var(--muted); font-size: 1rem; line-height: 1.8; margin-bottom: 1rem; }
+.snake-emoji { font-size: 3rem; display: block; margin-bottom: 1rem; }
+
+/* ---- OVERALL PROGRESS ---- */
+.overall-progress { max-width: 760px; margin: 2.5rem auto 0; padding: 0 1.5rem; }
+.overall-progress-box { background: var(--surface); border: 1.5px solid var(--border-lt); border-radius: 14px; padding: 1.5rem 1.8rem; }
+.overall-progress-box .prog-label { display: flex; justify-content: space-between; font-size: .85rem; font-weight: 600; color: var(--muted); margin-bottom: .6rem; }
+.progress-track { height: 10px; background: var(--surface-2); border-radius: 999px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--teal); border-radius: 999px; transition: width .4s ease; width: 0%; }
+.prog-footnote { font-size: .8rem; color: var(--faint); margin-top: .6rem; text-align: center; }
+
+/* ---- PHASE LAYOUT ---- */
+.phases { max-width: 900px; margin: 3rem auto 4rem; padding: 0 1.5rem; }
+.phase-block { margin-bottom: 3.5rem; }
+.phase-label { display: flex; align-items: center; gap: .8rem; margin-bottom: 1.4rem; }
+.phase-badge { background: var(--purple); color: #fff; font-family: 'JetBrains Mono', monospace; font-size: .72rem; font-weight: 700; padding: .25rem .8rem; border-radius: 999px; letter-spacing: .04em; }
+.phase-title { font-size: 1.25rem; font-weight: 700; color: var(--text); }
+.phase-desc { font-size: .9rem; color: var(--muted); margin-left: auto; font-style: italic; }
+
+/* ---- LESSON CARDS ---- */
+.lesson-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+.lesson-card { background: #fff; border: 1.5px solid var(--border-lt); border-radius: 14px; padding: 1.3rem 1.5rem; text-decoration: none; color: var(--text); transition: all .18s; position: relative; display: flex; flex-direction: column; gap: .5rem; }
+.lesson-card:hover { border-color: var(--purple); box-shadow: 0 4px 20px rgba(127,119,221,.12); transform: translateY(-2px); }
+.lesson-card.locked { opacity: .55; cursor: not-allowed; filter: grayscale(.3); }
+.lesson-card.locked:hover { transform: none; box-shadow: none; border-color: var(--border-lt); }
+.lesson-card.done { border-color: var(--teal); background: #f8fffc; }
+.lesson-num { font-family: 'JetBrains Mono', monospace; font-size: .72rem; font-weight: 500; color: var(--faint); }
+.lesson-title { font-size: 1rem; font-weight: 700; color: var(--text); line-height: 1.35; }
+.lesson-card.done .lesson-title { color: #0a4a30; }
+.lesson-desc { font-size: .85rem; color: var(--muted); line-height: 1.5; }
+.lesson-tags { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .3rem; }
+.lesson-tag { font-family: 'JetBrains Mono', monospace; font-size: .68rem; background: var(--surface-2); color: var(--purple-dk); padding: .1rem .55rem; border-radius: 999px; font-weight: 500; }
+.lesson-status { position: absolute; top: 1rem; right: 1rem; font-size: .72rem; font-weight: 700; }
+.status-done { color: var(--teal); }
+.status-lock { color: var(--faint); }
+.status-new { background: var(--amber); color: #fff; font-size: .65rem; padding: .15rem .55rem; border-radius: 999px; font-family: 'JetBrains Mono', monospace; }
+.lesson-arrow { margin-top: auto; font-size: .82rem; color: var(--purple); font-weight: 600; display: flex; align-items: center; gap: .3rem; }
+.lesson-card.locked .lesson-arrow { display: none; }
+
+/* ---- CALLOUT STRIP ---- */
+.callout-strip { background: var(--amber-lt); border: 1.5px solid #f0c060; border-radius: 12px; padding: 1.1rem 1.4rem; max-width: 900px; margin: 0 auto 3rem; margin-left: 1.5rem; margin-right: 1.5rem; font-size: .92rem; color: #5a3800; }
+.callout-strip strong { color: var(--amber); }
+
+/* ---- HOW TO USE ---- */
+.how-to { max-width: 900px; margin: 0 auto 3rem; padding: 0 1.5rem; }
+.how-to h2 { font-size: 1.3rem; font-weight: 700; color: var(--text); margin-bottom: 1rem; }
+.how-to-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+.how-item { background: var(--surface); border: 1.5px solid var(--border-lt); border-radius: 12px; padding: 1.1rem 1.2rem; }
+.how-num { font-family: 'JetBrains Mono', monospace; font-size: .72rem; font-weight: 700; color: var(--purple); margin-bottom: .35rem; }
+.how-item p { font-size: .88rem; color: var(--muted); line-height: 1.5; }
+
+/* ---- FOOTER ---- */
+footer { background: var(--surface); border-top: 1.5px solid var(--border-lt); text-align: center; padding: 2rem 1.5rem; color: var(--muted); font-size: .88rem; }
+footer strong { color: var(--purple-dk); font-weight: 700; }
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 600px) {
+  .lesson-grid { grid-template-columns: 1fr; }
+  .how-to-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="brand">MLlabswithMel</div>
+  <h1>From <em>Novice</em> to Ninja</h1>
+  <p class="subtitle">Mastering Python one line at a time -- a structured path from zero to data science ready.</p>
+  <div class="tag-row">
+    <span class="tag">Python</span>
+    <span class="tag">Data Science</span>
+    <span class="tag">Beginner Friendly</span>
+    <span class="tag">Hands-On</span>
+    <span class="tag">Self-Paced</span>
+  </div>
+</header>
+
+<!-- HERO INTRO -->
+<div class="hero-intro">
+  <span class="snake-emoji">🐍</span>
+  <h2>You don't need a computer science degree.</h2>
+  <p>This series is built for complete beginners who want to use Python for real data work. Every lesson is short, practical, and written in plain English. We start with the absolute basics and build up -- slowly, clearly, one concept at a time.</p>
+  <p>By the end, you'll be writing Python to clean data, analyse it, and understand how machine learning works. Let's go.</p>
+</div>
+
+<!-- OVERALL PROGRESS -->
+<div class="overall-progress">
+  <div class="overall-progress-box">
+    <div class="prog-label">
+      <span>Overall series progress</span>
+      <span id="prog-text">0 of 9 lessons started</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="prog-fill"></div>
+    </div>
+    <p class="prog-footnote">Click "Mark done" inside each lesson to track your progress here.</p>
+  </div>
+</div>
+
+<!-- HOW TO USE -->
+<div class="how-to" style="margin-top: 2.5rem;">
+  <h2>How to use this series</h2>
+  <div class="how-to-grid">
+    <div class="how-item">
+      <div class="how-num">STEP 01</div>
+      <p>Go in order. Each lesson builds on the last. Don't skip ahead.</p>
+    </div>
+    <div class="how-item">
+      <div class="how-num">STEP 02</div>
+      <p>Open a Python environment alongside each lesson -- Jupyter, Colab, or VS Code all work.</p>
+    </div>
+    <div class="how-item">
+      <div class="how-num">STEP 03</div>
+      <p>Do every mini challenge. Reading isn't enough -- you have to type the code yourself.</p>
+    </div>
+    <div class="how-item">
+      <div class="how-num">STEP 04</div>
+      <p>Mark lessons done when you can explain the concept out loud without looking at notes.</p>
+    </div>
+  </div>
+</div>
+
+<!-- CALLOUT -->
+<div class="callout-strip" style="max-width:900px; margin: 0 1.5rem 3rem;">
+  <strong>Before you start:</strong> Make sure Python is installed on your machine, or open a free <a href="https://colab.research.google.com" target="_blank" style="color:var(--amber);font-weight:600;">Google Colab</a> notebook. You don't need to install anything to get going.
+</div>
+
+<!-- PHASES -->
+<div class="phases">
+
+  <!-- PHASE 1 -->
+  <div class="phase-block">
+    <div class="phase-label">
+      <span class="phase-badge">PHASE 1</span>
+      <span class="phase-title">Python Foundations</span>
+      <span class="phase-desc">5 lessons</span>
+    </div>
+
+    <div class="lesson-grid">
+
+      <!-- Lesson 1 -->
+      <a class="lesson-card" href="lessons/python-foundations/01-variables-data-types-loops.html">
+        <span class="lesson-status status-new">START HERE</span>
+        <span class="lesson-num">Lesson 01</span>
+        <div class="lesson-title">Variables, Data Types &amp; Loops</div>
+        <div class="lesson-desc">Store information in Python, understand the types of data it works with, and write your first loops.</div>
+        <div class="lesson-tags">
+          <span class="lesson-tag">variables</span>
+          <span class="lesson-tag">int / str / bool</span>
+          <span class="lesson-tag">for loops</span>
+          <span class="lesson-tag">if statements</span>
+        </div>
+        <div class="lesson-arrow">Start lesson →</div>
+      </a>
+
+      <!-- Lesson 2 -->
+      <a class="lesson-card locked" href="#" onclick="return false;">
+        <span class="lesson-status status-lock">🔒</span>
+        <span class="lesson-num">Lesson 02</span>
+        <div class="lesson-title">Functions &amp; Scope</div>
+        <div class="lesson-desc">Defining, calling, returning values, and understanding where variables live in your code.</div>
+        <div class="lesson-tags">
+          <span class="lesson-tag">def</span>
+          <span class="lesson-tag">parameters</span>
+          <span class="lesson-tag">return</span>
+          <span class="lesson-tag">scope</span>
+        </div>
+      </a>
+
+      <!-- Lesson 3 -->
+      <a class="lesson-card locked" href="#" onclick="return false;">
+        <span class="lesson-status status-lock">🔒</span>
+        <span class="lesson-num">Lesson 03</span>
+        <div class="lesson-title">Lists, Dicts &amp; Data Structures</div>
+        <div class="lesson-desc">The containers Python uses to hold multiple pieces of data -- when to use each one and how to navigate them.</div>
+        <div class="lesson-tags">
+          <span class="lesson-tag">list</span>
+          <span class="lesson-tag">dict</span>
+          <span class="lesson-tag">tuple</span>
+          <span class="lesson-tag">set</span>
+        </div>
+      </a>
+
+      <!-- Lesson 4 -->
+      <a class="lesson-card locked" href="#" onclick="return false;">
+        <span class="lesson-status status-lock">🔒</span>
+        <span class="lesson-num">Lesson 04</span>
+        <div class="lesson-title">Error Handling &amp; Debugging</div>
+        <div class="lesson-desc">How to read Python error messages, use try/except, and debug with print statements like a pro.</div>
+        <div class="lesson-tags">
+          <span class="lesson-tag">try/except</span>
+          <span class="lesson-tag">tracebacks</span>
+          <span class="lesson-tag">debugging</span>
+        </div>
+      </a>
+
+      <!-- Lesson 5 -->
+      <a class="lesson-card locked" href="#" onclick="return false;">
+        <span class="lesson-status status-lock">🔒</span>
+        <span class="lesson-num">Lesson 05</span>
+        <div class="lesson-title">Working with Files &amp; CSVs</div>
+        <div class="lesson-desc">Reading, writing, and parsing local files -- the foundation of every real data project.</div>
+        <div class="lesson-tags">
+          <span class="lesson-tag">open()</span>
+          <span class="lesson-tag">csv</span>
+          <span class="lesson-tag">read/write</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- PHASE 2 -->
+  <div class="phase-block">
+    <div class="phase-label">
+      <span class="phase-badge">PHASE 2</span>
+      <span class="phase-title">Data Wrangling</span>
+      <span class="phase-desc">4 lessons -- complete Phase 1 first</span>
+    </div>
+
+    <div class="lesson-grid">
+
+      <!-- Lesson 6 -->
+      <a class="lesson-card locked" href="#" onclick="return false;">
+        <span class="lesson-status status-lock">🔒</span>
+        <span class="lesson-num">Lesson 06</span>
+        <div class="lesson-title">Pandas for Beginners</div>
+        <div class="lesson-desc">DataFrames, Series, and loading data. The tool every data analyst uses every single day.</div>
+        <div class="lesson-tags">
+          <span class="lesson-tag">pandas</span>
+          <span class="lesson-tag">DataFrame</span>
+          <span class="lesson-tag">Series</span>
+        </div>
+      </a>
+
+      <!-- Lesson 7 -->
+      <a class="lesson-card locked" href="#" onclick="return false;">
+        <span class="lesson-status status-lock">🔒</span>
+        <span class="lesson-num">Lesson 07</span>
+        <div class="lesson-title">Cleaning Messy Data</div>
+        <div class="lesson-desc">Nulls, duplicates, wrong types, and outliers -- the unglamorous work that makes analysis possible.</div>
+        <div class="lesson-tags">
+          <span class="lesson-tag">dropna</span>
+          <span class="lesson-tag">fillna</span>
+          <span class="lesson-tag">dtypes</span>
+        </div>
+      </a>
+
+      <!-- Lesson 8 -->
+      <a class="lesson-card locked" href="#" onclick="return false;">
+        <span class="lesson-status status-lock">🔒</span>
+        <span class="lesson-num">Lesson 08</span>
+        <div class="lesson-title">Groupby &amp; Aggregations</div>
+        <div class="lesson-desc">Summarising data by category -- the pivot table of the Python world.</div>
+        <div class="lesson-tags">
+          <span class="lesson-tag">groupby</span>
+          <span class="lesson-tag">agg</span>
+          <span class="lesson-tag">sum/mean/count</span>
+        </div>
+      </a>
+
+      <!-- Lesson 9 -->
+      <a class="lesson-card locked" href="#" onclick="return false;">
+        <span class="lesson-status status-lock">🔒</span>
+        <span class="lesson-num">Lesson 09</span>
+        <div class="lesson-title">Merging &amp; Joining Datasets</div>
+        <div class="lesson-desc">Inner, left, right, and outer joins in Pandas -- SQL joins but in Python.</div>
+        <div class="lesson-tags">
+          <span class="lesson-tag">merge</span>
+          <span class="lesson-tag">join</span>
+          <span class="lesson-tag">concat</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+</div><!-- end .phases -->
+
+<!-- FOOTER -->
+<footer>
+  <strong>MLlabswithMel</strong> -- Hands-on data &amp; AI education<br>
+  <span style="font-size:.82rem;margin-top:.3rem;display:block;color:var(--faint)">From Novice to Ninja -- Series Index</span>
+</footer>
+
+<script>
+// Stub progress -- will connect to lesson completion later
+function updateOverallProgress() {
+  // In future: read completion flags from localStorage per lesson
+  var total = 9;
+  var done = 0; // will increment as lessons are built + marked
+  var pct = Math.round((done / total) * 100);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-text').textContent = done + ' of ' + total + ' lessons started';
+}
+updateOverallProgress();
+</script>
+
+</body>
+</html>
