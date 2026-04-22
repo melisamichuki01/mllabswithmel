@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 0: Your Environment | MLlabswithMel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#faf9ff;--surface:#f3f0ff;--surface-2:#ede9ff;
+  --purple:#7f77dd;--purple-dk:#534ab7;--purple-lt:#e8e5ff;
+  --teal:#1d9e75;--teal-lt:#d4f0e6;
+  --coral:#d85a30;--coral-lt:#faecea;
+  --amber:#ba7517;--amber-lt:#fef3dc;
+  --text:#1a1633;--muted:#6b5fa8;--faint:#9b94cc;
+  --code-bg:#ede9ff;--code-text:#534ab7;
+  --border:#c4bde8;--border-lt:#e2defc;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:1.05rem;line-height:1.75;}
+
+/* SCROLL BAR */
+@keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.scroll-glow{position:fixed;top:0;left:0;width:100%;height:4px;z-index:1000;background:linear-gradient(90deg,#7f77dd,#534ab7,#9b8ff0,#7f77dd,#b8b0ff,#534ab7);background-size:300% 300%;animation:gradientShift 4s ease infinite;transform-origin:left;transform:scaleX(0);transition:transform .05s linear;}
+
+/* HEADER */
+.site-header{background:linear-gradient(135deg,var(--surface) 0%,#eceaff 60%,var(--surface) 100%);background-size:200% 200%;animation:gradientShift 8s ease infinite;border-bottom:2px solid var(--purple);padding:2.5rem 1.5rem 2rem;text-align:center;}
+.site-header .brand{font-size:.8rem;font-weight:700;color:var(--purple-dk);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.4rem;font-family:'JetBrains Mono',monospace;}
+.breadcrumb{font-size:.8rem;color:var(--faint);margin-bottom:.8rem;font-family:'JetBrains Mono',monospace;}
+.breadcrumb a{color:var(--purple);text-decoration:none;}
+.breadcrumb a:hover{text-decoration:underline;}
+.site-header h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;line-height:1.2;color:var(--text);margin-bottom:.6rem;}
+.site-header h1 em{color:var(--purple);font-style:normal;}
+.site-header .subtitle{color:var(--muted);font-size:1rem;max-width:560px;margin:0 auto 1rem;}
+.tag-row{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-top:.8rem;}
+.tag{background:var(--purple-lt);color:var(--purple-dk);font-size:.72rem;font-weight:600;padding:.2rem .7rem;border-radius:999px;font-family:'JetBrains Mono',monospace;}
+.tag.teal{background:var(--teal-lt);color:#0a4a30;}
+.tag.amber{background:var(--amber-lt);color:#6b3a00;}
+
+/* PREREQS */
+.prereqs{max-width:900px;margin:1.5rem auto 0;padding:0 1.5rem;}
+.prereqs-box{background:var(--amber-lt);border:1.5px solid #f0c060;border-radius:12px;padding:1.2rem 1.5rem;}
+.prereqs-box h3{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--amber);margin-bottom:.7rem;}
+.prereqs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.5rem;}
+.prereq-item{display:flex;align-items:flex-start;gap:.5rem;font-size:.88rem;}
+.prereq-dot{width:6px;height:6px;min-width:6px;background:var(--amber);border-radius:50%;margin-top:.6rem;}
+
+/* PROGRESS */
+.progress-section{max-width:900px;margin:1.5rem auto 0;padding:0 1.5rem;}
+.progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem;font-size:.85rem;color:var(--muted);font-weight:600;}
+.progress-track{height:8px;background:var(--surface-2);border-radius:999px;overflow:hidden;margin-bottom:1rem;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--purple),#9b8ff0);border-radius:999px;transition:width .4s ease;width:0%;}
+.topic-chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:.5rem;}
+.chip{display:flex;align-items:center;gap:.5rem;background:var(--surface);border:1.5px solid var(--border-lt);border-radius:8px;padding:.5rem .8rem;cursor:pointer;font-size:.82rem;font-weight:600;color:var(--muted);transition:all .15s;user-select:none;}
+.chip:hover{border-color:var(--border);color:var(--text);}
+.chip.done{border-color:var(--teal);background:var(--teal-lt);color:#0a4a30;}
+.chip-box{width:15px;height:15px;min-width:15px;border:1.5px solid var(--border);border-radius:3px;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.chip.done .chip-box{background:var(--teal);border-color:var(--teal);}
+.chip-tick{display:none;color:#fff;font-size:9px;font-weight:800;}
+.chip.done .chip-tick{display:block;}
+
+/* TOC */
+.toc{background:var(--surface);border:1.5px solid var(--border-lt);border-radius:12px;padding:1.4rem 1.5rem;margin:1.5rem auto;max-width:900px;padding-left:1.5rem;padding-right:1.5rem;}
+.toc h3{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin-bottom:.8rem;}
+.toc ol{padding-left:1.2rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.3rem;}
+.toc ol li a{color:var(--purple-dk);text-decoration:none;font-size:.87rem;font-weight:500;transition:color .15s;}
+.toc ol li a:hover,.toc ol li a.active{color:var(--purple);font-weight:700;}
+
+/* MAIN */
+main{max-width:900px;margin:0 auto;padding:0 1.5rem 5rem;}
+section{margin-bottom:4rem;scroll-margin-top:2rem;}
+section h2{font-size:clamp(1.25rem,3vw,1.75rem);font-weight:700;color:var(--text);margin-bottom:1.2rem;padding-bottom:.6rem;border-bottom:2px solid var(--border-lt);display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;}
+.section-num{display:inline-flex;align-items:center;justify-content:center;background:var(--purple);color:#fff;font-size:.68rem;font-weight:700;width:24px;height:24px;border-radius:50%;flex-shrink:0;}
+.done-check{margin-left:auto;display:flex;align-items:center;gap:.4rem;font-size:.76rem;font-weight:600;color:var(--faint);cursor:pointer;user-select:none;transition:color .15s;}
+.done-check:hover,.done-check.checked{color:var(--teal);}
+.done-check-box{width:16px;height:16px;border:1.5px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.done-check.checked .done-check-box{background:var(--teal);border-color:var(--teal);}
+.done-check-tick{display:none;color:#fff;font-size:10px;font-weight:800;}
+.done-check.checked .done-check-tick{display:block;}
+section h3{font-size:1.05rem;font-weight:700;color:var(--purple-dk);margin:1.8rem 0 .6rem;}
+section p{margin-bottom:1rem;color:var(--muted);}
+section p strong{color:var(--text);}
+section ul,section ol{padding-left:1.4rem;margin-bottom:1rem;color:var(--muted);}
+section li{margin-bottom:.5rem;}
+section li strong{color:var(--text);}
+
+/* CARDS */
+.card{border-radius:10px;margin:1.5rem 0;overflow:hidden;border-left:4px solid transparent;}
+.card-header{padding:.75rem 1.2rem;font-size:.9rem;font-weight:700;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;}
+.card-header::after{content:'▼';font-size:.6rem;transition:transform .2s;}
+.card.open .card-header::after{transform:rotate(180deg);}
+.card-body{padding:1rem 1.2rem 1.2rem;display:none;font-size:.95rem;color:var(--muted);}
+.card.open .card-body{display:block;}
+.card-body p{margin-bottom:.7rem;}
+.card-body p:last-child{margin-bottom:0;}
+.card-body strong{color:var(--text);}
+.card-body ul{padding-left:1.2rem;}
+.card-body li{margin-bottom:.3rem;}
+.slowdown-card{background:var(--coral-lt);border-color:var(--coral);}
+.slowdown-card .card-header{background:#f8dcd5;color:#8b2e10;}
+.explain-card{background:var(--purple-lt);border-color:var(--purple);}
+.explain-card .card-header{background:#ddd9f8;color:var(--purple-dk);}
+.analogy-card{background:var(--teal-lt);border-color:var(--teal);}
+.analogy-card .card-header{background:#c0e8d8;color:#0a4a30;}
+
+/* CHALLENGES */
+.challenge{background:var(--amber-lt);border:1.5px solid #f0c060;border-radius:10px;margin:1.8rem 0;overflow:hidden;}
+.challenge-header{background:#fde8a0;padding:.7rem 1.2rem;font-size:.88rem;font-weight:700;color:#6b3a00;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;}
+.challenge-header::after{content:'▼';font-size:.6rem;transition:transform .2s;}
+.challenge.open .challenge-header::after{transform:rotate(180deg);}
+.challenge-body{padding:1rem 1.2rem 1.2rem;display:none;font-size:.93rem;color:var(--muted);}
+.challenge.open .challenge-body{display:block;}
+.challenge-body p{margin-bottom:.7rem;}
+.challenge-q{font-weight:700;color:#6b3a00;margin-bottom:.6rem;}
+.answer-toggle{background:none;border:1.5px solid #d4a020;border-radius:6px;padding:.3rem .9rem;font-size:.79rem;font-weight:700;color:#8b5a00;cursor:pointer;margin-top:.4rem;font-family:'Plus Jakarta Sans',sans-serif;transition:background .15s;}
+.answer-toggle:hover{background:#fde8a0;}
+.answer-box{background:#fff8e0;border-radius:6px;padding:.8rem 1rem;margin-top:.6rem;display:none;border:1px solid #f0c060;color:var(--muted);}
+.answer-box.show{display:block;}
+.answer-box p{margin-bottom:.5rem;}
+.answer-box p:last-child{margin-bottom:0;}
+
+/* CODE BLOCKS */
+.code-block{background:var(--code-bg);border-radius:10px;margin:1.2rem 0;overflow:hidden;border:1.5px solid var(--border-lt);}
+.code-label{display:flex;align-items:center;justify-content:space-between;padding:.45rem 1rem;font-family:'JetBrains Mono',monospace;font-size:.73rem;font-weight:500;border-bottom:1px solid var(--border-lt);}
+.code-label.terminal{background:#dff5ec;color:#0a4a30;}
+.code-label.script{background:var(--amber-lt);color:#6b3a00;}
+.code-label.output{background:var(--surface-2);color:var(--muted);}
+.copy-btn{background:none;border:1px solid var(--border);border-radius:5px;padding:2px 8px;font-size:.68rem;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s;}
+.copy-btn:hover{background:var(--purple-lt);color:var(--purple-dk);}
+.copy-btn.copied{color:var(--teal);border-color:var(--teal);}
+pre{padding:1.2rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.84rem;line-height:1.8;color:var(--code-text);white-space:pre;}
+.cm{color:#9b94cc;}.kw{color:var(--purple);}.st{color:var(--teal);}.fn{color:var(--amber);}.nm{color:var(--coral);}
+
+/* TABLES */
+.table-wrap{overflow-x:auto;margin:1.2rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.91rem;}
+th{background:var(--surface);color:var(--purple-dk);font-size:.78rem;font-weight:700;text-align:left;padding:.65rem 1rem;border-bottom:2px solid var(--border);}
+td{padding:.6rem 1rem;border-bottom:1px solid var(--border-lt);vertical-align:top;color:var(--muted);}
+td strong{color:var(--text);}
+tr:hover td{background:var(--surface);}
+
+/* CALLOUTS */
+.callout{background:var(--teal-lt);border-left:3px solid var(--teal);padding:.9rem 1.2rem;border-radius:0 8px 8px 0;margin:1.2rem 0;font-size:.93rem;color:#0a4a30;}
+.callout strong{color:var(--teal);}
+.callout-amber{background:var(--amber-lt);border-left:3px solid var(--amber);padding:.9rem 1.2rem;border-radius:0 8px 8px 0;margin:1.2rem 0;font-size:.93rem;color:#5a3800;}
+.callout-amber strong{color:var(--amber);}
+
+/* STEP LIST */
+.step-list{display:flex;flex-direction:column;gap:.8rem;margin:1.2rem 0;}
+.step-item{display:flex;gap:1rem;align-items:flex-start;background:#fff;border:1.5px solid var(--border-lt);border-radius:12px;padding:1rem 1.2rem;}
+.step-num{background:var(--purple);color:#fff;font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:700;width:26px;height:26px;min-width:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:.1rem;}
+.step-item h4{font-size:.93rem;font-weight:700;color:var(--text);margin-bottom:.2rem;}
+.step-item p{font-size:.86rem;color:var(--muted);margin:0;line-height:1.55;}
+
+/* WIN BOX */
+.win-box{background:var(--teal-lt);border:1.5px solid var(--teal);border-radius:10px;padding:1rem 1.4rem;margin:1.8rem 0;color:#0a4a30;font-weight:600;font-size:.95rem;}
+
+/* TASK BOXES */
+.task-box{background:var(--surface);border:1.5px solid var(--border-lt);border-radius:10px;padding:1.1rem 1.4rem;margin:1rem 0;}
+.task-num{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--purple);margin-bottom:.3rem;}
+.task-box p{margin:0;font-size:.94rem;color:var(--muted);}
+.task-box p strong{color:var(--text);}
+
+/* NAV FOOTER */
+.page-nav{display:flex;justify-content:space-between;align-items:center;max-width:900px;margin:3rem auto 0;padding:0 1.5rem 2rem;gap:1rem;}
+.nav-btn{display:inline-flex;align-items:center;gap:.5rem;background:var(--surface);border:1.5px solid var(--border-lt);border-radius:10px;padding:.7rem 1.2rem;text-decoration:none;font-size:.88rem;font-weight:700;color:var(--purple-dk);transition:all .18s;}
+.nav-btn:hover{border-color:var(--purple);background:var(--purple-lt);}
+.nav-btn.next{background:var(--purple);color:#fff;border-color:var(--purple);}
+.nav-btn.next:hover{background:var(--purple-dk);}
+
+/* FOOTER */
+footer{background:var(--surface);border-top:1.5px solid var(--border-lt);text-align:center;padding:2rem 1.5rem;color:var(--muted);font-size:.87rem;margin-top:1rem;}
+footer strong{color:var(--purple-dk);font-weight:700;}
+
+@media(max-width:640px){
+  .toc ol,.topic-chips,.prereqs-grid{grid-template-columns:1fr 1fr;}
+  pre{font-size:.76rem;}
+  .page-nav{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<div class="scroll-glow" id="scroll-bar"></div>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="brand">MLlabswithMel</div>
+  <div class="breadcrumb"><a href="../index.html">Portal</a> / Phase 0</div>
+  <h1>Phase 0: Your <em>Environment</em></h1>
+  <p class="subtitle">Before you write a single line of Python, you need a place to write it. This phase gets your machine ready so everything just works.</p>
+  <div class="tag-row">
+    <span class="tag">Setup</span>
+    <span class="tag">Terminal</span>
+    <span class="tag">Anaconda</span>
+    <span class="tag">VS Code</span>
+    <span class="tag teal">No Python yet</span>
+    <span class="tag amber">~2 hours</span>
+  </div>
+</header>
+
+<!-- PREREQS -->
+<div class="prereqs">
+  <div class="prereqs-box">
+    <h3>Before you start this phase</h3>
+    <div class="prereqs-grid">
+      <div class="prereq-item"><div class="prereq-dot"></div><span>A Windows laptop or desktop (this guide is Windows-first)</span></div>
+      <div class="prereq-item"><div class="prereq-dot"></div><span>A stable internet connection for downloads</span></div>
+      <div class="prereq-item"><div class="prereq-dot"></div><span>About 3GB of free disk space for Anaconda and VS Code</span></div>
+      <div class="prereq-item"><div class="prereq-dot"></div><span>Zero Python experience required — this is truly the beginning</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-section">
+  <div class="progress-header">
+    <span>Phase 0 progress</span>
+    <span id="prog-text">0 of 4 lessons done</span>
+  </div>
+  <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
+  <div class="topic-chips">
+    <div class="chip" onclick="chipClick(this,'s1')"><div class="chip-box"><span class="chip-tick">✓</span></div>0.1 The Terminal</div>
+    <div class="chip" onclick="chipClick(this,'s2')"><div class="chip-box"><span class="chip-tick">✓</span></div>0.2 Anaconda Setup</div>
+    <div class="chip" onclick="chipClick(this,'s3')"><div class="chip-box"><span class="chip-tick">✓</span></div>0.3 VS Code + Extensions</div>
+    <div class="chip" onclick="chipClick(this,'s4')"><div class="chip-box"><span class="chip-tick">✓</span></div>0.4 Jupyter in VS Code</div>
+  </div>
+</div>
+
+<!-- TOC -->
+<div class="toc" style="margin-left:1.5rem;margin-right:1.5rem;max-width:900px;margin-left:auto;margin-right:auto;">
+  <h3>What's in this phase</h3>
+  <ol id="toc-list">
+    <li><a href="#s1">The Terminal</a></li>
+    <li><a href="#s2">Setting Up with Anaconda</a></li>
+    <li><a href="#s3">VS Code and Extensions</a></li>
+    <li><a href="#s4">Jupyter Notebooks in VS Code</a></li>
+    <li><a href="#s5">Your First Python File</a></li>
+    <li><a href="#s6">Common Errors and Fixes</a></li>
+    <li><a href="#s7">Practice Tasks</a></li>
+    <li><a href="#s8">How It All Fits Together</a></li>
+  </ol>
+</div>
+
+<main>
+
+<!-- ── S1: THE TERMINAL ── -->
+<section id="s1">
+  <h2><span class="section-num">01</span> The Terminal <span class="done-check" onclick="toggleDone(this)"><span class="done-check-box"><span class="done-check-tick">✓</span></span>Mark done</span></h2>
+
+  <div class="card analogy-card open">
+    <div class="card-header">🔁 In plain life terms...</div>
+    <div class="card-body">
+      <p>The terminal is like texting your computer instead of clicking on it. Instead of using your mouse to open folders and apps, you type short commands and your computer does exactly what you said. It sounds harder, but once it clicks, it's actually faster and more powerful than anything you can do with a mouse.</p>
+      <p>Every professional developer uses the terminal every single day. You're going to start using it on day one.</p>
+    </div>
+  </div>
+
+  <h3>Opening the terminal on Windows</h3>
+  <p>Windows has a few terminal options. The best one to use for this course is <strong>Command Prompt</strong> or <strong>PowerShell</strong>. Here's how to open either one:</p>
+
+  <div class="step-list">
+    <div class="step-item"><div class="step-num">1</div><div><h4>Press the Windows key</h4><p>The Windows key is between Ctrl and Alt on the bottom left of your keyboard. It has the Windows logo on it.</p></div></div>
+    <div class="step-item"><div class="step-num">2</div><div><h4>Type "cmd" or "PowerShell"</h4><p>Start typing immediately — you don't need to click anywhere first. Either works. PowerShell is slightly more powerful; cmd is simpler. Start with cmd if you're not sure.</p></div></div>
+    <div class="step-item"><div class="step-num">3</div><div><h4>Press Enter</h4><p>A black (or blue) window opens with a blinking cursor. That's your terminal. It's waiting for you to type something.</p></div></div>
+  </div>
+
+  <div class="card slowdown-card">
+    <div class="card-header">🚨 Don't worry — this window looks scary at first</div>
+    <div class="card-body">
+      <p>The terminal is just a text interface. You type, press Enter, and something happens. That's it. You cannot break your computer just by typing commands — the worst that happens is you get an error message, and error messages are just the terminal telling you what went wrong so you can fix it.</p>
+    </div>
+  </div>
+
+  <h3>The commands you actually need to know</h3>
+  <p>You don't need to memorise hundreds of commands. Here are the five that matter right now:</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Command</th><th>What it does</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><code>cd foldername</code></td><td>Move into a folder (cd = change directory)</td><td><code>cd Documents</code></td></tr>
+        <tr><td><code>cd ..</code></td><td>Go back up one folder level</td><td><code>cd ..</code></td></tr>
+        <tr><td><code>dir</code></td><td>List what's inside the current folder</td><td><code>dir</code></td></tr>
+        <tr><td><code>mkdir foldername</code></td><td>Create a new folder</td><td><code>mkdir my_project</code></td></tr>
+        <tr><td><code>python --version</code></td><td>Check if Python is installed and which version</td><td><code>python --version</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label terminal"><span>🟢 Try these in your terminal right now</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># Check where you are right now</span>
+cd
+
+<span class="cm"># Move into your Documents folder</span>
+cd Documents
+
+<span class="cm"># See what's inside</span>
+dir
+
+<span class="cm"># Create a folder for this course</span>
+mkdir mllabs
+
+<span class="cm"># Move into it</span>
+cd mllabs
+
+<span class="cm"># Confirm you're in the right place</span>
+cd</pre>
+  </div>
+
+  <div class="card explain-card">
+    <div class="card-header">💡 What does a "path" mean?</div>
+    <div class="card-body">
+      <p>A <strong>path</strong> is just the address of a file or folder on your computer. <code>C:\Users\YourName\Documents\mllabs</code> is a path — it tells your computer exactly where to find that folder, floor by floor, like a building address.</p>
+      <p>When you type <code>cd</code> in the terminal, it shows you your current path — where you are right now in the building.</p>
+    </div>
+  </div>
+
+  <div class="challenge">
+    <div class="challenge-header" onclick="toggleChallenge(this)">🎯 Mini Challenge — The Terminal</div>
+    <div class="challenge-body">
+      <p class="challenge-q">Using only the terminal (no mouse, no File Explorer):</p>
+      <p>1. Navigate to your Desktop.<br>2. Create a new folder called <code>python_practice</code>.<br>3. Move into that folder.<br>4. Confirm you're in the right place by checking your current path.</p>
+      <button class="answer-toggle" onclick="toggleAnswer(this)">Show answer</button>
+      <div class="answer-box">
+        <p>Here's the sequence:</p>
+        <div class="code-block" style="margin-top:.5rem;">
+          <div class="code-label terminal"><span>🟢 Terminal</span></div>
+          <pre>
+cd %USERPROFILE%\Desktop
+mkdir python_practice
+cd python_practice
+cd</pre>
+        </div>
+        <p>The last <code>cd</code> on its own prints your current location. It should end with <code>\Desktop\python_practice</code>.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="win-box">You now know how to navigate your computer with text commands. This is a skill most people never bother to learn — you just did it on day one.</div>
+</section>
+
+<!-- ── S2: ANACONDA ── -->
+<section id="s2">
+  <h2><span class="section-num">02</span> Setting Up with Anaconda <span class="done-check" onclick="toggleDone(this)"><span class="done-check-box"><span class="done-check-tick">✓</span></span>Mark done</span></h2>
+
+  <div class="card analogy-card open">
+    <div class="card-header">🔁 Here's the everyday version of that</div>
+    <div class="card-body">
+      <p>Installing Python on its own is like moving into a new flat with bare walls and no furniture. You can live there, but you'll spend weeks sourcing everything separately. Anaconda is the furnished flat — Python is already there, plus all the data science tools you'll need (Pandas, NumPy, Jupyter, and more) come pre-installed and configured properly.</p>
+      <p>It also handles <strong>environments</strong> — which means different projects can use different versions of Python and different libraries without clashing with each other. This matters more than it sounds, and you'll thank yourself later for starting with Anaconda.</p>
+    </div>
+  </div>
+
+  <h3>Installing Anaconda</h3>
+  <div class="step-list">
+    <div class="step-item"><div class="step-num">1</div><div><h4>Go to anaconda.com/download</h4><p>Click the big Download button. It will detect Windows automatically and download the right installer. The file is about 800MB — it takes a few minutes.</p></div></div>
+    <div class="step-item"><div class="step-num">2</div><div><h4>Run the installer</h4><p>Double-click the downloaded .exe file. Click through the setup. When it asks "Install for Just Me" or "All Users" — choose <strong>Just Me</strong>. This avoids permission problems later.</p></div></div>
+    <div class="step-item"><div class="step-num">3</div><div><h4>Leave the PATH option unchecked</h4><p>The installer will ask if you want to "Add Anaconda3 to my PATH environment variable". <strong>Leave this unchecked.</strong> It's checked by default in some versions — make sure it isn't. You'll use Anaconda Prompt instead, which handles this for you.</p></div></div>
+    <div class="step-item"><div class="step-num">4</div><div><h4>Finish the installation</h4><p>Click Finish. The installation is done. You do not need to register or create an Anaconda account.</p></div></div>
+  </div>
+
+  <div class="callout-amber"><strong>On a Mac?</strong> Download the macOS installer from the same page. The setup is nearly identical. The terminal commands in this course work on Mac too — just use <code>ls</code> instead of <code>dir</code>.</div>
+
+  <h3>Verifying the installation</h3>
+  <p>Open <strong>Anaconda Prompt</strong> — not your regular terminal. Search for "Anaconda Prompt" in your Start menu. It looks like a regular terminal but has Anaconda's environment activated automatically.</p>
+
+  <div class="code-block">
+    <div class="code-label terminal"><span>🟢 Run in Anaconda Prompt</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># Check that Python is there</span>
+python --version
+
+<span class="cm"># Check that conda (the environment manager) is there</span>
+conda --version
+
+<span class="cm"># See all the packages that came pre-installed</span>
+conda list</pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label output"><span>Expected output (your exact version numbers may differ)</span></div>
+    <pre>
+Python 3.11.5
+conda 23.7.4</pre>
+  </div>
+
+  <div class="card slowdown-card">
+    <div class="card-header">🚨 If you see "conda is not recognised" in regular cmd</div>
+    <div class="card-body">
+      <p>This is normal. Anaconda creates its own terminal called <strong>Anaconda Prompt</strong> — use that instead of regular Command Prompt for everything in this course. Search "Anaconda Prompt" in your Start menu. It should be there after installation.</p>
+    </div>
+  </div>
+
+  <h3>Creating your first environment</h3>
+  <p>An environment is like a fresh, clean room for a specific project. The packages you install inside one environment don't affect any other. This is the professional way to work.</p>
+
+  <div class="code-block">
+    <div class="code-label terminal"><span>🟢 Run in Anaconda Prompt</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># Create an environment called "mllabs" with Python 3.11</span>
+conda create --name mllabs python=3.11
+
+<span class="cm"># It will ask you to confirm — type y and press Enter</span>
+<span class="cm"># This takes a minute or two</span>
+
+<span class="cm"># Activate the environment (switch into it)</span>
+conda activate mllabs
+
+<span class="cm"># Your prompt now shows (mllabs) at the start — you're inside it</span>
+
+<span class="cm"># Check you're using the right Python</span>
+python --version</pre>
+  </div>
+
+  <div class="card explain-card">
+    <div class="card-header">💡 Why bother with environments at all?</div>
+    <div class="card-body">
+      <p>Imagine two projects: one needs Pandas version 1.5, and another needs version 2.0. If you install everything in the same place, they fight over which version is installed, and one of them breaks.</p>
+      <p>Environments keep them separate. Project A lives in its own room with its own furniture. Project B lives in a different room with different furniture. They never see each other.</p>
+      <p>For now, your <code>mllabs</code> environment is where you'll do all your work for this course. Always activate it before you start coding.</p>
+    </div>
+  </div>
+
+  <h3>Installing the key packages</h3>
+  <p>With your <code>mllabs</code> environment activated, install the libraries you'll need for this course:</p>
+
+  <div class="code-block">
+    <div class="code-label terminal"><span>🟢 Run in Anaconda Prompt (with mllabs activated)</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># Install the core data science stack in one command</span>
+conda install pandas numpy matplotlib seaborn jupyter
+
+<span class="cm"># Type y when it asks to confirm</span>
+<span class="cm"># This will take a few minutes — Anaconda is downloading and setting up</span>
+
+<span class="cm"># Verify pandas installed correctly</span>
+python -c "import pandas; print(pandas.__version__)"</pre>
+  </div>
+
+  <div class="challenge">
+    <div class="challenge-header" onclick="toggleChallenge(this)">🎯 Mini Challenge — Anaconda</div>
+    <div class="challenge-body">
+      <p class="challenge-q">Open Anaconda Prompt and complete the following:</p>
+      <p>1. Activate your <code>mllabs</code> environment.<br>2. Check which Python version is active — it should say 3.11.x.<br>3. Run this one-liner in the terminal to confirm Pandas is installed and print its version.</p>
+      <button class="answer-toggle" onclick="toggleAnswer(this)">Show answer</button>
+      <div class="answer-box">
+        <div class="code-block" style="margin:.3rem 0 .5rem;">
+          <div class="code-label terminal"><span>🟢 Anaconda Prompt</span></div>
+          <pre>
+conda activate mllabs
+python --version
+python -c "import pandas; print(pandas.__version__)"</pre>
+        </div>
+        <p>If the last command prints a version number (like <code>2.1.0</code>) without any error, Pandas is installed and working correctly.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="win-box">Anaconda is installed, your environment is set up, and the key packages are ready. You have a proper Python development environment — the same foundation professional data scientists use.</div>
+</section>
+
+<!-- ── S3: VS CODE ── -->
+<section id="s3">
+  <h2><span class="section-num">03</span> VS Code and Extensions <span class="done-check" onclick="toggleDone(this)"><span class="done-check-box"><span class="done-check-tick">✓</span></span>Mark done</span></h2>
+
+  <div class="card analogy-card open">
+    <div class="card-header">🔁 Think of it like this...</div>
+    <div class="card-body">
+      <p>You could write Python code in Notepad — it would technically work. But that would be like writing a novel with a pencil stub on a napkin. VS Code is a proper word processor for code. It colours your code so errors stand out, it spots mistakes before you run anything, it lets you see your files, run the terminal, and debug — all in one window.</p>
+      <p>It's free, it's fast, and it's what most professional Python developers actually use.</p>
+    </div>
+  </div>
+
+  <h3>Installing VS Code</h3>
+  <div class="step-list">
+    <div class="step-item"><div class="step-num">1</div><div><h4>Go to code.visualstudio.com</h4><p>Click the big blue Download button. It will detect Windows and download the right installer automatically.</p></div></div>
+    <div class="step-item"><div class="step-num">2</div><div><h4>Run the installer</h4><p>Accept the agreement. When you reach "Select Additional Tasks", tick <strong>"Add to PATH"</strong> and <strong>"Open with Code" context menu options</strong>. Leave everything else as default.</p></div></div>
+    <div class="step-item"><div class="step-num">3</div><div><h4>Open VS Code</h4><p>VS Code opens automatically when installation finishes. You'll see a welcome screen. You can close that tab.</p></div></div>
+  </div>
+
+  <h3>Installing the extensions you need</h3>
+  <p>VS Code is lean by default. Extensions are what give it superpowers for Python. You need exactly three:</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Extension</th><th>What it does</th><th>Publisher</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Python</strong></td><td>The core Python support — syntax highlighting, running scripts, selecting your interpreter</td><td>Microsoft</td></tr>
+        <tr><td><strong>Pylance</strong></td><td>Smarter autocomplete, real-time error detection as you type, type hints</td><td>Microsoft</td></tr>
+        <tr><td><strong>Jupyter</strong></td><td>Lets you run .ipynb notebook files directly inside VS Code</td><td>Microsoft</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="step-list">
+    <div class="step-item"><div class="step-num">1</div><div><h4>Open the Extensions panel</h4><p>Click the square icon on the left sidebar (it looks like four squares, one slightly detached). Or press <code>Ctrl + Shift + X</code>.</p></div></div>
+    <div class="step-item"><div class="step-num">2</div><div><h4>Search for "Python"</h4><p>The first result should be the Python extension by Microsoft. Click Install. Pylance usually installs alongside it automatically.</p></div></div>
+    <div class="step-item"><div class="step-num">3</div><div><h4>Search for "Jupyter"</h4><p>Install the Jupyter extension by Microsoft. This gives you notebook support inside VS Code.</p></div></div>
+  </div>
+
+  <h3>Selecting your Python interpreter</h3>
+  <p>VS Code needs to know which Python to use. You have Anaconda installed with a <code>mllabs</code> environment — point VS Code at that one.</p>
+
+  <div class="step-list">
+    <div class="step-item"><div class="step-num">1</div><div><h4>Press Ctrl + Shift + P</h4><p>This opens the Command Palette — VS Code's search bar for every feature and setting.</p></div></div>
+    <div class="step-item"><div class="step-num">2</div><div><h4>Type "Python: Select Interpreter"</h4><p>Click that option when it appears in the dropdown.</p></div></div>
+    <div class="step-item"><div class="step-num">3</div><div><h4>Choose the mllabs environment</h4><p>You'll see a list of available Python installations. Find the one that says <code>conda: mllabs</code> or shows a path containing <code>mllabs</code>. Click it.</p></div></div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label output"><span>The path you're looking for will look something like this</span></div>
+    <pre>
+Python 3.11.5 ('mllabs': conda)
+~\anaconda3\envs\mllabs\python.exe</pre>
+  </div>
+
+  <div class="card slowdown-card">
+    <div class="card-header">🚨 I don't see my mllabs environment in the list</div>
+    <div class="card-body">
+      <p>This sometimes happens when VS Code opens before Anaconda has fully set up. Try two things: first, close VS Code and reopen it. Second, in your Anaconda Prompt with <code>mllabs</code> activated, type <code>code .</code> and press Enter — this opens VS Code from within the activated environment, and it should recognise it immediately.</p>
+    </div>
+  </div>
+
+  <h3>Opening a folder (the right way)</h3>
+  <p>Always open a <strong>folder</strong> in VS Code, not a file. This gives VS Code context about your project — where your files are, how they relate, and where the terminal should start.</p>
+
+  <div class="step-list">
+    <div class="step-item"><div class="step-num">1</div><div><h4>File → Open Folder</h4><p>Or press <code>Ctrl + K, Ctrl + O</code>. Navigate to your <code>mllabs</code> folder in Documents (or wherever you created it).</p></div></div>
+    <div class="step-item"><div class="step-num">2</div><div><h4>Click "Select Folder"</h4><p>VS Code opens that folder as your workspace. You'll see the folder contents in the left sidebar.</p></div></div>
+    <div class="step-item"><div class="step-num">3</div><div><h4>Open the integrated terminal</h4><p>Press <code>Ctrl + `</code> (the backtick key, usually top-left of your keyboard). A terminal opens at the bottom of VS Code, already pointed at your folder.</p></div></div>
+  </div>
+
+  <div class="callout"><strong>Good habit to build now:</strong> always open VS Code by opening a folder, not by double-clicking a file. It keeps your workspace organised and your terminal in the right place.</div>
+
+  <div class="challenge">
+    <div class="challenge-header" onclick="toggleChallenge(this)">🎯 Mini Challenge — VS Code Setup</div>
+    <div class="challenge-body">
+      <p class="challenge-q">Complete this setup check:</p>
+      <p>1. Open VS Code and open your <code>mllabs</code> folder.<br>2. Open the integrated terminal (Ctrl + `).<br>3. In that terminal, activate your conda environment and confirm the Python interpreter is the <code>mllabs</code> one.<br>4. Check the bottom bar of VS Code — it should show <code>Python 3.11.x ('mllabs': conda)</code>.</p>
+      <button class="answer-toggle" onclick="toggleAnswer(this)">Show answer</button>
+      <div class="answer-box">
+        <div class="code-block" style="margin:.3rem 0 .5rem;">
+          <div class="code-label terminal"><span>🟢 VS Code Integrated Terminal</span></div>
+          <pre>
+conda activate mllabs
+python --version</pre>
+        </div>
+        <p>The bottom left status bar of VS Code should show the active Python interpreter. If it still shows a different Python, press <code>Ctrl+Shift+P</code> and run "Python: Select Interpreter" to switch it.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="win-box">VS Code is set up and talking to your Anaconda environment. You have a proper coding workspace.</div>
+</section>
+
+<!-- ── S4: JUPYTER ── -->
+<section id="s4">
+  <h2><span class="section-num">04</span> Jupyter Notebooks in VS Code <span class="done-check" onclick="toggleDone(this)"><span class="done-check-box"><span class="done-check-tick">✓</span></span>Mark done</span></h2>
+
+  <div class="card analogy-card open">
+    <div class="card-header">🔁 Real world version</div>
+    <div class="card-body">
+      <p>A Jupyter Notebook is like a laboratory notebook — the kind scientists use to write down an experiment, run it, record the result, add notes, and then run the next experiment. Each block (called a <strong>cell</strong>) can contain code or notes. You run one cell at a time, and the output appears directly below it. This makes it perfect for exploring data: you can try something, see the result immediately, adjust, and try again.</p>
+    </div>
+  </div>
+
+  <h3>Creating your first notebook</h3>
+  <div class="step-list">
+    <div class="step-item"><div class="step-num">1</div><div><h4>Open the Command Palette</h4><p>Press <code>Ctrl + Shift + P</code> inside VS Code.</p></div></div>
+    <div class="step-item"><div class="step-num">2</div><div><h4>Type "Jupyter: Create New Jupyter Notebook"</h4><p>Select it from the list. A new <code>.ipynb</code> file opens with one empty cell.</p></div></div>
+    <div class="step-item"><div class="step-num">3</div><div><h4>Select the kernel</h4><p>In the top right corner of the notebook, you'll see "Select Kernel". Click it and choose <code>Python 3.11 (mllabs)</code> or whichever matches your conda environment.</p></div></div>
+    <div class="step-item"><div class="step-num">4</div><div><h4>Save the notebook</h4><p>Press <code>Ctrl + S</code>. Name it <code>phase0_test.ipynb</code>. It saves into your <code>mllabs</code> folder.</p></div></div>
+  </div>
+
+  <h3>Running your first cell</h3>
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 Type this in the first cell of your notebook</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="fn">print</span>(<span class="st">"Hello from my first notebook!"</span>)
+<span class="fn">print</span>(<span class="st">"Python is running and the environment is working."</span>)</pre>
+  </div>
+
+  <p>Press <strong>Shift + Enter</strong> to run the cell. The output appears directly below it. If you see the two print statements, everything is working.</p>
+
+  <div class="card explain-card">
+    <div class="card-header">💡 What's a kernel and why does it matter?</div>
+    <div class="card-body">
+      <p>The <strong>kernel</strong> is the engine running your notebook. When you run a cell, the kernel executes the code and sends the result back to the screen. The kernel also <strong>remembers</strong> what you've done — so if you define a variable in cell 1, cell 5 can still use it.</p>
+      <p>If your notebook starts behaving weirdly (variables seem to disappear or give unexpected values), the fix is almost always to <strong>restart the kernel</strong>: go to the Kernel menu and click "Restart". This wipes the memory and starts fresh.</p>
+    </div>
+  </div>
+
+  <h3>The difference between notebooks and scripts</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th></th><th>.ipynb Notebook</th><th>.py Script</th></tr></thead>
+      <tbody>
+        <tr><td><strong>How you run it</strong></td><td>One cell at a time with Shift+Enter</td><td>All at once from the terminal</td></tr>
+        <tr><td><strong>Output appears</strong></td><td>Inline, right below the cell</td><td>In the terminal</td></tr>
+        <tr><td><strong>Best for</strong></td><td>Exploring data, experimenting, learning</td><td>Building tools, automations, applications</td></tr>
+        <tr><td><strong>Variables</strong></td><td>Shared across all cells while kernel runs</td><td>Run once and gone</td></tr>
+        <tr><td><strong>In this course</strong></td><td>Used for data exploration phases</td><td>Used for everything you build</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout"><strong>Quick rule:</strong> when you're figuring something out — use a notebook. When you're building something that needs to run on its own — write a script. Most data scientists use both, switching between them depending on what they're doing.</div>
+
+  <div class="challenge">
+    <div class="challenge-header" onclick="toggleChallenge(this)">🎯 Mini Challenge — Jupyter</div>
+    <div class="challenge-body">
+      <p class="challenge-q">In your <code>phase0_test.ipynb</code> notebook:</p>
+      <p>1. In cell 1, import pandas and print its version.<br>2. In cell 2, create a variable called <code>my_name</code> with your name as a string.<br>3. In cell 3, use that variable in a print statement — prove that cell 3 can "remember" what was set in cell 2.</p>
+      <button class="answer-toggle" onclick="toggleAnswer(this)">Show answer</button>
+      <div class="answer-box">
+        <div class="code-block" style="margin:.3rem 0 .5rem;">
+          <div class="code-label script"><span>🟡 Cell 1</span></div>
+          <pre>
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="fn">print</span>(<span class="st">f"Pandas version: {pd.__version__}"</span>)</pre>
+        </div>
+        <div class="code-block" style="margin:.3rem 0 .5rem;">
+          <div class="code-label script"><span>🟡 Cell 2</span></div>
+          <pre>
+my_name = <span class="st">"Mel"</span>  <span class="cm"># put your actual name here</span></pre>
+        </div>
+        <div class="code-block" style="margin:.3rem 0 .5rem;">
+          <div class="code-label script"><span>🟡 Cell 3</span></div>
+          <pre>
+<span class="fn">print</span>(<span class="st">f"Hello, {my_name}. Your environment is fully set up."</span>)</pre>
+        </div>
+        <p>Cell 3 works because the kernel is keeping track of <code>my_name</code> since it was defined. This is the shared memory that makes notebooks so useful for exploration.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="win-box">You're running Jupyter notebooks directly in VS Code with your Anaconda environment. That's the setup that professional data scientists use every day.</div>
+</section>
+
+<!-- ── S5: FIRST PYTHON FILE ── -->
+<section id="s5">
+  <h2><span class="section-num">05</span> Your First Python File <span class="done-check" onclick="toggleDone(this)"><span class="done-check-box"><span class="done-check-tick">✓</span></span>Mark done</span></h2>
+
+  <p>Before you move into Phase 1, write and run one complete Python script from scratch. This confirms your entire setup is working end to end — from writing code to running it from the terminal.</p>
+
+  <h3>Create the file</h3>
+  <p>In VS Code with your <code>mllabs</code> folder open, create a new file:</p>
+
+  <div class="step-list">
+    <div class="step-item"><div class="step-num">1</div><div><h4>New file</h4><p>Press <code>Ctrl + N</code> or click the new file icon in the sidebar. Name it <code>hello.py</code>.</p></div></div>
+    <div class="step-item"><div class="step-num">2</div><div><h4>Write your first script</h4><p>Type the code below — don't copy-paste it yet. Actually typing it once helps it stick.</p></div></div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 hello.py — type this out</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># This is a comment — Python ignores it, but humans need it</span>
+<span class="cm"># Comments are notes you leave yourself and future-you will thank you for them</span>
+
+name = <span class="st">"Mel"</span>          <span class="cm"># store your name in a variable</span>
+language = <span class="st">"Python"</span>  <span class="cm"># store the language name</span>
+phase = <span class="nm">0</span>             <span class="cm"># which phase are we on?</span>
+
+<span class="fn">print</span>(<span class="st">f"Hello, {name}!"</span>)
+<span class="fn">print</span>(<span class="st">f"You are learning {language}."</span>)
+<span class="fn">print</span>(<span class="st">f"You are on Phase {phase} of the From Novice to Ninja curriculum."</span>)
+<span class="fn">print</span>(<span class="st">"Your environment is set up. You are ready."</span>)</pre>
+  </div>
+
+  <h3>Run it from the terminal</h3>
+  <div class="code-block">
+    <div class="code-label terminal"><span>🟢 VS Code Integrated Terminal</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># Make sure you're in the mllabs folder and the environment is active</span>
+conda activate mllabs
+
+<span class="cm"># Run the script</span>
+python hello.py</pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label output"><span>Expected output</span></div>
+    <pre>
+Hello, Mel!
+You are learning Python.
+You are on Phase 0 of the From Novice to Ninja curriculum.
+Your environment is set up. You are ready.</pre>
+  </div>
+
+  <div class="win-box">🎉 You just wrote and ran your first Python script. That's it. That's the whole setup. Everything from here is building on this foundation.</div>
+</section>
+
+<!-- ── S6: COMMON ERRORS ── -->
+<section id="s6">
+  <h2><span class="section-num">06</span> Common Errors and Fixes <span class="done-check" onclick="toggleDone(this)"><span class="done-check-box"><span class="done-check-tick">✓</span></span>Mark done</span></h2>
+
+  <p>These are the errors that trip up almost everyone during setup. If something goes wrong, check here first before anything else.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Error</th><th>What it means</th><th>Fix</th></tr></thead>
+      <tbody>
+        <tr><td><code>'python' is not recognized</code></td><td>Python is not on your PATH, or you're using regular cmd instead of Anaconda Prompt</td><td>Open <strong>Anaconda Prompt</strong> instead of regular cmd. Run <code>conda activate mllabs</code> first.</td></tr>
+        <tr><td><code>'conda' is not recognized</code></td><td>Same issue — regular cmd doesn't know about conda</td><td>Always use <strong>Anaconda Prompt</strong> for anything related to Python or conda</td></tr>
+        <tr><td>VS Code doesn't show mllabs interpreter</td><td>VS Code can't find the conda environment</td><td>Close VS Code. Open Anaconda Prompt, run <code>conda activate mllabs</code>, then type <code>code .</code> to open VS Code from within the environment</td></tr>
+        <tr><td><code>ModuleNotFoundError: No module named 'pandas'</code></td><td>You're running Python from the wrong environment</td><td>Activate mllabs first: <code>conda activate mllabs</code>. Then run your script again.</td></tr>
+        <tr><td>Notebook kernel won't start</td><td>The Jupyter extension can't connect to your environment</td><td>Select the kernel manually: top-right of the notebook, click "Select Kernel", choose the mllabs conda environment</td></tr>
+        <tr><td><code>SyntaxError: invalid syntax</code></td><td>There's a typo in your code — a missing colon, bracket, or quote</td><td>Read the error message — it tells you the exact line number. Look at that line carefully.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout-amber"><strong>The golden rule of setup errors:</strong> if something isn't working, the first thing to check is whether you're in the right environment. Run <code>conda activate mllabs</code>, then try again. Nine times out of ten, that's the fix.</div>
+</section>
+
+<!-- ── S7: PRACTICE TASKS ── -->
+<section id="s7">
+  <h2><span class="section-num">07</span> Practice Tasks <span class="done-check" onclick="toggleDone(this)"><span class="done-check-box"><span class="done-check-tick">✓</span></span>Mark done</span></h2>
+
+  <p>Before moving to Phase 1, complete these tasks. They're not optional — they confirm your setup works and build the muscle memory you'll need every day.</p>
+
+  <div class="task-box">
+    <div class="task-num">Task 01 — Easy</div>
+    <p>From the terminal, navigate to your Desktop, create a folder called <code>phase0_work</code>, and then navigate into it. Confirm you're inside it by printing the current path.</p>
+  </div>
+
+  <div class="task-box">
+    <div class="task-num">Task 02 — Easy</div>
+    <p>Open Anaconda Prompt, activate your <code>mllabs</code> environment, and list all installed packages with <code>conda list</code>. Find pandas in the list and note which version is installed.</p>
+  </div>
+
+  <div class="task-box">
+    <div class="task-num">Task 03 — Medium</div>
+    <p>Create a new Python script called <code>about_me.py</code>. It should store your name, city, and one thing you want to learn this year in variables, then print a sentence using all three. Run it from the VS Code terminal.</p>
+  </div>
+
+  <div class="task-box">
+    <div class="task-num">Task 04 — Medium</div>
+    <p>Create a new Jupyter notebook called <code>setup_check.ipynb</code>. In three separate cells, import numpy, pandas, and matplotlib. In a fourth cell, print all three version numbers. Run all cells and confirm they work.</p>
+  </div>
+
+  <div class="task-box">
+    <div class="task-num">Task 05 — Challenge</div>
+    <p>Create a second conda environment called <code>test_env</code> with Python 3.10. Activate it and confirm a different Python version is running. Then switch back to <code>mllabs</code>. This teaches you how to move between environments — a skill you'll use when working on multiple projects.</p>
+  </div>
+</section>
+
+<!-- ── S8: HOW IT ALL FITS TOGETHER ── -->
+<section id="s8">
+  <h2><span class="section-num">08</span> How It All Fits Together <span class="done-check" onclick="toggleDone(this)"><span class="done-check-box"><span class="done-check-tick">✓</span></span>Mark done</span></h2>
+
+  <p>Here's what you now have and why each piece matters:</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Tool</th><th>What it does</th><th>When you use it</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Terminal (Anaconda Prompt)</strong></td><td>Your command centre for running scripts, managing environments, installing packages</td><td>Every time you start working</td></tr>
+        <tr><td><strong>Anaconda</strong></td><td>Manages Python, environments, and your package library so nothing conflicts</td><td>Creating and switching environments, installing new libraries</td></tr>
+        <tr><td><strong>conda environment (mllabs)</strong></td><td>An isolated space where all your course work lives without affecting anything else</td><td>Always activated when you're coding</td></tr>
+        <tr><td><strong>VS Code</strong></td><td>Where you write, edit, and run your code — scripts and notebooks both</td><td>Every coding session</td></tr>
+        <tr><td><strong>Python extension + Pylance</strong></td><td>Gives VS Code Python awareness: colours, errors, autocomplete</td><td>Active automatically once installed</td></tr>
+        <tr><td><strong>Jupyter extension</strong></td><td>Lets you run .ipynb notebooks inside VS Code without needing a browser</td><td>Data exploration and learning phases</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>What's next</h3>
+  <p>Phase 0 is done. From here, every phase is about writing actual Python. No more setup — just code.</p>
+  <p>Phase 1 covers the Python basics: variables, data types, strings, numbers, booleans, and how Python thinks about information. It builds directly on this setup — you'll write and run every example in the environment you just configured.</p>
+
+  <div class="callout"><strong>Before you move on:</strong> mark all four lessons done using the chips at the top of this page. The progress bar should hit 100%. That's your signal that Phase 0 is genuinely complete.</div>
+</section>
+
+</main>
+
+<!-- PAGE NAV -->
+<div class="page-nav">
+  <a href="../index.html" class="nav-btn">← Back to Portal</a>
+  <a href="phase1.html" class="nav-btn next">Phase 1: Python Basics →</a>
+</div>
+
+<footer>
+  <strong>MLlabswithMel</strong> &mdash; Hands-on data &amp; AI education<br>
+  <span style="font-size:.82rem;margin-top:.3rem;display:block;color:var(--faint)">Phase 0: Your Environment</span>
+</footer>
+
+<script>
+/* SCROLL BAR */
+window.addEventListener('scroll', function() {
+  var pct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+  document.getElementById('scroll-bar').style.transform = 'scaleX(' + Math.min(pct, 1) + ')';
+});
+
+/* CARDS */
+document.querySelectorAll('.card-header').forEach(function(h) {
+  h.addEventListener('click', function() { h.closest('.card').classList.toggle('open'); });
+});
+
+/* CHALLENGES */
+function toggleChallenge(h) { h.closest('.challenge').classList.toggle('open'); }
+function toggleAnswer(btn) {
+  var box = btn.nextElementSibling;
+  box.classList.toggle('show');
+  btn.textContent = box.classList.contains('show') ? 'Hide answer' : 'Show answer';
+}
+
+/* SECTION DONE */
+function toggleDone(el) { el.classList.toggle('checked'); updateProgress(); }
+
+/* COPY */
+function copyCode(btn) {
+  var pre = btn.closest('.code-block').querySelector('pre');
+  navigator.clipboard.writeText(pre ? pre.innerText : '').then(function() {
+    btn.textContent = 'Copied!'; btn.classList.add('copied');
+    setTimeout(function() { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  }).catch(function() { btn.textContent = 'Failed'; setTimeout(function() { btn.textContent = 'Copy'; }, 1500); });
+}
+
+/* PROGRESS CHIPS */
+function chipClick(chip, sectionId) {
+  chip.classList.toggle('done');
+  updateProgress();
+  if (chip.classList.contains('done')) {
+    document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+  }
+}
+function updateProgress() {
+  var total = document.querySelectorAll('.chip').length;
+  var done  = document.querySelectorAll('.chip.done').length;
+  var checks = document.querySelectorAll('.done-check.checked').length;
+  var combined = Math.max(done, checks);
+  var pct = Math.round((combined / total) * 100);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-text').textContent = combined + ' of ' + total + ' lessons done';
+}
+
+/* SCROLL SPY TOC */
+var sections = document.querySelectorAll('main section[id]');
+var tocLinks = document.querySelectorAll('#toc-list a');
+function updateToc() {
+  var y = window.scrollY + 130, cur = '';
+  sections.forEach(function(s) { if (s.offsetTop <= y) cur = s.id; });
+  tocLinks.forEach(function(a) { a.classList.toggle('active', a.getAttribute('href') === '#' + cur); });
+}
+window.addEventListener('scroll', updateToc, { passive: true });
+updateToc();
+</script>
+</body>
+</html>
