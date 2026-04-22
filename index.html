@@ -3,348 +3,732 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>From Novice to Ninja — MLlabswithMel</title>
+<title>From Novice to Ninja: MLlabswithMel</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --bg:        #faf9ff;
-  --surface:   #f3f0ff;
-  --surface-2: #ede9ff;
-  --purple:    #7f77dd;
-  --purple-dk: #534ab7;
-  --purple-lt: #e8e5ff;
-  --teal:      #1d9e75;
-  --teal-lt:   #d4f0e6;
-  --coral:     #d85a30;
-  --coral-lt:  #faecea;
-  --amber:     #ba7517;
-  --amber-lt:  #fef3dc;
-  --text:      #1a1633;
-  --muted:     #6b5fa8;
-  --faint:     #9b94cc;
-  --code-bg:   #ede9ff;
-  --code-text: #534ab7;
-  --border:    #c4bde8;
-  --border-lt: #e2defc;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#faf9ff;--surface:#f3f0ff;--surface-2:#ede9ff;
+  --purple:#7f77dd;--purple-dk:#534ab7;--purple-lt:#e8e5ff;
+  --teal:#1d9e75;--teal-lt:#d4f0e6;
+  --coral:#d85a30;--coral-lt:#faecea;
+  --amber:#ba7517;--amber-lt:#fef3dc;
+  --text:#1a1633;--muted:#6b5fa8;--faint:#9b94cc;
+  --code-bg:#ede9ff;--code-text:#534ab7;
+  --border:#c4bde8;--border-lt:#e2defc;
 }
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:1.05rem;line-height:1.75;}
 
-html { scroll-behavior: smooth; }
-body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.05rem; line-height: 1.75; }
+/* SCROLL ANIMATION */
+@keyframes gradientShift {
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+.scroll-glow{
+  position:fixed;top:0;left:0;width:100%;height:4px;z-index:1000;
+  background:linear-gradient(90deg,#7f77dd,#534ab7,#9b8ff0,#7f77dd,#b8b0ff,#534ab7);
+  background-size:300% 300%;
+  animation:gradientShift 4s ease infinite;
+  transform-origin:left;
+  transform:scaleX(0);
+  transition:transform .05s linear;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .5s ease,transform .5s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
 
-/* ---- HEADER ---- */
-.site-header { background: var(--surface); border-bottom: 2px solid var(--purple); padding: 3rem 1.5rem 2.5rem; text-align: center; }
-.site-header .brand { font-size: .85rem; font-weight: 700; color: var(--purple-dk); letter-spacing: .1em; text-transform: uppercase; margin-bottom: .6rem; }
-.site-header h1 { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 700; line-height: 1.15; color: var(--text); margin-bottom: .7rem; }
-.site-header h1 em { color: var(--purple); font-style: normal; }
-.site-header .subtitle { color: var(--muted); font-size: 1.05rem; max-width: 600px; margin: 0 auto 1.2rem; }
-.tag-row { display: flex; flex-wrap: wrap; gap: .5rem; justify-content: center; margin-top: 1rem; }
-.tag { background: var(--purple-lt); color: var(--purple-dk); font-size: .75rem; font-weight: 600; padding: .2rem .75rem; border-radius: 999px; font-family: 'JetBrains Mono', monospace; }
+/* HEADER */
+.site-header{
+  background:linear-gradient(135deg,var(--surface) 0%,#eceaff 50%,var(--surface) 100%);
+  background-size:200% 200%;
+  animation:gradientShift 8s ease infinite;
+  border-bottom:2px solid var(--purple);
+  padding:3rem 1.5rem 2.5rem;text-align:center;
+}
+.site-header .brand{font-size:.85rem;font-weight:700;color:var(--purple-dk);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.6rem;font-family:'JetBrains Mono',monospace;}
+.site-header h1{font-size:clamp(2rem,5vw,3.2rem);font-weight:700;line-height:1.15;color:var(--text);margin-bottom:.7rem;}
+.site-header h1 em{color:var(--purple);font-style:normal;}
+.site-header .subtitle{color:var(--muted);font-size:1.05rem;max-width:620px;margin:0 auto 1.2rem;}
+.tag-row{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-top:1rem;}
+.tag{background:var(--purple-lt);color:var(--purple-dk);font-size:.75rem;font-weight:600;padding:.2rem .75rem;border-radius:999px;font-family:'JetBrains Mono',monospace;}
 
-/* ---- HERO INTRO ---- */
-.hero-intro { max-width: 720px; margin: 3rem auto 0; padding: 0 1.5rem; text-align: center; }
-.hero-intro h2 { font-size: 1.5rem; font-weight: 700; color: var(--text); margin-bottom: .8rem; }
-.hero-intro p { color: var(--muted); font-size: 1rem; line-height: 1.8; margin-bottom: 1rem; }
-.snake-emoji { font-size: 3rem; display: block; margin-bottom: 1rem; }
+/* HOW TO USE */
+.how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1.5rem;}
+.how-card{border-radius:14px;padding:1.4rem 1.5rem;border:1.5px solid var(--border-lt);background:#fff;text-align:center;}
+.how-num{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:700;color:#fff;margin:0 auto .8rem;}
+.how-num.p{background:var(--purple);}
+.how-num.t{background:var(--teal);}
+.how-num.a{background:var(--amber);}
+.how-card h4{font-size:.95rem;font-weight:700;color:var(--text);margin-bottom:.4rem;}
+.how-card p{font-size:.84rem;color:var(--muted);margin:0;line-height:1.6;}
 
-/* ---- OVERALL PROGRESS ---- */
-.overall-progress { max-width: 760px; margin: 2.5rem auto 0; padding: 0 1.5rem; }
-.overall-progress-box { background: var(--surface); border: 1.5px solid var(--border-lt); border-radius: 14px; padding: 1.5rem 1.8rem; }
-.overall-progress-box .prog-label { display: flex; justify-content: space-between; font-size: .85rem; font-weight: 600; color: var(--muted); margin-bottom: .6rem; }
-.progress-track { height: 10px; background: var(--surface-2); border-radius: 999px; overflow: hidden; }
-.progress-fill { height: 100%; background: var(--teal); border-radius: 999px; transition: width .4s ease; width: 0%; }
-.prog-footnote { font-size: .8rem; color: var(--faint); margin-top: .6rem; text-align: center; }
+/* SECTIONS */
+.sw{max-width:900px;margin:0 auto;padding:3rem 1.5rem 0;}
+.sl{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem;}
+.sw h2{font-size:clamp(1.4rem,3vw,1.9rem);font-weight:700;color:var(--text);margin-bottom:1rem;line-height:1.25;}
+.sw h2 em{color:var(--purple);font-style:normal;}
+.sw p{color:var(--muted);line-height:1.8;margin-bottom:1rem;}
+.sw p:last-child{margin-bottom:0;}
+hr.div{border:none;border-top:1.5px solid var(--border-lt);margin:3rem auto;max-width:900px;}
 
-/* ---- PHASE LAYOUT ---- */
-.phases { max-width: 900px; margin: 3rem auto 4rem; padding: 0 1.5rem; }
-.phase-block { margin-bottom: 3.5rem; }
-.phase-label { display: flex; align-items: center; gap: .8rem; margin-bottom: 1.4rem; }
-.phase-badge { background: var(--purple); color: #fff; font-family: 'JetBrains Mono', monospace; font-size: .72rem; font-weight: 700; padding: .25rem .8rem; border-radius: 999px; letter-spacing: .04em; }
-.phase-title { font-size: 1.25rem; font-weight: 700; color: var(--text); }
-.phase-desc { font-size: .9rem; color: var(--muted); margin-left: auto; font-style: italic; }
+/* PERSONA CARDS */
+.persona-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1rem;margin-top:1.5rem;}
+.persona-card{background:#fff;border:1.5px solid var(--border-lt);border-radius:14px;padding:1.4rem 1.5rem;transition:transform .2s,border-color .2s;}
+.persona-card:hover{transform:translateY(-2px);border-color:var(--purple);}
+.persona-card.hl{border-color:var(--purple);background:var(--surface);}
+.persona-card .pi{font-size:2rem;margin-bottom:.6rem;display:block;}
+.persona-card h3{font-size:1rem;font-weight:700;color:var(--text);margin-bottom:.4rem;}
+.persona-card p{font-size:.88rem;color:var(--muted);line-height:1.6;margin:0;}
 
-/* ---- LESSON CARDS ---- */
-.lesson-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
-.lesson-card { background: #fff; border: 1.5px solid var(--border-lt); border-radius: 14px; padding: 1.3rem 1.5rem; text-decoration: none; color: var(--text); transition: all .18s; position: relative; display: flex; flex-direction: column; gap: .5rem; }
-.lesson-card:hover { border-color: var(--purple); box-shadow: 0 4px 20px rgba(127,119,221,.12); transform: translateY(-2px); }
-.lesson-card.locked { opacity: .55; cursor: not-allowed; filter: grayscale(.3); }
-.lesson-card.locked:hover { transform: none; box-shadow: none; border-color: var(--border-lt); }
-.lesson-card.done { border-color: var(--teal); background: #f8fffc; }
-.lesson-num { font-family: 'JetBrains Mono', monospace; font-size: .72rem; font-weight: 500; color: var(--faint); }
-.lesson-title { font-size: 1rem; font-weight: 700; color: var(--text); line-height: 1.35; }
-.lesson-card.done .lesson-title { color: #0a4a30; }
-.lesson-desc { font-size: .85rem; color: var(--muted); line-height: 1.5; }
-.lesson-tags { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .3rem; }
-.lesson-tag { font-family: 'JetBrains Mono', monospace; font-size: .68rem; background: var(--surface-2); color: var(--purple-dk); padding: .1rem .55rem; border-radius: 999px; font-weight: 500; }
-.lesson-status { position: absolute; top: 1rem; right: 1rem; font-size: .72rem; font-weight: 700; }
-.status-done { color: var(--teal); }
-.status-lock { color: var(--faint); }
-.status-new { background: var(--amber); color: #fff; font-size: .65rem; padding: .15rem .55rem; border-radius: 999px; font-family: 'JetBrains Mono', monospace; }
-.lesson-arrow { margin-top: auto; font-size: .82rem; color: var(--purple); font-weight: 600; display: flex; align-items: center; gap: .3rem; }
-.lesson-card.locked .lesson-arrow { display: none; }
+/* SETUP GRID */
+.setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-top:1.5rem;}
+.sc{border-radius:14px;padding:1.5rem;border:1.5px solid var(--border-lt);}
+.sc.primary{background:var(--surface);border-color:var(--purple);}
+.sc.secondary{background:#fff;}
+.sc .sbadge{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;padding:.15rem .65rem;border-radius:999px;margin-bottom:.8rem;display:inline-block;}
+.sc.primary .sbadge{background:var(--purple);color:#fff;}
+.sc.secondary .sbadge{background:var(--surface-2);color:var(--purple-dk);}
+.sc h3{font-size:1.05rem;font-weight:700;color:var(--text);margin-bottom:.5rem;}
+.sc p{font-size:.88rem;color:var(--muted);line-height:1.6;margin-bottom:.8rem;}
+.sc ul{padding-left:1.2rem;}
+.sc li{font-size:.88rem;color:var(--muted);margin-bottom:.3rem;}
+.sc .snote{font-size:.8rem;color:var(--faint);font-style:italic;margin-top:.8rem;border-top:1px solid var(--border-lt);padding-top:.7rem;}
 
-/* ---- CALLOUT STRIP ---- */
-.callout-strip { background: var(--amber-lt); border: 1.5px solid #f0c060; border-radius: 12px; padding: 1.1rem 1.4rem; max-width: 900px; margin: 0 auto 3rem; margin-left: 1.5rem; margin-right: 1.5rem; font-size: .92rem; color: #5a3800; }
-.callout-strip strong { color: var(--amber); }
+/* FILE CARDS */
+.file-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-top:1.5rem;}
+.fc{background:#fff;border:1.5px solid var(--border-lt);border-radius:14px;padding:1.4rem 1.5rem;}
+.fc .fext{font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--purple);margin-bottom:.5rem;display:block;}
+.fc h3{font-size:.95rem;font-weight:700;color:var(--text);margin-bottom:.4rem;}
+.fc p{font-size:.87rem;color:var(--muted);line-height:1.6;margin:0;}
+.fc .fuse{margin-top:.6rem;font-size:.8rem;font-weight:600;color:var(--teal);}
 
-/* ---- HOW TO USE ---- */
-.how-to { max-width: 900px; margin: 0 auto 3rem; padding: 0 1.5rem; }
-.how-to h2 { font-size: 1.3rem; font-weight: 700; color: var(--text); margin-bottom: 1rem; }
-.how-to-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
-.how-item { background: var(--surface); border: 1.5px solid var(--border-lt); border-radius: 12px; padding: 1.1rem 1.2rem; }
-.how-num { font-family: 'JetBrains Mono', monospace; font-size: .72rem; font-weight: 700; color: var(--purple); margin-bottom: .35rem; }
-.how-item p { font-size: .88rem; color: var(--muted); line-height: 1.5; }
+/* COLAB STEPS */
+.colab-steps{margin-top:1.5rem;display:flex;flex-direction:column;gap:.8rem;}
+.cs{display:flex;gap:1rem;align-items:flex-start;background:#fff;border:1.5px solid var(--border-lt);border-radius:12px;padding:1rem 1.2rem;}
+.csn{background:var(--purple);color:#fff;font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:700;width:26px;height:26px;min-width:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:.15rem;}
+.cs h4{font-size:.92rem;font-weight:700;color:var(--text);margin-bottom:.2rem;}
+.cs p{font-size:.85rem;color:var(--muted);margin:0;line-height:1.5;}
 
-/* ---- FOOTER ---- */
-footer { background: var(--surface); border-top: 1.5px solid var(--border-lt); text-align: center; padding: 2rem 1.5rem; color: var(--muted); font-size: .88rem; }
-footer strong { color: var(--purple-dk); font-weight: 700; }
+/* CODE BLOCKS */
+.code-block{background:var(--code-bg);border-radius:10px;margin:1.2rem 0;overflow:hidden;border:1.5px solid var(--border-lt);}
+.code-label{display:flex;align-items:center;justify-content:space-between;padding:.45rem 1rem;font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:500;border-bottom:1px solid var(--border-lt);}
+.code-label.script{background:var(--amber-lt);color:#6b3a00;}
+.code-label.output{background:var(--surface-2);color:var(--muted);}
+.copy-btn{background:none;border:1px solid var(--border);border-radius:5px;padding:2px 8px;font-size:.7rem;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s;}
+.copy-btn:hover{background:var(--purple-lt);color:var(--purple-dk);}
+.copy-btn.copied{color:var(--teal);border-color:var(--teal);}
+pre{padding:1.2rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:1.75;color:var(--code-text);white-space:pre;}
+.cm{color:#9b94cc;}.kw{color:var(--purple);}.st{color:var(--teal);}.fn{color:var(--amber);}.nm{color:var(--coral);}
 
-/* ---- RESPONSIVE ---- */
-@media (max-width: 600px) {
-  .lesson-grid { grid-template-columns: 1fr; }
-  .how-to-grid { grid-template-columns: 1fr 1fr; }
+/* CALLOUTS */
+.callout{background:var(--teal-lt);border-left:3px solid var(--teal);padding:.9rem 1.2rem;border-radius:0 8px 8px 0;margin:1.2rem 0;font-size:.93rem;color:#0a4a30;}
+.callout strong{color:var(--teal);}
+.callout-amber{background:var(--amber-lt);border-left:3px solid var(--amber);padding:.9rem 1.2rem;border-radius:0 8px 8px 0;margin:1.2rem 0;font-size:.93rem;color:#5a3800;}
+.callout-amber strong{color:var(--amber);}
+
+/* WHAT YOU'LL BUILD */
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin-top:1.5rem;}
+.project-card{background:#fff;border:1.5px solid var(--border-lt);border-radius:14px;padding:1.4rem 1.5rem;transition:transform .2s,border-color .2s;}
+.project-card:hover{transform:translateY(-2px);border-color:var(--purple);}
+.project-card .pbadge{font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;padding:.15rem .6rem;border-radius:999px;margin-bottom:.7rem;display:inline-block;}
+.project-card .pbadge.ta{background:var(--teal-lt);color:#0a4a30;}
+.project-card .pbadge.tb{background:var(--coral-lt);color:#8b2e10;}
+.project-card .pbadge.cs{background:var(--surface-2);color:var(--purple-dk);}
+.project-card h4{font-size:.97rem;font-weight:700;color:var(--text);margin-bottom:.4rem;}
+.project-card p{font-size:.84rem;color:var(--muted);line-height:1.6;margin:0;}
+.project-card .pcta{margin-top:.8rem;font-size:.8rem;font-weight:700;color:var(--teal);}
+.project-card .pcta.soon{color:var(--faint);}
+
+/* TRACKER */
+.tracker-wrap{background:var(--surface);border:1.5px solid var(--border-lt);border-radius:14px;padding:1.5rem 1.8rem;margin-top:1.5rem;}
+.tracker-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem;}
+.tracker-title{font-size:.95rem;font-weight:700;color:var(--text);}
+.tracker-count{font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:600;color:var(--muted);}
+.progress-track{height:8px;background:var(--surface-2);border-radius:999px;overflow:hidden;margin-bottom:1.2rem;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--purple),#9b8ff0);border-radius:999px;transition:width .4s ease;width:0%;}
+.phase-group-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;color:var(--faint);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.6rem;}
+.chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:.5rem;}
+.chip{display:flex;align-items:center;gap:.5rem;background:#fff;border:1.5px solid var(--border-lt);border-radius:8px;padding:.45rem .8rem;cursor:pointer;font-size:.8rem;font-weight:600;color:var(--muted);transition:all .15s;user-select:none;}
+.chip:hover{border-color:var(--border);color:var(--text);}
+.chip.done{border-color:var(--teal);background:var(--teal-lt);color:#0a4a30;}
+.chip-box{width:14px;height:14px;min-width:14px;border:1.5px solid var(--border);border-radius:3px;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
+.chip.done .chip-box{background:var(--teal);border-color:var(--teal);}
+.chip-tick{display:none;color:#fff;font-size:9px;font-weight:800;}
+.chip.done .chip-tick{display:block;}
+
+/* PHASE DECISION GUIDE */
+.decision-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-top:1.5rem;}
+.dcard{border-radius:12px;padding:1.2rem 1.4rem;border:1.5px solid var(--border-lt);background:#fff;}
+.dcard h4{font-size:.9rem;font-weight:700;margin-bottom:.4rem;}
+.dcard p{font-size:.83rem;color:var(--muted);margin:0;line-height:1.6;}
+.dcard .drec{font-size:.75rem;font-weight:700;margin-top:.6rem;font-family:'JetBrains Mono',monospace;}
+.dcard.data h4{color:#0a4a30;}
+.dcard.data .drec{color:var(--teal);}
+.dcard.builder h4{color:#8b2e10;}
+.dcard.builder .drec{color:var(--coral);}
+.dcard.unsure h4{color:var(--purple-dk);}
+.dcard.unsure .drec{color:var(--purple);}
+.dcard.data{border-color:var(--teal);background:var(--teal-lt);}
+.dcard.builder{border-color:var(--coral);background:var(--coral-lt);}
+.dcard.unsure{border-color:var(--purple);background:var(--surface);}
+
+/* CURRICULUM */
+.cw{max-width:900px;margin:0 auto;padding:0 1.5rem 4rem;}
+.phase-block{margin-bottom:2.5rem;}
+.phase-header{display:flex;align-items:center;gap:.8rem;margin-bottom:1.2rem;padding-bottom:.7rem;border-bottom:2px solid var(--border-lt);}
+.phase-badge{background:var(--purple);color:#fff;font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;padding:.2rem .75rem;border-radius:999px;white-space:nowrap;}
+.phase-badge.ta{background:var(--teal);}
+.phase-badge.tb{background:var(--coral);}
+.phase-name{font-size:1.1rem;font-weight:700;color:var(--text);}
+.phase-meta{font-size:.82rem;color:var(--faint);font-style:italic;margin-left:auto;display:flex;gap:.8rem;align-items:center;}
+.phase-lessons{font-size:.72rem;font-family:'JetBrains Mono',monospace;background:var(--surface-2);color:var(--purple-dk);padding:.15rem .55rem;border-radius:999px;font-style:normal;}
+.phase-time{font-size:.78rem;font-style:italic;}
+.lesson-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:.9rem;}
+.lc{background:#fff;border:1.5px solid var(--border-lt);border-radius:12px;padding:1.2rem 1.4rem;text-decoration:none;color:var(--text);transition:all .18s;position:relative;display:flex;flex-direction:column;gap:.4rem;}
+.lc:hover:not(.locked){border-color:var(--purple);box-shadow:0 4px 20px rgba(127,119,221,.12);transform:translateY(-2px);}
+.lc.locked{opacity:.5;cursor:not-allowed;}
+.lc.ta:hover:not(.locked){border-color:var(--teal);box-shadow:0 4px 20px rgba(29,158,117,.1);}
+.lc.tb:hover:not(.locked){border-color:var(--coral);box-shadow:0 4px 20px rgba(216,90,48,.1);}
+.lnum{font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:500;color:var(--faint);}
+.ltitle{font-size:.97rem;font-weight:700;color:var(--text);line-height:1.35;}
+.ldesc{font-size:.84rem;color:var(--muted);line-height:1.5;}
+.ltags{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.3rem;}
+.ltag{font-family:'JetBrains Mono',monospace;font-size:.66rem;background:var(--surface-2);color:var(--purple-dk);padding:.1rem .5rem;border-radius:999px;}
+.ltag.t{background:var(--teal-lt);color:#0a4a30;}
+.ltag.c{background:var(--coral-lt);color:#8b2e10;}
+.larrow{margin-top:auto;padding-top:.5rem;font-size:.8rem;color:var(--purple);font-weight:600;}
+.lc.ta .larrow{color:var(--teal);}
+.lc.tb .larrow{color:var(--coral);}
+.lc.locked .larrow{display:none;}
+.slock{position:absolute;top:.9rem;right:1rem;font-size:.75rem;color:var(--faint);}
+.sstart{position:absolute;top:.9rem;right:1rem;background:var(--amber);color:#fff;font-size:.65rem;font-weight:700;padding:.15rem .55rem;border-radius:999px;font-family:'JetBrains Mono',monospace;}
+
+/* FORK */
+.fork-banner{background:var(--surface);border:2px solid var(--purple);border-radius:16px;padding:2rem;margin:2.5rem 0;}
+.fork-banner h3{font-size:1.3rem;font-weight:700;color:var(--text);margin-bottom:.5rem;}
+.fork-banner p{font-size:.95rem;color:var(--muted);max-width:560px;margin:0 auto 1.4rem;}
+
+/* TRACK TRACKERS */
+.track-trackers{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin:2rem 0;}
+.tt{border-radius:14px;padding:1.3rem 1.5rem;}
+.tt.dat{background:var(--teal-lt);border:1.5px solid var(--teal);}
+.tt.bld{background:var(--coral-lt);border:1.5px solid var(--coral);}
+.tt .tracker-title{font-size:.9rem;font-weight:700;margin-bottom:.4rem;}
+.tt.dat .tracker-title{color:#0a4a30;}
+.tt.bld .tracker-title{color:#8b2e10;}
+.tt .tracker-count{font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:600;margin-bottom:.6rem;}
+.tt.dat .tracker-count{color:var(--teal);}
+.tt.bld .tracker-count{color:var(--coral);}
+.tt .progress-track{background:rgba(255,255,255,.5);}
+.tt.dat .progress-fill{background:var(--teal);}
+.tt.bld .progress-fill{background:var(--coral);}
+
+/* FOOTER */
+footer{background:var(--surface);border-top:1.5px solid var(--border-lt);text-align:center;padding:2rem 1.5rem;color:var(--muted);font-size:.88rem;margin-top:2rem;}
+footer strong{color:var(--purple-dk);font-weight:700;}
+
+@media(max-width:640px){
+  .setup-grid,.file-grid,.track-trackers,.decision-grid,.how-grid{grid-template-columns:1fr;}
+  .persona-grid{grid-template-columns:1fr;}
+  .chips{grid-template-columns:1fr 1fr;}
 }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
+<!-- SCROLL PROGRESS BAR -->
+<div class="scroll-glow" id="scroll-bar"></div>
+
 <header class="site-header">
   <div class="brand">MLlabswithMel</div>
   <h1>From <em>Novice</em> to Ninja</h1>
-  <p class="subtitle">Mastering Python one line at a time -- a structured path from zero to data science ready.</p>
+  <p class="subtitle">A complete Python curriculum for absolute beginners. Built one concept at a time, with a real project at every milestone.</p>
   <div class="tag-row">
     <span class="tag">Python</span>
-    <span class="tag">Data Science</span>
     <span class="tag">Beginner Friendly</span>
-    <span class="tag">Hands-On</span>
+    <span class="tag">Windows</span>
     <span class="tag">Self-Paced</span>
+    <span class="tag">Data + Builder Tracks</span>
   </div>
 </header>
 
-<!-- HERO INTRO -->
-<div class="hero-intro">
-  <span class="snake-emoji">🐍</span>
-  <h2>You don't need a computer science degree.</h2>
-  <p>This series is built for complete beginners who want to use Python for real data work. Every lesson is short, practical, and written in plain English. We start with the absolute basics and build up -- slowly, clearly, one concept at a time.</p>
-  <p>By the end, you'll be writing Python to clean data, analyse it, and understand how machine learning works. Let's go.</p>
-</div>
-
-<!-- OVERALL PROGRESS -->
-<div class="overall-progress">
-  <div class="overall-progress-box">
-    <div class="prog-label">
-      <span>Overall series progress</span>
-      <span id="prog-text">0 of 9 lessons started</span>
-    </div>
-    <div class="progress-track">
-      <div class="progress-fill" id="prog-fill"></div>
-    </div>
-    <p class="prog-footnote">Click "Mark done" inside each lesson to track your progress here.</p>
-  </div>
-</div>
-
 <!-- HOW TO USE -->
-<div class="how-to" style="margin-top: 2.5rem;">
-  <h2>How to use this series</h2>
-  <div class="how-to-grid">
-    <div class="how-item">
-      <div class="how-num">STEP 01</div>
-      <p>Go in order. Each lesson builds on the last. Don't skip ahead.</p>
+<div class="sw reveal">
+  <div class="sl">How to use this curriculum</div>
+  <h2>Three things to know before you start</h2>
+  <p>This is not a shortcut. It is a complete Python education. If you want to be good, this is the work. Here is how to get the most out of it.</p>
+  <div class="how-grid">
+    <div class="how-card">
+      <div class="how-num p">1</div>
+      <h4>Read first, code second</h4>
+      <p>Each page explains one concept using analogies before code. Read it fully before running anything. Understanding why before how makes everything stick.</p>
     </div>
-    <div class="how-item">
-      <div class="how-num">STEP 02</div>
-      <p>Open a Python environment alongside each lesson -- Jupyter, Colab, or VS Code all work.</p>
+    <div class="how-card">
+      <div class="how-num t">2</div>
+      <h4>Do every mini challenge</h4>
+      <p>Every section has a challenge with a collapsible answer. Try it yourself first. The answer is there for when you are genuinely stuck, not as a shortcut.</p>
     </div>
-    <div class="how-item">
-      <div class="how-num">STEP 03</div>
-      <p>Do every mini challenge. Reading isn't enough -- you have to type the code yourself.</p>
+    <div class="how-card">
+      <div class="how-num a">3</div>
+      <h4>Mark done when you can explain it</h4>
+      <p>Tick a phase off when you can explain it out loud without notes. Not when you have read it. When you can teach it. That is the bar.</p>
     </div>
-    <div class="how-item">
-      <div class="how-num">STEP 04</div>
-      <p>Mark lessons done when you can explain the concept out loud without looking at notes.</p>
+  </div>
+  <div class="callout" style="margin-top:1.5rem;"><strong>Go in order.</strong> Each phase builds directly on the last. If something in Phase 3 confuses you, the answer is almost always in Phase 1 or 2.</div>
+</div>
+
+<hr class="div">
+
+<!-- WHY THIS EXISTS -->
+<div class="sw reveal">
+  <div class="sl">Who this is for</div>
+  <h2>Built for <em>people who want to build things</em></h2>
+  <p>Most Python courses funnel you into one lane before you even understand what Python is. This one does not. Python automates things, builds APIs, processes files, scrapes websites, powers machine learning models, and connects to databases. The same language does all of it. This curriculum teaches you Python as a developer first, then lets you choose a direction based on what you actually want to build.</p>
+  <div class="persona-grid">
+    <div class="persona-card hl"><span class="pi">📊</span><h3>You work with data</h3><p>You use Excel, maybe SQL, and you have heard Python can do what you do faster and at scale. You want to clean data, analyse it, and eventually build models.</p></div>
+    <div class="persona-card"><span class="pi">🔧</span><h3>You want to build things</h3><p>You have ideas: a tool, an app, something automated. You do not have a CS degree but you are willing to learn. Python is the right starting point.</p></div>
+    <div class="persona-card"><span class="pi">⚡</span><h3>You want to automate things</h3><p>You do repetitive tasks every week that a script could handle in seconds. Renaming files, sending emails, pulling data. Python handles all of it.</p></div>
+  </div>
+</div>
+
+<hr class="div">
+
+<!-- WHAT YOU WILL BUILD -->
+<div class="sw reveal">
+  <div class="sl">Real outputs, not just theory</div>
+  <h2>What you will <em>actually build</em></h2>
+  <p>Every phase ends with something you can run, show, and add to a portfolio. Here is a preview of what is waiting at different points in the curriculum.</p>
+  <div class="projects-grid">
+    <div class="project-card">
+      <span class="pbadge ta">Phase 8 Project</span>
+      <h4>Student Results Pipeline</h4>
+      <p>Read exam scores from a CSV, validate the data, calculate letter grades, handle missing entries gracefully, and write a timestamped report to disk.</p>
+      <div class="pcta">Available after Phase 8 &#8594;</div>
+    </div>
+    <div class="project-card">
+      <span class="pbadge ta">Phase 11 Project</span>
+      <h4>Live Weather Data Fetcher</h4>
+      <p>Pull real weather data from an API for multiple cities, clean it, handle errors, and save it to a CSV. A production-style data pipeline in one script.</p>
+      <div class="pcta">Available after Phase 11 &#8594;</div>
+    </div>
+    <div class="project-card">
+      <span class="pbadge ta">Track A Capstone</span>
+      <h4>Churn Predictor or Price Estimator</h4>
+      <p>End-to-end: load real data, clean it, train a model, evaluate it, and serve predictions through a FastAPI endpoint. Your deployed portfolio piece.</p>
+      <div class="pcta soon">Unlocks at Track A &#8594;</div>
+    </div>
+    <div class="project-card">
+      <span class="pbadge tb">Track B Capstone</span>
+      <h4>Job Scraper or Finance Tracker</h4>
+      <p>Scrape a website or connect to an API, store the data in a database, serve it through a Flask app, and deploy it live. Something real people can use.</p>
+      <div class="pcta soon">Unlocks at Track B &#8594;</div>
     </div>
   </div>
 </div>
 
-<!-- CALLOUT -->
-<div class="callout-strip" style="max-width:900px; margin: 0 1.5rem 3rem;">
-  <strong>Before you start:</strong> Make sure Python is installed on your machine, or open a free <a href="https://colab.research.google.com" target="_blank" style="color:var(--amber);font-weight:600;">Google Colab</a> notebook. You don't need to install anything to get going.
+<hr class="div">
+
+<!-- SETUP -->
+<div class="sw reveal">
+  <div class="sl">Before you start</div>
+  <h2>How to set yourself up</h2>
+  <p>There are two ways to work through this curriculum. The first is the proper developer setup: everything installed on your machine, working the way a real Python developer works. The second is a lightweight alternative if you cannot or do not want to install anything yet.</p>
+  <div class="setup-grid">
+    <div class="sc primary">
+      <span class="sbadge">Recommended</span>
+      <h3>🖥️ Local Setup with Anaconda</h3>
+      <p>Anaconda installs Python, a package manager, and the most important data science libraries in one step. It also handles environments properly so your projects do not clash with each other.</p>
+      <ul>
+        <li>Download <strong>Anaconda</strong> from anaconda.com</li>
+        <li>Run the installer and follow the prompts</li>
+        <li>Install <strong>VS Code</strong> as your editor</li>
+        <li>Add the Python and Jupyter extensions in VS Code</li>
+        <li>Open the terminal and verify with <code>conda --version</code></li>
+      </ul>
+      <p class="snote">Phase 0 of this curriculum walks you through every step. You will not be doing this alone.</p>
+    </div>
+    <div class="sc secondary">
+      <span class="sbadge">Lightweight Alternative</span>
+      <h3>☁️ Google Colab</h3>
+      <p>If your machine is low on storage, slow, or you just want to start writing code today with zero installation, Colab works. All you need is a Google account.</p>
+      <ul>
+        <li>Go to <strong>colab.research.google.com</strong></li>
+        <li>Sign in with your Google account</li>
+        <li>Create a new notebook: Python is already there</li>
+        <li>Files save to Google Drive automatically</li>
+      </ul>
+      <p class="snote">Colab is great for getting started but it has limits: no persistent file system, sessions time out, and it does not teach you how to work like a developer. Move to local setup when you can.</p>
+    </div>
+  </div>
 </div>
 
-<!-- PHASES -->
-<div class="phases">
+<hr class="div">
 
-  <!-- PHASE 1 -->
-  <div class="phase-block">
-    <div class="phase-label">
-      <span class="phase-badge">PHASE 1</span>
-      <span class="phase-title">Python Foundations</span>
-      <span class="phase-desc">5 lessons</span>
+<!-- FILE TYPES -->
+<div class="sw reveal">
+  <div class="sl">Something you will come across immediately</div>
+  <h2>What are <em>.py</em> and <em>.ipynb</em> files?</h2>
+  <p>When you start working with Python you will see two file types everywhere. They are both Python but they work differently and get used in different situations.</p>
+  <div class="file-grid">
+    <div class="fc">
+      <span class="fext">.py</span>
+      <h3>A Python script</h3>
+      <p>A plain text file containing Python code. You run it from the terminal or VS Code and it executes top to bottom. This is what most real Python projects are made of: automations, APIs, tools, applications.</p>
+      <p class="fuse">When to use it: Building something that runs, automates, or serves other people.</p>
     </div>
-
-    <div class="lesson-grid">
-
-      <!-- Lesson 1 -->
-      <a class="lesson-card" href="lessons/python-foundations/01-variables-data-types-loops.html">
-        <span class="lesson-status status-new">START HERE</span>
-        <span class="lesson-num">Lesson 01</span>
-        <div class="lesson-title">Variables, Data Types &amp; Loops</div>
-        <div class="lesson-desc">Store information in Python, understand the types of data it works with, and write your first loops.</div>
-        <div class="lesson-tags">
-          <span class="lesson-tag">variables</span>
-          <span class="lesson-tag">int / str / bool</span>
-          <span class="lesson-tag">for loops</span>
-          <span class="lesson-tag">if statements</span>
-        </div>
-        <div class="lesson-arrow">Start lesson →</div>
-      </a>
-
-      <!-- Lesson 2 -->
-      <a class="lesson-card locked" href="#" onclick="return false;">
-        <span class="lesson-status status-lock">🔒</span>
-        <span class="lesson-num">Lesson 02</span>
-        <div class="lesson-title">Functions &amp; Scope</div>
-        <div class="lesson-desc">Defining, calling, returning values, and understanding where variables live in your code.</div>
-        <div class="lesson-tags">
-          <span class="lesson-tag">def</span>
-          <span class="lesson-tag">parameters</span>
-          <span class="lesson-tag">return</span>
-          <span class="lesson-tag">scope</span>
-        </div>
-      </a>
-
-      <!-- Lesson 3 -->
-      <a class="lesson-card locked" href="#" onclick="return false;">
-        <span class="lesson-status status-lock">🔒</span>
-        <span class="lesson-num">Lesson 03</span>
-        <div class="lesson-title">Lists, Dicts &amp; Data Structures</div>
-        <div class="lesson-desc">The containers Python uses to hold multiple pieces of data -- when to use each one and how to navigate them.</div>
-        <div class="lesson-tags">
-          <span class="lesson-tag">list</span>
-          <span class="lesson-tag">dict</span>
-          <span class="lesson-tag">tuple</span>
-          <span class="lesson-tag">set</span>
-        </div>
-      </a>
-
-      <!-- Lesson 4 -->
-      <a class="lesson-card locked" href="#" onclick="return false;">
-        <span class="lesson-status status-lock">🔒</span>
-        <span class="lesson-num">Lesson 04</span>
-        <div class="lesson-title">Error Handling &amp; Debugging</div>
-        <div class="lesson-desc">How to read Python error messages, use try/except, and debug with print statements like a pro.</div>
-        <div class="lesson-tags">
-          <span class="lesson-tag">try/except</span>
-          <span class="lesson-tag">tracebacks</span>
-          <span class="lesson-tag">debugging</span>
-        </div>
-      </a>
-
-      <!-- Lesson 5 -->
-      <a class="lesson-card locked" href="#" onclick="return false;">
-        <span class="lesson-status status-lock">🔒</span>
-        <span class="lesson-num">Lesson 05</span>
-        <div class="lesson-title">Working with Files &amp; CSVs</div>
-        <div class="lesson-desc">Reading, writing, and parsing local files -- the foundation of every real data project.</div>
-        <div class="lesson-tags">
-          <span class="lesson-tag">open()</span>
-          <span class="lesson-tag">csv</span>
-          <span class="lesson-tag">read/write</span>
-        </div>
-      </a>
-
+    <div class="fc">
+      <span class="fext">.ipynb</span>
+      <h3>A Jupyter Notebook</h3>
+      <p>A notebook made up of cells. Write and run code one block at a time, see outputs inline, mix code with notes, and explore data interactively. The format Colab uses. Common in data science and analysis work.</p>
+      <p class="fuse">When to use it: Exploring data, experimenting, teaching, or showing your work step by step.</p>
     </div>
   </div>
+  <div class="callout" style="margin-top:1.5rem;"><strong>Quick rule:</strong> Exploring or analysing data, use a notebook. Building something that runs on its own, use a script. Most data scientists use both regularly.</div>
 
-  <!-- PHASE 2 -->
-  <div class="phase-block">
-    <div class="phase-label">
-      <span class="phase-badge">PHASE 2</span>
-      <span class="phase-title">Data Wrangling</span>
-      <span class="phase-desc">4 lessons -- complete Phase 1 first</span>
-    </div>
-
-    <div class="lesson-grid">
-
-      <!-- Lesson 6 -->
-      <a class="lesson-card locked" href="#" onclick="return false;">
-        <span class="lesson-status status-lock">🔒</span>
-        <span class="lesson-num">Lesson 06</span>
-        <div class="lesson-title">Pandas for Beginners</div>
-        <div class="lesson-desc">DataFrames, Series, and loading data. The tool every data analyst uses every single day.</div>
-        <div class="lesson-tags">
-          <span class="lesson-tag">pandas</span>
-          <span class="lesson-tag">DataFrame</span>
-          <span class="lesson-tag">Series</span>
-        </div>
-      </a>
-
-      <!-- Lesson 7 -->
-      <a class="lesson-card locked" href="#" onclick="return false;">
-        <span class="lesson-status status-lock">🔒</span>
-        <span class="lesson-num">Lesson 07</span>
-        <div class="lesson-title">Cleaning Messy Data</div>
-        <div class="lesson-desc">Nulls, duplicates, wrong types, and outliers -- the unglamorous work that makes analysis possible.</div>
-        <div class="lesson-tags">
-          <span class="lesson-tag">dropna</span>
-          <span class="lesson-tag">fillna</span>
-          <span class="lesson-tag">dtypes</span>
-        </div>
-      </a>
-
-      <!-- Lesson 8 -->
-      <a class="lesson-card locked" href="#" onclick="return false;">
-        <span class="lesson-status status-lock">🔒</span>
-        <span class="lesson-num">Lesson 08</span>
-        <div class="lesson-title">Groupby &amp; Aggregations</div>
-        <div class="lesson-desc">Summarising data by category -- the pivot table of the Python world.</div>
-        <div class="lesson-tags">
-          <span class="lesson-tag">groupby</span>
-          <span class="lesson-tag">agg</span>
-          <span class="lesson-tag">sum/mean/count</span>
-        </div>
-      </a>
-
-      <!-- Lesson 9 -->
-      <a class="lesson-card locked" href="#" onclick="return false;">
-        <span class="lesson-status status-lock">🔒</span>
-        <span class="lesson-num">Lesson 09</span>
-        <div class="lesson-title">Merging &amp; Joining Datasets</div>
-        <div class="lesson-desc">Inner, left, right, and outer joins in Pandas -- SQL joins but in Python.</div>
-        <div class="lesson-tags">
-          <span class="lesson-tag">merge</span>
-          <span class="lesson-tag">join</span>
-          <span class="lesson-tag">concat</span>
-        </div>
-      </a>
-
-    </div>
+  <h3 style="font-size:1.05rem;font-weight:700;color:var(--text);margin:2rem 0 .5rem;">How to write and run a Python file in Colab</h3>
+  <p>Colab is notebook-first, but you can write and think in terms of scripts. Here is the pattern:</p>
+  <div class="colab-steps">
+    <div class="cs"><div class="csn">1</div><div><h4>Open a new notebook</h4><p>Go to colab.research.google.com, click "New notebook". You will see an empty cell ready for code.</p></div></div>
+    <div class="cs"><div class="csn">2</div><div><h4>Write your Python code in a cell</h4><p>Each cell is like one block of a script. Write your code, press Shift + Enter to run it. Output appears directly below.</p></div></div>
+    <div class="cs"><div class="csn">3</div><div><h4>Save it as a real .py file using %%writefile</h4><p>Put %%writefile filename.py at the top of a cell. Everything in that cell gets saved as an actual Python script.</p></div></div>
   </div>
 
-</div><!-- end .phases -->
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 Write this in a Colab cell</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre><span class="cm">%%writefile my_first_script.py</span>
 
-<!-- FOOTER -->
+<span class="cm"># This saves the cell as a .py file</span>
+<span class="fn">print</span>(<span class="st">"Hello from my first Python script"</span>)
+
+name = <span class="st">"Mel"</span>
+<span class="fn">print</span>(<span class="st">f"Welcome, {name}. Let's build something."</span>)</pre>
+  </div>
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 Then run it with this in the next cell</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>%<span class="fn">run</span> my_first_script.py</pre>
+  </div>
+  <div class="code-block">
+    <div class="code-label output"><span>Output</span></div>
+    <pre>Hello from my first Python script
+Welcome, Mel. Let's build something.</pre>
+  </div>
+  <div class="callout-amber"><strong>Note:</strong> Files created with %%writefile only exist for the duration of your Colab session. When it ends, they are gone. Save important work to Google Drive or download it to your machine.</div>
+</div>
+
+<hr class="div">
+
+<!-- CURRICULUM INTRO + CORE TRACKER -->
+<div class="sw reveal">
+  <div class="sl">The curriculum</div>
+  <h2>How this course is <em>structured</em></h2>
+  <p>Everyone starts at Phase 0 and works through the common core: 13 phases covering everything a Python developer needs regardless of where they end up. After Phase 12, you choose a track. Estimated time for the common core is around 40 hours at a comfortable pace, roughly 3 to 4 hours per phase.</p>
+  <div class="callout"><strong>Go in order.</strong> Each phase builds directly on the last. Mark a phase done when you can explain it out loud without looking at your notes.</div>
+
+  <div class="tracker-wrap">
+    <div class="tracker-header">
+      <span class="tracker-title">Common Core Progress</span>
+      <span class="tracker-count" id="core-text">0 of 13 phases complete</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="core-fill"></div></div>
+    <div class="phase-group-label">Phases 0 to 12</div>
+    <div class="chips" id="core-chips">
+      <div class="chip" onclick="chipToggle(this,'core')"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>Phase 0: Environment</div>
+      <div class="chip" onclick="chipToggle(this,'core')"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>Phase 1: Python Basics</div>
+      <div class="chip" onclick="chipToggle(this,'core')"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>Phase 2: Control Flow</div>
+      <div class="chip" onclick="chipToggle(this,'core')"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>Phase 3: Functions</div>
+      <div class="chip" onclick="chipToggle(this,'core')"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>Phase 4: Data Structures</div>
+      <div class="chip" onclick="chipToggle(this,'core')"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>Phase 5: Modules</div>
+      <div class="chip" onclick="chipToggle(this,'core')"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>Phase 6: OOP</div>
+      <div class="chip" onclick="chipToggle(this,'core')"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>Phase 7: Dev Workflow</div>
+      <div class="chip" onclick="chipToggle(this,'core')"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>Phase 8: Files</div>
+      <div class="chip" onclick="chipToggle(this,'core')"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>Phase 9: Automation</div>
+      <div class="chip" onclick="chipToggle(this,'core')"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>Phase 10: Testing</div>
+      <div class="chip" onclick="chipToggle(this,'core')"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>Phase 11: APIs</div>
+      <div class="chip" onclick="chipToggle(this,'core')"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>Phase 12: Packaging</div>
+    </div>
+  </div>
+</div>
+
+<!-- LESSON CARDS -->
+<div class="cw">
+
+<div class="phase-block reveal" style="margin-top:2.5rem;">
+  <div class="phase-header"><span class="phase-badge">Phase 0</span><span class="phase-name">Your Environment</span><span class="phase-meta"><span class="phase-lessons">4 lessons</span><span class="phase-time">~2 hrs</span></span></div>
+  <div class="lesson-grid">
+    <a class="lc" href="lessons/phase-0/01-terminal.html"><span class="sstart">START HERE</span><span class="lnum">0.1</span><div class="ltitle">The Terminal</div><div class="ldesc">What it is, why it exists, how to navigate your machine from the command line.</div><div class="ltags"><span class="ltag">cmd</span><span class="ltag">navigation</span><span class="ltag">paths</span></div><div class="larrow">Start &#8594;</div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">0.2</span><div class="ltitle">Setting Up with Anaconda</div><div class="ldesc">Install Anaconda to get Python, conda, and the key data science libraries in one step. Create your first environment.</div><div class="ltags"><span class="ltag">conda</span><span class="ltag">environments</span><span class="ltag">pip</span></div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">0.3</span><div class="ltitle">VS Code and Extensions</div><div class="ldesc">Setup, the extensions you actually need, running your first .py file.</div><div class="ltags"><span class="ltag">VS Code</span><span class="ltag">Pylance</span><span class="ltag">Jupyter</span></div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">0.4</span><div class="ltitle">Jupyter Notebooks Inside VS Code</div><div class="ldesc">Running notebooks locally, kernel selection, when to use a notebook vs a script.</div><div class="ltags"><span class="ltag">.ipynb</span><span class="ltag">kernel</span><span class="ltag">cells</span></div></a>
+  </div>
+</div>
+
+<div class="phase-block reveal">
+  <div class="phase-header"><span class="phase-badge">Phase 1</span><span class="phase-name">Python Basics</span><span class="phase-meta"><span class="phase-lessons">5 lessons</span><span class="phase-time">~3 hrs</span></span></div>
+  <div class="lesson-grid">
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">1.1</span><div class="ltitle">Variables and Data Types</div><div class="ldesc">Storing information, the types Python works with, why types matter.</div><div class="ltags"><span class="ltag">str</span><span class="ltag">int</span><span class="ltag">float</span><span class="ltag">bool</span></div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">1.2</span><div class="ltitle">Strings in Depth</div><div class="ldesc">Slicing, methods, f-strings, formatting. Strings are everywhere.</div><div class="ltags"><span class="ltag">f-strings</span><span class="ltag">methods</span><span class="ltag">slicing</span></div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">1.3</span><div class="ltitle">Numbers and Operators</div><div class="ldesc">Arithmetic, comparison, assignment operators and type conversion.</div><div class="ltags"><span class="ltag">int</span><span class="ltag">float</span><span class="ltag">math</span></div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">1.4</span><div class="ltitle">Booleans and Comparisons</div><div class="ldesc">True/False, comparison operators, and/or/not: the logic layer.</div><div class="ltags"><span class="ltag">bool</span><span class="ltag">and/or/not</span></div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">1.5</span><div class="ltitle">Getting Input from the User</div><div class="ldesc">input(), type casting, building your first interactive script.</div><div class="ltags"><span class="ltag">input()</span><span class="ltag">casting</span></div></a>
+  </div>
+</div>
+
+<div class="phase-block reveal">
+  <div class="phase-header"><span class="phase-badge">Phase 2</span><span class="phase-name">Control Flow</span><span class="phase-meta"><span class="phase-lessons">4 lessons</span><span class="phase-time">~3 hrs</span></span></div>
+  <div class="lesson-grid">
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">2.1</span><div class="ltitle">if / elif / else</div><div class="ldesc">Making decisions in code. Conditions, nesting, the ternary shortcut.</div><div class="ltags"><span class="ltag">if</span><span class="ltag">elif</span><span class="ltag">else</span></div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">2.2</span><div class="ltitle">for Loops</div><div class="ldesc">Iterating over sequences, range(), looping through strings and lists.</div><div class="ltags"><span class="ltag">for</span><span class="ltag">range()</span></div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">2.3</span><div class="ltitle">while Loops</div><div class="ldesc">Looping until a condition changes. Avoiding the infinite loop trap.</div><div class="ltags"><span class="ltag">while</span><span class="ltag">infinite loops</span></div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">2.4</span><div class="ltitle">break, continue, pass</div><div class="ldesc">Controlling what happens inside a loop. When and why to use each.</div><div class="ltags"><span class="ltag">break</span><span class="ltag">continue</span><span class="ltag">pass</span></div></a>
+  </div>
+</div>
+
+<div class="phase-block reveal">
+  <div class="phase-header"><span class="phase-badge">Phase 3</span><span class="phase-name">Functions</span><span class="phase-meta"><span class="phase-lessons">4 lessons</span><span class="phase-time">~3 hrs</span></span></div>
+  <div class="lesson-grid">
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">3.1</span><div class="ltitle">Defining and Calling Functions</div><div class="ldesc">def, calling, why functions exist. Your first reusable block of code.</div><div class="ltags"><span class="ltag">def</span><span class="ltag">call</span></div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">3.2</span><div class="ltitle">Parameters and Return Values</div><div class="ldesc">Passing data in, getting results out. Default values, keyword arguments.</div><div class="ltags"><span class="ltag">parameters</span><span class="ltag">return</span><span class="ltag">*args</span></div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">3.3</span><div class="ltitle">Scope</div><div class="ldesc">Where variables live and die. Local vs global scope explained clearly.</div><div class="ltags"><span class="ltag">scope</span><span class="ltag">local</span><span class="ltag">global</span></div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">3.4</span><div class="ltitle">Lambda and Higher-Order Functions</div><div class="ldesc">One-line functions, passing functions as arguments, map and filter.</div><div class="ltags"><span class="ltag">lambda</span><span class="ltag">map</span><span class="ltag">filter</span></div></a>
+  </div>
+</div>
+
+<div class="phase-block reveal">
+  <div class="phase-header"><span class="phase-badge">Phase 4</span><span class="phase-name">Data Structures</span><span class="phase-meta"><span class="phase-lessons">4 lessons</span><span class="phase-time">~3 hrs</span></span></div>
+  <div class="lesson-grid">
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">4.1</span><div class="ltitle">Lists</div><div class="ldesc">Ordered, changeable, allows duplicates. The workhorse of Python collections.</div><div class="ltags"><span class="ltag">list</span><span class="ltag">indexing</span><span class="ltag">methods</span></div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">4.2</span><div class="ltitle">Dictionaries</div><div class="ldesc">Key-value pairs, fast lookups, the structure behind almost every API response.</div><div class="ltags"><span class="ltag">dict</span><span class="ltag">keys</span><span class="ltag">values</span></div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">4.3</span><div class="ltitle">Tuples and Sets</div><div class="ldesc">Immutable sequences and unique collections: when and why to use them.</div><div class="ltags"><span class="ltag">tuple</span><span class="ltag">set</span></div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">4.4</span><div class="ltitle">Comprehensions</div><div class="ldesc">List and dict comprehensions: the Pythonic way to build collections in one line.</div><div class="ltags"><span class="ltag">list comp</span><span class="ltag">dict comp</span></div></a>
+  </div>
+</div>
+
+<div class="phase-block reveal">
+  <div class="phase-header"><span class="phase-badge">Phase 5</span><span class="phase-name">Modules and Packages</span><span class="phase-meta"><span class="phase-lessons">3 lessons</span><span class="phase-time">~2 hrs</span></span></div>
+  <div class="lesson-grid">
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">5.1</span><div class="ltitle">Built-in Modules</div><div class="ldesc">math, random, datetime, os: Python's built-in toolkit.</div><div class="ltags"><span class="ltag">import</span><span class="ltag">math</span><span class="ltag">datetime</span></div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">5.2</span><div class="ltitle">Installing Packages with pip</div><div class="ldesc">pip install, PyPI, requirements.txt basics, keeping projects organised.</div><div class="ltags"><span class="ltag">pip</span><span class="ltag">PyPI</span></div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">5.3</span><div class="ltitle">Creating Your Own Module</div><div class="ldesc">Writing a .py file as a module, importing it, building reusable utilities.</div><div class="ltags"><span class="ltag">modules</span><span class="ltag">__init__</span></div></a>
+  </div>
+</div>
+
+<div class="phase-block reveal">
+  <div class="phase-header"><span class="phase-badge">Phase 6</span><span class="phase-name">Object-Oriented Programming</span><span class="phase-meta"><span class="phase-lessons">3 lessons</span><span class="phase-time">~3 hrs</span></span></div>
+  <div class="lesson-grid">
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">6.1</span><div class="ltitle">Classes and Objects</div><div class="ldesc">Blueprints vs instances. __init__, self, and creating your first class.</div><div class="ltags"><span class="ltag">class</span><span class="ltag">object</span><span class="ltag">__init__</span></div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">6.2</span><div class="ltitle">Inheritance and Encapsulation</div><div class="ldesc">Parent and child classes, private variables, @property decorators.</div><div class="ltags"><span class="ltag">inheritance</span><span class="ltag">super()</span><span class="ltag">@property</span></div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">6.3</span><div class="ltitle">Polymorphism</div><div class="ldesc">Same method name, different behaviour. How Python handles it gracefully.</div><div class="ltags"><span class="ltag">polymorphism</span><span class="ltag">overriding</span></div></a>
+  </div>
+</div>
+
+<div class="phase-block reveal">
+  <div class="phase-header"><span class="phase-badge">Phase 7</span><span class="phase-name">Working Like a Developer</span><span class="phase-meta"><span class="phase-lessons">4 lessons</span><span class="phase-time">~3 hrs</span></span></div>
+  <div class="lesson-grid">
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">7.1</span><div class="ltitle">Git and GitHub</div><div class="ldesc">Version control, your first repo, committing and pushing. Why this matters.</div><div class="ltags"><span class="ltag">git</span><span class="ltag">GitHub</span><span class="ltag">commit</span></div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">7.2</span><div class="ltitle">Reading Errors and Debugging</div><div class="ldesc">Tracebacks, common error types, print debugging, VS Code debugger basics.</div><div class="ltags"><span class="ltag">errors</span><span class="ltag">traceback</span><span class="ltag">debug</span></div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">7.3</span><div class="ltitle">Error Handling with try/except</div><div class="ldesc">Catching errors gracefully, finally, raise: writing code that does not crash.</div><div class="ltags"><span class="ltag">try/except</span><span class="ltag">raise</span><span class="ltag">finally</span></div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">7.4</span><div class="ltitle">PEP 8 and Clean Code</div><div class="ldesc">Python's style guide, naming conventions, writing code other people can read.</div><div class="ltags"><span class="ltag">PEP8</span><span class="ltag">style</span><span class="ltag">naming</span></div></a>
+  </div>
+</div>
+
+<div class="phase-block reveal">
+  <div class="phase-header"><span class="phase-badge">Phase 8</span><span class="phase-name">Files and the Real World</span><span class="phase-meta"><span class="phase-lessons">4 lessons</span><span class="phase-time">~3 hrs</span></span></div>
+  <div class="lesson-grid">
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">8.1</span><div class="ltitle">Reading and Writing Files</div><div class="ldesc">open(), read, write, append modes. Context managers and why to use them.</div><div class="ltags"><span class="ltag">open()</span><span class="ltag">with</span><span class="ltag">read/write</span></div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">8.2</span><div class="ltitle">Working with CSVs</div><div class="ldesc">The csv module, reading rows, writing rows, handling headers.</div><div class="ltags"><span class="ltag">csv</span><span class="ltag">reader</span><span class="ltag">writer</span></div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">8.3</span><div class="ltitle">Working with JSON</div><div class="ldesc">json.loads, json.dumps, reading and writing JSON files. The format APIs speak.</div><div class="ltags"><span class="ltag">json</span><span class="ltag">loads</span><span class="ltag">dumps</span></div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">8.4</span><div class="ltitle">Command Line Arguments</div><div class="ldesc">argparse: making scripts that accept inputs when you run them.</div><div class="ltags"><span class="ltag">argparse</span><span class="ltag">CLI</span></div></a>
+  </div>
+</div>
+
+<div class="phase-block reveal">
+  <div class="phase-header"><span class="phase-badge">Phase 9</span><span class="phase-name">Automation</span><span class="phase-meta"><span class="phase-lessons">4 lessons</span><span class="phase-time">~3 hrs</span></span></div>
+  <div class="lesson-grid">
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">9.1</span><div class="ltitle">Files and Folders with os and pathlib</div><div class="ldesc">Navigating directories, renaming, moving, and deleting files programmatically.</div><div class="ltags"><span class="ltag">os</span><span class="ltag">pathlib</span><span class="ltag">shutil</span></div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">9.2</span><div class="ltitle">Automating Excel with openpyxl</div><div class="ldesc">Reading and writing Excel files from Python. No more manual spreadsheet work.</div><div class="ltags"><span class="ltag">openpyxl</span><span class="ltag">Excel</span></div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">9.3</span><div class="ltitle">Sending Emails with smtplib</div><div class="ldesc">Automating email sends from Python. Reports, alerts, notifications.</div><div class="ltags"><span class="ltag">smtplib</span><span class="ltag">email</span></div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">9.4</span><div class="ltitle">Scheduling Scripts</div><div class="ldesc">Windows Task Scheduler: running your Python script automatically every day.</div><div class="ltags"><span class="ltag">Task Scheduler</span><span class="ltag">schedule</span></div></a>
+  </div>
+</div>
+
+<div class="phase-block reveal">
+  <div class="phase-header"><span class="phase-badge">Phase 10</span><span class="phase-name">Testing</span><span class="phase-meta"><span class="phase-lessons">3 lessons</span><span class="phase-time">~2 hrs</span></span></div>
+  <div class="lesson-grid">
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">10.1</span><div class="ltitle">Why Tests Matter</div><div class="ldesc">What testing is, what it prevents, and the mindset shift it requires.</div><div class="ltags"><span class="ltag">testing</span><span class="ltag">mindset</span></div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">10.2</span><div class="ltitle">unittest</div><div class="ldesc">Python's built-in testing framework. Writing your first test, assertions, test cases.</div><div class="ltags"><span class="ltag">unittest</span><span class="ltag">assert</span></div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">10.3</span><div class="ltitle">pytest</div><div class="ldesc">The simpler, more widely used testing tool. Fixtures, running tests, coverage.</div><div class="ltags"><span class="ltag">pytest</span><span class="ltag">fixtures</span><span class="ltag">coverage</span></div></a>
+  </div>
+</div>
+
+<div class="phase-block reveal">
+  <div class="phase-header"><span class="phase-badge">Phase 11</span><span class="phase-name">APIs: Using and Building</span><span class="phase-meta"><span class="phase-lessons">3 lessons</span><span class="phase-time">~3 hrs</span></span></div>
+  <div class="lesson-grid">
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">11.1</span><div class="ltitle">REST and HTTP</div><div class="ldesc">What an API is, how HTTP works, methods, status codes, constraints of REST.</div><div class="ltags"><span class="ltag">REST</span><span class="ltag">HTTP</span><span class="ltag">GET/POST</span></div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">11.2</span><div class="ltitle">Consuming APIs with requests</div><div class="ldesc">Making API calls, handling JSON responses, authentication, rate limiting.</div><div class="ltags"><span class="ltag">requests</span><span class="ltag">JSON</span><span class="ltag">auth</span></div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">11.3</span><div class="ltitle">Building an API with FastAPI</div><div class="ldesc">Routes, request and response models, connecting to data, testing your endpoints.</div><div class="ltags"><span class="ltag">FastAPI</span><span class="ltag">routes</span><span class="ltag">Pydantic</span></div></a>
+  </div>
+</div>
+
+<div class="phase-block reveal">
+  <div class="phase-header"><span class="phase-badge">Phase 12</span><span class="phase-name">Packaging and Sharing Your Work</span><span class="phase-meta"><span class="phase-lessons">3 lessons</span><span class="phase-time">~2 hrs</span></span></div>
+  <div class="lesson-grid">
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">12.1</span><div class="ltitle">Virtual Environments in Depth</div><div class="ldesc">venv vs conda: when to use which, managing dependencies properly.</div><div class="ltags"><span class="ltag">venv</span><span class="ltag">conda</span></div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">12.2</span><div class="ltitle">requirements.txt and pyproject.toml</div><div class="ldesc">Capturing your project's dependencies so anyone can run your code.</div><div class="ltags"><span class="ltag">requirements.txt</span><span class="ltag">pyproject.toml</span></div></a>
+    <a class="lc locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">12.3</span><div class="ltitle">Sharing a Project on GitHub</div><div class="ldesc">README, .gitignore, keeping secrets out of version control.</div><div class="ltags"><span class="ltag">GitHub</span><span class="ltag">.gitignore</span><span class="ltag">README</span></div></a>
+  </div>
+</div>
+
+<!-- FORK BANNER -->
+<div class="fork-banner reveal">
+  <h3>&#127881; Common Core Complete</h3>
+  <p>At this point you are a Python developer. Now choose the direction that matches what you want to build. Not sure? Read the guide below before deciding.</p>
+  <div class="decision-grid">
+    <div class="dcard data">
+      <h4>&#128202; I work with data</h4>
+      <p>You want to clean data, analyse it, visualise it, and eventually build models that make predictions. You are headed toward analytics, data science, or machine learning.</p>
+      <div class="drec">&#8594; Take Track A: The Data Path</div>
+    </div>
+    <div class="dcard builder">
+      <h4>&#128296; I want to build things</h4>
+      <p>You want to build tools people can use: web apps, scrapers, APIs, automations. You are more interested in shipping products than statistical models.</p>
+      <div class="drec">&#8594; Take Track B: The Builder Path</div>
+    </div>
+    <div class="dcard unsure">
+      <h4>&#129300; I am not sure yet</h4>
+      <p>Data skills are more universally employable right now. If you are genuinely unsure, Track A gives you more options. You can always come back and do Track B after.</p>
+      <div class="drec">&#8594; Default to Track A</div>
+    </div>
+  </div>
+</div>
+
+<!-- TRACK TRACKERS -->
+<div class="track-trackers reveal">
+  <div class="tt dat">
+    <div class="tracker-title">Track A Progress</div>
+    <div class="tracker-count" id="tracka-text">0 of 11 phases complete</div>
+    <div class="progress-track"><div class="progress-fill" id="tracka-fill"></div></div>
+    <div class="chips" id="tracka-chips" style="margin-top:.8rem;">
+      <div class="chip" onclick="chipToggle(this,'tracka')"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>A1: SQL Fundamentals</div>
+      <div class="chip" onclick="chipToggle(this,'tracka')"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>A2: Python and Databases</div>
+      <div class="chip" onclick="chipToggle(this,'tracka')"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>A3: Pandas Foundations</div>
+      <div class="chip" onclick="chipToggle(this,'tracka')"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>A4: Cleaning Messy Data</div>
+      <div class="chip" onclick="chipToggle(this,'tracka')"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>A5: Groupby and Aggregations</div>
+      <div class="chip" onclick="chipToggle(this,'tracka')"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>A6: Merging and Joining</div>
+      <div class="chip" onclick="chipToggle(this,'tracka')"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>A7: EDA in Practice</div>
+      <div class="chip" onclick="chipToggle(this,'tracka')"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>A8: Data Storytelling</div>
+      <div class="chip" onclick="chipToggle(this,'tracka')"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>A9: Intro to ML</div>
+      <div class="chip" onclick="chipToggle(this,'tracka')"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>A10: From Model to Product</div>
+      <div class="chip" onclick="chipToggle(this,'tracka')"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>A11: Capstone</div>
+    </div>
+  </div>
+  <div class="tt bld">
+    <div class="tracker-title">Track B Progress</div>
+    <div class="tracker-count" id="trackb-text">0 of 7 phases complete</div>
+    <div class="progress-track"><div class="progress-fill" id="trackb-fill"></div></div>
+    <div class="chips" id="trackb-chips" style="margin-top:.8rem;">
+      <div class="chip" onclick="chipToggle(this,'trackb')"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>B1: Web Scraping</div>
+      <div class="chip" onclick="chipToggle(this,'trackb')"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>B2: APIs in Depth</div>
+      <div class="chip" onclick="chipToggle(this,'trackb')"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>B3: Flask</div>
+      <div class="chip" onclick="chipToggle(this,'tracka')"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>B4: Databases</div>
+      <div class="chip" onclick="chipToggle(this,'trackb')"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>B5: Deployment</div>
+      <div class="chip" onclick="chipToggle(this,'trackb')"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>B6: CLI Tools</div>
+      <div class="chip" onclick="chipToggle(this,'trackb')"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>B7: Capstone</div>
+    </div>
+  </div>
+</div>
+
+<!-- TRACK A CARDS -->
+<div class="phase-block reveal" style="margin-top:2rem;">
+  <div class="phase-header"><span class="phase-badge ta">Track A</span><span class="phase-name">The Data Path</span><span class="phase-meta"><span class="phase-lessons">11 phases</span><span class="phase-time">~35 hrs</span></span></div>
+  <div class="lesson-grid">
+    <a class="lc ta locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">A1</span><div class="ltitle">SQL Fundamentals for Python Developers</div><div class="ldesc">SELECT, WHERE, JOINs, GROUP BY: writing queries in Python using real databases.</div><div class="ltags"><span class="ltag t">SQL</span><span class="ltag t">SELECT</span><span class="ltag t">JOIN</span></div></a>
+    <a class="lc ta locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">A2</span><div class="ltitle">Python and Databases</div><div class="ldesc">Connecting to MySQL and SQL Server, cursors, parameterised queries. The connector-swapping lesson.</div><div class="ltags"><span class="ltag t">pymysql</span><span class="ltag t">pyodbc</span></div></a>
+    <a class="lc ta locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">A3</span><div class="ltitle">Pandas Foundations</div><div class="ldesc">DataFrames, Series, loading from CSV, Excel, and databases.</div><div class="ltags"><span class="ltag t">pandas</span><span class="ltag t">DataFrame</span></div></a>
+    <a class="lc ta locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">A4</span><div class="ltitle">Cleaning Messy Data</div><div class="ldesc">Nulls, duplicates, wrong types, outliers, standardising formats.</div><div class="ltags"><span class="ltag t">dropna</span><span class="ltag t">fillna</span></div></a>
+    <a class="lc ta locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">A5</span><div class="ltitle">Groupby and Aggregations</div><div class="ldesc">Summarising by category, multi-level grouping, custom aggregations.</div><div class="ltags"><span class="ltag t">groupby</span><span class="ltag t">agg</span></div></a>
+    <a class="lc ta locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">A6</span><div class="ltitle">Merging and Joining</div><div class="ldesc">Inner, left, right, outer joins in Pandas, mapped directly to SQL joins.</div><div class="ltags"><span class="ltag t">merge</span><span class="ltag t">join</span></div></a>
+    <a class="lc ta locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">A7</span><div class="ltitle">Exploratory Data Analysis</div><div class="ldesc">EDA in practice: distributions, correlations, outlier detection, summary statistics. How to actually understand a new dataset.</div><div class="ltags"><span class="ltag t">EDA</span><span class="ltag t">describe</span><span class="ltag t">corr</span></div></a>
+    <a class="lc ta locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">A8</span><div class="ltitle">Data Storytelling and Visualisation</div><div class="ldesc">Matplotlib, Seaborn, Plotly: choosing the right chart, building a narrative, making your findings land with an audience.</div><div class="ltags"><span class="ltag t">matplotlib</span><span class="ltag t">seaborn</span><span class="ltag t">Plotly</span></div></a>
+    <a class="lc ta locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">A9</span><div class="ltitle">Intro to Machine Learning</div><div class="ldesc">Scikit-learn, train/test split, your first classifier, evaluation metrics.</div><div class="ltags"><span class="ltag t">sklearn</span><span class="ltag t">train/test</span></div></a>
+    <a class="lc ta locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">A10</span><div class="ltitle">From Model to Product</div><div class="ldesc">Pickling, FastAPI prediction endpoint, hosting, Streamlit vs Gradio.</div><div class="ltags"><span class="ltag t">pickle</span><span class="ltag t">Streamlit</span><span class="ltag t">Gradio</span></div></a>
+    <a class="lc ta locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">A11</span><div class="ltitle">Capstone Project</div><div class="ldesc">End-to-end: choose your project, build it, deploy it. Your portfolio piece.</div><div class="ltags"><span class="ltag t">churn predictor</span><span class="ltag t">price estimator</span><span class="ltag t">+3 options</span></div></a>
+  </div>
+</div>
+
+<!-- TRACK B CARDS -->
+<div class="phase-block reveal">
+  <div class="phase-header"><span class="phase-badge tb">Track B</span><span class="phase-name">The Builder Path</span><span class="phase-meta"><span class="phase-lessons">7 phases</span><span class="phase-time">~25 hrs</span></span></div>
+  <div class="lesson-grid">
+    <a class="lc tb locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">B1</span><div class="ltitle">Web Scraping</div><div class="ldesc">BeautifulSoup, requests, navigating HTML, pagination, being a polite scraper.</div><div class="ltags"><span class="ltag c">BeautifulSoup</span><span class="ltag c">requests</span></div></a>
+    <a class="lc tb locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">B2</span><div class="ltitle">Working with APIs in Depth</div><div class="ldesc">Auth patterns, OAuth basics, rate limiting, paginating API responses.</div><div class="ltags"><span class="ltag c">OAuth</span><span class="ltag c">pagination</span></div></a>
+    <a class="lc tb locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">B3</span><div class="ltitle">Intro to Flask</div><div class="ldesc">Routing, templates, forms, returning JSON. Your first web application.</div><div class="ltags"><span class="ltag c">Flask</span><span class="ltag c">routes</span><span class="ltag c">Jinja2</span></div></a>
+    <a class="lc tb locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">B4</span><div class="ltitle">Databases for Builders</div><div class="ldesc">SQLAlchemy, connecting Flask to a database, simple CRUD operations.</div><div class="ltags"><span class="ltag c">SQLAlchemy</span><span class="ltag c">CRUD</span></div></a>
+    <a class="lc tb locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">B5</span><div class="ltitle">Deployment Basics</div><div class="ldesc">Environment variables, .env files, deploying to Render or Railway.</div><div class="ltags"><span class="ltag c">Render</span><span class="ltag c">.env</span><span class="ltag c">Railway</span></div></a>
+    <a class="lc tb locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">B6</span><div class="ltitle">Building CLI Tools</div><div class="ldesc">argparse in depth, tools people can run from the terminal, packaging a script.</div><div class="ltags"><span class="ltag c">argparse</span><span class="ltag c">CLI</span></div></a>
+    <a class="lc tb locked" href="#" onclick="return false;"><span class="slock">&#128274;</span><span class="lnum">B7</span><div class="ltitle">Capstone Project</div><div class="ldesc">Choose your project, build it, deploy it live. Your portfolio piece.</div><div class="ltags"><span class="ltag c">job scraper</span><span class="ltag c">finance tracker</span><span class="ltag c">+3 options</span></div></a>
+  </div>
+</div>
+
+</div>
+
 <footer>
-  <strong>MLlabswithMel</strong> -- Hands-on data &amp; AI education<br>
-  <span style="font-size:.82rem;margin-top:.3rem;display:block;color:var(--faint)">From Novice to Ninja -- Series Index</span>
+  <strong>MLlabswithMel</strong> &mdash; Hands-on data &amp; AI education<br>
+  <span style="font-size:.82rem;margin-top:.3rem;display:block;color:var(--faint)">From Novice to Ninja Series</span>
 </footer>
 
 <script>
-// Stub progress -- will connect to lesson completion later
-function updateOverallProgress() {
-  // In future: read completion flags from localStorage per lesson
-  var total = 9;
-  var done = 0; // will increment as lessons are built + marked
-  var pct = Math.round((done / total) * 100);
-  document.getElementById('prog-fill').style.width = pct + '%';
-  document.getElementById('prog-text').textContent = done + ' of ' + total + ' lessons started';
-}
-updateOverallProgress();
-</script>
+/* SCROLL PROGRESS BAR */
+window.addEventListener('scroll', function() {
+  var scrolled = window.scrollY;
+  var total = document.documentElement.scrollHeight - window.innerHeight;
+  var pct = total > 0 ? scrolled / total : 0;
+  document.getElementById('scroll-bar').style.transform = 'scaleX(' + pct + ')';
+});
 
+/* SCROLL REVEAL */
+var revealEls = document.querySelectorAll('.reveal');
+var observer = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+revealEls.forEach(function(el) { observer.observe(el); });
+
+/* TRACKER */
+function chipToggle(chip, trackId) {
+  chip.classList.toggle('done');
+  updateTracker(trackId);
+}
+function updateTracker(trackId) {
+  var chips = document.querySelectorAll('#' + trackId + '-chips .chip');
+  var done = document.querySelectorAll('#' + trackId + '-chips .chip.done').length;
+  var total = chips.length;
+  var pct = total > 0 ? Math.round((done / total) * 100) : 0;
+  var fill = document.getElementById(trackId + '-fill');
+  var text = document.getElementById(trackId + '-text');
+  if (fill) fill.style.width = pct + '%';
+  if (text) text.textContent = done + ' of ' + total + ' phases complete';
+}
+
+/* COPY */
+function copyCode(btn) {
+  var pre = btn.closest('.code-block').querySelector('pre');
+  navigator.clipboard.writeText(pre ? pre.innerText : '').then(function() {
+    btn.textContent = 'Copied!'; btn.classList.add('copied');
+    setTimeout(function() { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  }).catch(function() { btn.textContent = 'Failed'; setTimeout(function() { btn.textContent = 'Copy'; }, 1500); });
+}
+
+updateTracker('core');
+updateTracker('tracka');
+updateTracker('trackb');
+</script>
 </body>
 </html>
