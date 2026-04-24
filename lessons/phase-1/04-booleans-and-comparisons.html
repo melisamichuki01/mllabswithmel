@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.4 Booleans & Comparisons | MLlabswithMel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#faf9ff;--surface:#f3f0ff;--surface-2:#ede9ff;--purple:#7f77dd;--purple-dk:#534ab7;--purple-lt:#e8e5ff;--teal:#1d9e75;--teal-lt:#d4f0e6;--coral:#d85a30;--coral-lt:#faecea;--amber:#ba7517;--amber-lt:#fef3dc;--text:#1a1633;--muted:#6b5fa8;--faint:#9b94cc;--code-bg:#ede9ff;--code-text:#534ab7;--border:#c4bde8;--border-lt:#e2defc;}
+html{scroll-behavior:smooth;}body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:1.05rem;line-height:1.8;}
+@keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.scroll-glow{position:fixed;top:0;left:0;width:100%;height:4px;z-index:1000;background:linear-gradient(90deg,#7f77dd,#534ab7,#9b8ff0,#7f77dd);background-size:300% 300%;animation:gradientShift 4s ease infinite;transform-origin:left;transform:scaleX(0);}
+.site-header{background:linear-gradient(135deg,var(--surface) 0%,#eceaff 60%,var(--surface) 100%);background-size:200% 200%;animation:gradientShift 8s ease infinite;border-bottom:2px solid var(--purple);padding:2rem 1.5rem 1.8rem;text-align:center;}
+.brand{font-size:.78rem;font-weight:700;color:var(--purple-dk);letter-spacing:.12em;text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin-bottom:.4rem;}
+.breadcrumb{font-size:.78rem;color:var(--faint);margin-bottom:.7rem;font-family:'JetBrains Mono',monospace;}
+.breadcrumb a{color:var(--purple);text-decoration:none;}.breadcrumb a:hover{text-decoration:underline;}
+.lesson-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;background:var(--purple);color:#fff;padding:.15rem .7rem;border-radius:999px;margin-bottom:.6rem;display:inline-block;}
+.site-header h1{font-size:clamp(1.7rem,4vw,2.6rem);font-weight:700;line-height:1.2;color:var(--text);margin-bottom:.5rem;}
+.site-header h1 em{color:var(--purple);font-style:normal;}
+.site-header .subtitle{color:var(--muted);font-size:.97rem;max-width:580px;margin:0 auto .8rem;}
+.tag-row{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;margin-top:.7rem;}
+.tag{background:var(--purple-lt);color:var(--purple-dk);font-size:.7rem;font-weight:600;padding:.18rem .65rem;border-radius:999px;font-family:'JetBrains Mono',monospace;}
+.tag.teal{background:var(--teal-lt);color:#0a4a30;}.tag.amber{background:var(--amber-lt);color:#6b3a00;}
+.lesson-strip{max-width:960px;margin:1.2rem auto 0;padding:0 1.5rem;}
+.lesson-strip-inner{display:flex;gap:.5rem;overflow-x:auto;padding-bottom:.3rem;}
+.ls-item{display:flex;align-items:center;gap:.4rem;background:var(--surface);border:1.5px solid var(--border-lt);border-radius:8px;padding:.4rem .85rem;text-decoration:none;font-size:.78rem;font-weight:600;color:var(--muted);white-space:nowrap;transition:all .15s;flex-shrink:0;}
+.ls-item:hover{border-color:var(--purple);color:var(--purple-dk);}.ls-item.active{background:var(--purple);border-color:var(--purple);color:#fff;}
+.ls-num{font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;}
+.progress-section{max-width:960px;margin:1.2rem auto 0;padding:0 1.5rem;}
+.progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;font-size:.83rem;color:var(--muted);font-weight:600;}
+.progress-track{height:7px;background:var(--surface-2);border-radius:999px;overflow:hidden;margin-bottom:1rem;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--purple),#9b8ff0);border-radius:999px;transition:width .4s ease;width:0%;}
+.topic-chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:.45rem;}
+.chip{display:flex;align-items:center;gap:.45rem;background:var(--surface);border:1.5px solid var(--border-lt);border-radius:7px;padding:.4rem .75rem;cursor:pointer;font-size:.78rem;font-weight:600;color:var(--muted);transition:all .15s;user-select:none;}
+.chip.done{border-color:var(--teal);background:var(--teal-lt);color:#0a4a30;}
+.chip-box{width:13px;height:13px;min-width:13px;border:1.5px solid var(--border);border-radius:3px;display:flex;align-items:center;justify-content:center;}
+.chip.done .chip-box{background:var(--teal);border-color:var(--teal);}
+.chip-tick{display:none;color:#fff;font-size:8px;font-weight:800;}.chip.done .chip-tick{display:block;}
+.toc{background:var(--surface);border:1.5px solid var(--border-lt);border-radius:12px;padding:1.3rem 1.5rem;margin:1.2rem auto;max-width:960px;}
+.toc h3{font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin-bottom:.7rem;}
+.toc ol{padding-left:1.2rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.3rem;}
+.toc ol li a{color:var(--purple-dk);text-decoration:none;font-size:.85rem;font-weight:500;}
+.toc ol li a:hover,.toc ol li a.toc-active{color:var(--purple);font-weight:700;}
+main{max-width:960px;margin:0 auto;padding:0 1.5rem 5rem;}
+section{margin-bottom:4rem;scroll-margin-top:2rem;}
+section h2{font-size:clamp(1.2rem,3vw,1.65rem);font-weight:700;color:var(--text);margin-bottom:1.2rem;padding-bottom:.6rem;border-bottom:2px solid var(--border-lt);display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;}
+.section-num{display:inline-flex;align-items:center;justify-content:center;background:var(--purple);color:#fff;font-size:.67rem;font-weight:700;width:24px;height:24px;border-radius:50%;flex-shrink:0;}
+.done-check{margin-left:auto;display:flex;align-items:center;gap:.4rem;font-size:.74rem;font-weight:600;color:var(--faint);cursor:pointer;user-select:none;}
+.done-check:hover,.done-check.checked{color:var(--teal);}
+.done-check-box{width:15px;height:15px;border:1.5px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;}
+.done-check.checked .done-check-box{background:var(--teal);border-color:var(--teal);}
+.done-check-tick{display:none;color:#fff;font-size:9px;font-weight:800;}.done-check.checked .done-check-tick{display:block;}
+section h3{font-size:1.05rem;font-weight:700;color:var(--purple-dk);margin:2rem 0 .6rem;}
+section p{margin-bottom:1rem;color:var(--muted);}section p strong{color:var(--text);}
+section ul{padding-left:1.4rem;margin-bottom:1rem;color:var(--muted);}section li{margin-bottom:.5rem;}section li strong{color:var(--text);}
+.card{border-radius:12px;margin:1.5rem 0;overflow:hidden;border-left:4px solid transparent;}
+.card-header{padding:.75rem 1.2rem;font-size:.9rem;font-weight:700;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;gap:.5rem;}
+.card-header::after{content:'▼';font-size:.58rem;transition:transform .2s;flex-shrink:0;}.card.open .card-header::after{transform:rotate(180deg);}
+.card-body{padding:1rem 1.2rem 1.2rem;display:none;font-size:.94rem;color:var(--muted);}.card.open .card-body{display:block;}
+.card-body p{margin-bottom:.7rem;}.card-body p:last-child{margin-bottom:0;}.card-body strong{color:var(--text);}
+.card-body ul{padding-left:1.2rem;}.card-body li{margin-bottom:.35rem;}
+.card-body code{background:var(--surface-2);padding:.08rem .35rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--purple-dk);}
+.slowdown-card{background:var(--coral-lt);border-color:var(--coral);}.slowdown-card .card-header{background:#f8dcd5;color:#8b2e10;}
+.explain-card{background:var(--purple-lt);border-color:var(--purple);}.explain-card .card-header{background:#ddd9f8;color:var(--purple-dk);}
+.analogy-card{background:var(--teal-lt);border-color:var(--teal);}.analogy-card .card-header{background:#c0e8d8;color:#0a4a30;}
+.challenge{background:var(--amber-lt);border:1.5px solid #f0c060;border-radius:12px;margin:1.8rem 0;overflow:hidden;}
+.challenge-header{background:#fde8a0;padding:.7rem 1.2rem;font-size:.88rem;font-weight:700;color:#6b3a00;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;}
+.challenge-header::after{content:'▼';font-size:.58rem;transition:transform .2s;}.challenge.open .challenge-header::after{transform:rotate(180deg);}
+.challenge-body{padding:1rem 1.2rem 1.2rem;display:none;font-size:.93rem;color:var(--muted);}.challenge.open .challenge-body{display:block;}
+.challenge-body p{margin-bottom:.7rem;}.challenge-q{font-weight:700;color:#6b3a00;margin-bottom:.6rem;font-size:.95rem;}
+.answer-toggle{background:none;border:1.5px solid #d4a020;border-radius:6px;padding:.3rem .9rem;font-size:.78rem;font-weight:700;color:#8b5a00;cursor:pointer;margin-top:.4rem;font-family:'Plus Jakarta Sans',sans-serif;transition:background .15s;}
+.answer-toggle:hover{background:#fde8a0;}
+.answer-box{background:#fff8e0;border-radius:8px;padding:.85rem 1rem;margin-top:.6rem;display:none;border:1px solid #f0c060;color:var(--muted);}.answer-box.show{display:block;}
+.answer-box p{margin-bottom:.5rem;}
+.code-block{background:var(--code-bg);border-radius:12px;margin:1.2rem 0;overflow:hidden;border:1.5px solid var(--border-lt);}
+.code-label{display:flex;align-items:center;justify-content:space-between;padding:.45rem 1rem;font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:500;border-bottom:1px solid var(--border-lt);}
+.code-label.script{background:var(--amber-lt);color:#6b3a00;}.code-label.output{background:var(--surface-2);color:var(--muted);}
+.copy-btn{background:none;border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-size:.68rem;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s;}
+.copy-btn:hover{background:var(--purple-lt);color:var(--purple-dk);}.copy-btn.copied{color:var(--teal);border-color:var(--teal);}
+pre{padding:1.2rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.84rem;line-height:1.85;color:var(--code-text);white-space:pre;}
+.cm{color:#9b94cc;font-style:italic;}.kw{color:var(--purple);font-weight:600;}.st{color:var(--teal);}.fn{color:var(--amber);}.nm{color:var(--coral);}.bi{color:#534ab7;}
+.table-wrap{overflow-x:auto;margin:1.2rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.9rem;}
+th{background:var(--surface);color:var(--purple-dk);font-size:.77rem;font-weight:700;text-align:left;padding:.65rem 1rem;border-bottom:2px solid var(--border);}
+td{padding:.6rem 1rem;border-bottom:1px solid var(--border-lt);vertical-align:top;color:var(--muted);}td strong{color:var(--text);}
+tr:hover td{background:var(--surface);}
+td code{background:var(--surface-2);padding:.08rem .35rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--purple-dk);}
+.callout{background:var(--teal-lt);border-left:3px solid var(--teal);padding:.9rem 1.2rem;border-radius:0 8px 8px 0;margin:1.2rem 0;font-size:.93rem;color:#0a4a30;}
+.callout strong{color:var(--teal);}
+.callout-amber{background:var(--amber-lt);border-left:3px solid var(--amber);padding:.9rem 1.2rem;border-radius:0 8px 8px 0;margin:1.2rem 0;font-size:.93rem;color:#5a3800;}
+.callout-coral{background:var(--coral-lt);border-left:3px solid var(--coral);padding:.9rem 1.2rem;border-radius:0 8px 8px 0;margin:1.2rem 0;font-size:.93rem;color:#6b1c00;}
+/* truth table */
+.truth-table td:last-child{font-weight:700;}
+.tt-true{color:var(--teal)!important;font-weight:700!important;}
+.tt-false{color:var(--coral)!important;font-weight:700!important;}
+/* switch visual */
+.switch-demo{display:flex;gap:1.2rem;flex-wrap:wrap;margin:1.2rem 0;justify-content:center;}
+.switch-box{background:#fff;border:1.5px solid var(--border-lt);border-radius:12px;padding:1rem 1.4rem;text-align:center;min-width:130px;}
+.switch-label{font-size:.78rem;font-weight:700;color:var(--muted);margin-bottom:.5rem;font-family:'JetBrains Mono',monospace;}
+.switch-on{background:var(--teal-lt);border-color:var(--teal);padding:.4rem .9rem;border-radius:8px;font-family:'JetBrains Mono',monospace;font-weight:700;color:#0a4a30;font-size:.95rem;}
+.switch-off{background:var(--coral-lt);border-color:var(--coral);padding:.4rem .9rem;border-radius:8px;font-family:'JetBrains Mono',monospace;font-weight:700;color:#6b1c00;font-size:.95rem;border:1.5px solid;}
+.win-box{background:var(--teal-lt);border:1.5px solid var(--teal);border-radius:12px;padding:1rem 1.4rem;margin:1.8rem 0;color:#0a4a30;font-weight:600;font-size:.95rem;}
+.task-box{background:var(--surface);border:1.5px solid var(--border-lt);border-radius:12px;padding:1.1rem 1.4rem;margin:1rem 0;}
+.task-num{font-size:.73rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--purple);margin-bottom:.3rem;}
+.task-box p{margin:0;font-size:.92rem;color:var(--muted);}
+.task-box p strong{color:var(--text);}
+.task-box code{background:var(--surface-2);padding:.05rem .32rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--purple-dk);}
+.page-nav{display:flex;justify-content:space-between;align-items:center;max-width:960px;margin:2.5rem auto 0;padding:0 1.5rem 2rem;gap:1rem;}
+.nav-btn{display:inline-flex;align-items:center;gap:.5rem;background:var(--surface);border:1.5px solid var(--border-lt);border-radius:12px;padding:.7rem 1.2rem;text-decoration:none;font-size:.87rem;font-weight:700;color:var(--purple-dk);transition:all .18s;}
+.nav-btn:hover{border-color:var(--purple);background:var(--purple-lt);}
+.nav-btn.next{background:var(--purple);color:#fff;border-color:var(--purple);}.nav-btn.next:hover{background:var(--purple-dk);}
+.nav-btn .nav-sub{display:block;font-size:.67rem;font-weight:500;opacity:.75;font-family:'JetBrains Mono',monospace;}
+footer{background:var(--surface);border-top:1.5px solid var(--border-lt);text-align:center;padding:1.8rem 1.5rem;color:var(--muted);font-size:.86rem;}
+footer strong{color:var(--purple-dk);font-weight:700;}
+p code,li code{background:var(--surface-2);padding:.08rem .38rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.83rem;color:var(--purple-dk);}
+@media(max-width:640px){.toc ol,.topic-chips{grid-template-columns:1fr;}pre{font-size:.76rem;}.page-nav{flex-direction:column;}
+.switch-demo{gap:.8rem;}}
+</style>
+</head>
+<body>
+<div class="scroll-glow" id="scroll-bar"></div>
+<header class="site-header">
+  <div class="brand">MLlabswithMel</div>
+  <div class="breadcrumb"><a href="../../index.html">Portal</a> / <a href="../../phase1.html">Phase 1</a> / Lesson 1.4</div>
+  <div class="lesson-label">Lesson 1.4 of 5</div>
+  <h1>Booleans and <em>Comparisons</em></h1>
+  <p class="subtitle">Every decision your program makes — every if, every loop, every filter — comes down to a single question: is this True or False? Booleans are tiny but they run everything.</p>
+  <div class="tag-row">
+    <span class="tag">bool</span>
+    <span class="tag">True / False</span>
+    <span class="tag">comparison operators</span>
+    <span class="tag">and / or / not</span>
+    <span class="tag">truthy / falsy</span>
+    <span class="tag teal">Foundation of all logic</span>
+    <span class="tag amber">~40 minutes</span>
+  </div>
+</header>
+<div class="lesson-strip">
+  <div class="lesson-strip-inner">
+    <a href="01-variables-and-data-types.html" class="ls-item"><span class="ls-num">1.1</span>Variables &amp; Types</a>
+    <a href="02-strings-in-depth.html" class="ls-item"><span class="ls-num">1.2</span>Strings In Depth</a>
+    <a href="03-numbers-and-operators.html" class="ls-item"><span class="ls-num">1.3</span>Numbers &amp; Operators</a>
+    <a href="04-booleans-and-comparisons.html" class="ls-item active"><span class="ls-num">1.4</span>Booleans &amp; Comparisons</a>
+    <a href="05-getting-input.html" class="ls-item"><span class="ls-num">1.5</span>Getting Input</a>
+  </div>
+</div>
+<div class="progress-section">
+  <div class="progress-header"><span>Lesson progress</span><span id="prog-text">0 of 6 sections done</span></div>
+  <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
+  <div class="topic-chips">
+    <div class="chip" onclick="chipClick(this,'s1')"><div class="chip-box"><span class="chip-tick">✓</span></div>True and False</div>
+    <div class="chip" onclick="chipClick(this,'s2')"><div class="chip-box"><span class="chip-tick">✓</span></div>Booleans as numbers</div>
+    <div class="chip" onclick="chipClick(this,'s3')"><div class="chip-box"><span class="chip-tick">✓</span></div>Comparison operators</div>
+    <div class="chip" onclick="chipClick(this,'s4')"><div class="chip-box"><span class="chip-tick">✓</span></div>Logical operators</div>
+    <div class="chip" onclick="chipClick(this,'s5')"><div class="chip-box"><span class="chip-tick">✓</span></div>Truthy and falsy</div>
+    <div class="chip" onclick="chipClick(this,'s6')"><div class="chip-box"><span class="chip-tick">✓</span></div>Short-circuit evaluation</div>
+  </div>
+</div>
+<div class="toc" style="margin-left:auto;margin-right:auto;">
+  <h3>In this lesson</h3>
+  <ol id="toc-list">
+    <li><a href="#s1">True and False — the basics</a></li>
+    <li><a href="#s2">Booleans behave like numbers</a></li>
+    <li><a href="#s3">Comparison operators</a></li>
+    <li><a href="#s4">Logical operators: and, or, not</a></li>
+    <li><a href="#s5">Truthy and falsy values</a></li>
+    <li><a href="#s6">Short-circuit evaluation</a></li>
+    <li><a href="#s7">Mini challenge</a></li>
+    <li><a href="#s8">Practice tasks</a></li>
+  </ol>
+</div>
+
+<main>
+
+<!-- S1: TRUE AND FALSE -->
+<section id="s1">
+  <h2><span class="section-num">01</span> True and False — the basics <span class="done-check" onclick="toggleDone(this)"><div class="done-check-box"><span class="done-check-tick">✓</span></div>Mark done</span></h2>
+
+  <div class="card analogy-card open">
+    <div class="card-header">🔁 Think of a light switch</div>
+    <div class="card-body">
+      <p>A boolean is the simplest possible thing in programming: it has exactly two states. On or off. Yes or no. Allowed or denied. In Python, these two states are called <strong>True</strong> and <strong>False</strong>.</p>
+      <p>Every decision your code makes — "should I run this block?", "has the user paid?", "is this password correct?" — ultimately gets evaluated to one of these two values. Booleans are the language of logic.</p>
+    </div>
+  </div>
+
+  <!-- VISUAL SWITCH -->
+  <div class="switch-demo">
+    <div class="switch-box">
+      <div class="switch-label">is_logged_in</div>
+      <div class="switch-on">True ✓</div>
+    </div>
+    <div class="switch-box">
+      <div class="switch-label">has_paid</div>
+      <div class="switch-off" style="border:1.5px solid var(--coral);">False ✗</div>
+    </div>
+    <div class="switch-box">
+      <div class="switch-label">account_active</div>
+      <div class="switch-on">True ✓</div>
+    </div>
+    <div class="switch-box">
+      <div class="switch-label">is_banned</div>
+      <div class="switch-off" style="border:1.5px solid var(--coral);">False ✗</div>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 Booleans — run this and observe</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># Boolean values: EXACTLY two options</span>
+<span class="cm"># Capital T, capital F — case matters in Python</span>
+is_active = <span class="kw">True</span>
+is_banned = <span class="kw">False</span>
+
+<span class="fn">print</span>(is_active)          <span class="cm"># True</span>
+<span class="fn">print</span>(is_banned)          <span class="cm"># False</span>
+<span class="fn">print</span>(<span class="bi">type</span>(is_active))    <span class="cm"># &lt;class 'bool'&gt;</span>
+
+<span class="cm"># Booleans are created naturally by comparisons</span>
+x = <span class="nm">10</span>
+<span class="fn">print</span>(x > <span class="nm">5</span>)             <span class="cm"># True</span>
+<span class="fn">print</span>(x == <span class="nm">3</span>)            <span class="cm"># False</span>
+<span class="fn">print</span>(<span class="bi">type</span>(x > <span class="nm">5</span>))       <span class="cm"># &lt;class 'bool'&gt; — comparisons ARE booleans</span>
+
+<span class="cm"># You can store comparison results in variables</span>
+is_adult = x > <span class="nm">18</span>
+<span class="fn">print</span>(is_adult)           <span class="cm"># False</span>
+<span class="fn">print</span>(<span class="st">f"Is adult: {is_adult}"</span>)</pre>
+  </div>
+
+  <div class="card slowdown-card">
+    <div class="card-header">🚨 true and false (lowercase) will crash your program</div>
+    <div class="card-body">
+      <p><code>True</code> and <code>False</code> are Python keywords — they must be capitalised exactly. <code>true</code> (lowercase) is just an undefined variable name and causes a <code>NameError</code>.</p>
+      <p>This is one of the most common beginner errors. Every time. Capital T. Capital F. Write it like that, always.</p>
+    </div>
+  </div>
+</section>
+
+<!-- S2: BOOLEANS AS NUMBERS -->
+<section id="s2">
+  <h2><span class="section-num">02</span> Booleans behave like numbers <span class="done-check" onclick="toggleDone(this)"><div class="done-check-box"><span class="done-check-tick">✓</span></div>Mark done</span></h2>
+
+  <p>Here's something that surprises most beginners: in Python, <code>True</code> is literally equal to <code>1</code> and <code>False</code> is literally equal to <code>0</code>. This is because Python's <code>bool</code> type is a subclass of <code>int</code>. You can do maths with booleans.</p>
+
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 Booleans as numbers — this is real Python, not a trick</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># True == 1, False == 0</span>
+<span class="fn">print</span>(<span class="kw">True</span> == <span class="nm">1</span>)     <span class="cm"># True</span>
+<span class="fn">print</span>(<span class="kw">False</span> == <span class="nm">0</span>)    <span class="cm"># True</span>
+<span class="fn">print</span>(<span class="kw">True</span> > <span class="kw">False</span>)  <span class="cm"># True — 1 > 0</span>
+
+<span class="cm"># Arithmetic with booleans</span>
+<span class="fn">print</span>(<span class="kw">True</span> + <span class="kw">True</span>)   <span class="cm"># 2</span>
+<span class="fn">print</span>(<span class="kw">True</span> + <span class="nm">5</span>)      <span class="cm"># 6</span>
+<span class="fn">print</span>(<span class="kw">False</span> * <span class="nm">100</span>)   <span class="cm"># 0</span>
+
+<span class="cm"># PRACTICAL USE: Count how many conditions are True</span>
+<span class="cm"># Imagine checking eligibility for a loan</span>
+has_id = <span class="kw">True</span>
+has_income = <span class="kw">True</span>
+has_good_credit = <span class="kw">False</span>
+is_kenyan_resident = <span class="kw">True</span>
+
+<span class="cm"># sum() treats True as 1 and False as 0 — genius!</span>
+conditions_met = has_id + has_income + has_good_credit + is_kenyan_resident
+<span class="fn">print</span>(<span class="st">f"Met {conditions_met} out of 4 conditions"</span>)  <span class="cm"># Met 3 out of 4</span>
+
+<span class="cm"># Or with a list and sum()</span>
+checks = [has_id, has_income, has_good_credit, is_kenyan_resident]
+<span class="fn">print</span>(<span class="st">f"Conditions passed: {sum(checks)}/4"</span>)</pre>
+  </div>
+
+  <div class="card explain-card">
+    <div class="card-header">💡 Why would you ever use this?</div>
+    <div class="card-body">
+      <p>The bool-as-number behaviour appears constantly in real code. Common uses include: counting how many items in a list satisfy a condition, summing up flagged rows in data, and conditional calculations where you want to add something only if a condition is True.</p>
+      <p>Example: <code>discount = 0.1 * is_member</code> — if <code>is_member</code> is True (1), discount is 10%. If False (0), discount is 0%. One clean line instead of an if/else block.</p>
+    </div>
+  </div>
+</section>
+
+<!-- S3: COMPARISON OPERATORS -->
+<section id="s3">
+  <h2><span class="section-num">03</span> Comparison operators <span class="done-check" onclick="toggleDone(this)"><div class="done-check-box"><span class="done-check-tick">✓</span></div>Mark done</span></h2>
+
+  <p>Comparison operators compare two values and always return a boolean — either <code>True</code> or <code>False</code>. These are the building blocks of all decision-making in Python.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Operator</th><th>Meaning</th><th>Example</th><th>Result</th></tr></thead>
+      <tbody>
+        <tr><td><code>==</code></td><td>Equal to</td><td><code>5 == 5</code></td><td class="tt-true">True</td></tr>
+        <tr><td><code>!=</code></td><td>Not equal to</td><td><code>5 != 3</code></td><td class="tt-true">True</td></tr>
+        <tr><td><code>&gt;</code></td><td>Greater than</td><td><code>10 &gt; 3</code></td><td class="tt-true">True</td></tr>
+        <tr><td><code>&lt;</code></td><td>Less than</td><td><code>2 &lt; 5</code></td><td class="tt-true">True</td></tr>
+        <tr><td><code>&gt;=</code></td><td>Greater than or equal</td><td><code>4 &gt;= 4</code></td><td class="tt-true">True</td></tr>
+        <tr><td><code>&lt;=</code></td><td>Less than or equal</td><td><code>2 &lt;= 1</code></td><td class="tt-false">False</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 Comparison operators — predict each result before running</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># Basic number comparisons</span>
+<span class="fn">print</span>(<span class="nm">10</span> == <span class="nm">10</span>)    <span class="cm"># True</span>
+<span class="fn">print</span>(<span class="nm">10</span> == <span class="nm">10.0</span>)  <span class="cm"># True — int and float can be equal</span>
+<span class="fn">print</span>(<span class="nm">7</span> != <span class="nm">3</span>)     <span class="cm"># True</span>
+<span class="fn">print</span>(<span class="nm">7</span> != <span class="nm">7</span>)     <span class="cm"># False</span>
+<span class="fn">print</span>(<span class="nm">5</span> > <span class="nm">5</span>)      <span class="cm"># False — strictly greater, NOT equal</span>
+<span class="fn">print</span>(<span class="nm">5</span> >= <span class="nm">5</span>)     <span class="cm"># True  — greater OR equal</span>
+
+<span class="cm"># String comparisons — alphabetical (lexicographic) order</span>
+<span class="fn">print</span>(<span class="st">"apple"</span> == <span class="st">"apple"</span>)   <span class="cm"># True</span>
+<span class="fn">print</span>(<span class="st">"apple"</span> == <span class="st">"Apple"</span>)   <span class="cm"># False — case sensitive!</span>
+<span class="fn">print</span>(<span class="st">"b"</span> > <span class="st">"a"</span>)            <span class="cm"># True  — 'b' comes after 'a'</span>
+<span class="fn">print</span>(<span class="st">"banana"</span> &lt; <span class="st">"cherry"</span>)  <span class="cm"># True  — 'b' before 'c'</span>
+
+<span class="cm"># Python allows CHAINED comparisons — read naturally!</span>
+age = <span class="nm">22</span>
+<span class="fn">print</span>(<span class="nm">18</span> &lt;= age &lt; <span class="nm">65</span>)    <span class="cm"># True — works exactly like maths: 18 ≤ age &lt; 65</span>
+<span class="fn">print</span>(<span class="nm">0</span> &lt; age &lt; <span class="nm">18</span>)      <span class="cm"># False — age is NOT between 0 and 18</span>
+
+score = <span class="nm">85</span>
+is_grade_b = <span class="nm">80</span> &lt;= score &lt; <span class="nm">90</span>
+<span class="fn">print</span>(<span class="st">f"Grade B? {is_grade_b}"</span>)   <span class="cm"># True</span></pre>
+  </div>
+
+  <div class="card slowdown-card">
+    <div class="card-header">🚨 = is assignment. == is comparison. They are NOT the same.</div>
+    <div class="card-body">
+      <p><code>age = 25</code> — stores the value 25 in the variable <code>age</code>.</p>
+      <p><code>age == 25</code> — asks "is age equal to 25?" Returns <code>True</code> or <code>False</code>.</p>
+      <p>Using <code>=</code> instead of <code>==</code> in a comparison is one of the most common bugs beginners write. Python will usually give you a <code>SyntaxError</code> or produce completely wrong logic silently. Always double-check which one you're using.</p>
+    </div>
+  </div>
+</section>
+
+<!-- S4: LOGICAL OPERATORS -->
+<section id="s4">
+  <h2><span class="section-num">04</span> Logical operators: and, or, not <span class="done-check" onclick="toggleDone(this)"><div class="done-check-box"><span class="done-check-tick">✓</span></div>Mark done</span></h2>
+
+  <p>Logical operators let you combine multiple boolean expressions into one. They're how you build real conditions: "must be over 18 AND have a valid ID", "must be student OR senior citizen".</p>
+
+  <h3>and — both must be True</h3>
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 The 'and' operator</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># 'and' returns True ONLY when BOTH conditions are True</span>
+<span class="cm"># If either is False, the whole expression is False</span>
+
+<span class="fn">print</span>(<span class="kw">True</span> <span class="kw">and</span> <span class="kw">True</span>)    <span class="cm"># True  — both True</span>
+<span class="fn">print</span>(<span class="kw">True</span> <span class="kw">and</span> <span class="kw">False</span>)   <span class="cm"># False — one is False</span>
+<span class="fn">print</span>(<span class="kw">False</span> <span class="kw">and</span> <span class="kw">True</span>)   <span class="cm"># False — one is False</span>
+<span class="fn">print</span>(<span class="kw">False</span> <span class="kw">and</span> <span class="kw">False</span>)  <span class="cm"># False — both False</span>
+
+<span class="cm"># Real example: can this person drive?</span>
+<span class="cm"># Must be 18+ AND have a valid licence</span>
+age = <span class="nm">20</span>
+has_licence = <span class="kw">True</span>
+
+can_drive = age >= <span class="nm">18</span> <span class="kw">and</span> has_licence
+<span class="fn">print</span>(<span class="st">f"Can drive: {can_drive}"</span>)  <span class="cm"># Can drive: True</span>
+
+<span class="cm"># What if they are underage?</span>
+age = <span class="nm">16</span>
+can_drive = age >= <span class="nm">18</span> <span class="kw">and</span> has_licence
+<span class="fn">print</span>(<span class="st">f"Can drive: {can_drive}"</span>)  <span class="cm"># Can drive: False</span>
+
+<span class="cm"># Real example: validate a password</span>
+password = <span class="st">"MyPass123"</span>
+is_long_enough = <span class="bi">len</span>(password) >= <span class="nm">8</span>
+has_number = <span class="kw">any</span>(c.<span class="fn">isdigit</span>() <span class="kw">for</span> c <span class="kw">in</span> password)
+is_valid_password = is_long_enough <span class="kw">and</span> has_number
+<span class="fn">print</span>(<span class="st">f"Password valid: {is_valid_password}"</span>)  <span class="cm"># True</span></pre>
+  </div>
+
+  <h3>or — at least one must be True</h3>
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 The 'or' operator</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># 'or' returns True when AT LEAST ONE condition is True</span>
+<span class="cm"># Only False when BOTH are False</span>
+
+<span class="fn">print</span>(<span class="kw">True</span> <span class="kw">or</span> <span class="kw">True</span>)    <span class="cm"># True</span>
+<span class="fn">print</span>(<span class="kw">True</span> <span class="kw">or</span> <span class="kw">False</span>)   <span class="cm"># True</span>
+<span class="fn">print</span>(<span class="kw">False</span> <span class="kw">or</span> <span class="kw">True</span>)   <span class="cm"># True</span>
+<span class="fn">print</span>(<span class="kw">False</span> <span class="kw">or</span> <span class="kw">False</span>)  <span class="cm"># False — only case where or returns False</span>
+
+<span class="cm"># Real example: discount eligibility</span>
+<span class="cm"># Student OR senior citizen gets a discount</span>
+is_student = <span class="kw">True</span>
+is_senior = <span class="kw">False</span>
+
+gets_discount = is_student <span class="kw">or</span> is_senior
+<span class="fn">print</span>(<span class="st">f"Gets discount: {gets_discount}"</span>)  <span class="cm"># True — student qualifies</span>
+
+<span class="cm"># Real example: emergency alert</span>
+<span class="cm"># Send alert if temperature is too high OR too low</span>
+temperature = <span class="nm">42.5</span>
+too_hot = temperature > <span class="nm">38</span>
+too_cold = temperature &lt; <span class="nm">15</span>
+
+send_alert = too_hot <span class="kw">or</span> too_cold
+<span class="fn">print</span>(<span class="st">f"Send alert: {send_alert}"</span>)  <span class="cm"># True — it's 42.5, too hot</span></pre>
+  </div>
+
+  <h3>not — flip the boolean</h3>
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 The 'not' operator</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># 'not' reverses the boolean — True becomes False, False becomes True</span>
+<span class="fn">print</span>(<span class="kw">not</span> <span class="kw">True</span>)         <span class="cm"># False</span>
+<span class="fn">print</span>(<span class="kw">not</span> <span class="kw">False</span>)        <span class="cm"># True</span>
+<span class="fn">print</span>(<span class="kw">not</span> (<span class="nm">5</span> > <span class="nm">3</span>))      <span class="cm"># False — 5>3 is True, not True = False</span>
+
+<span class="cm"># Real example: access control</span>
+is_banned = <span class="kw">False</span>
+can_access = <span class="kw">not</span> is_banned
+<span class="fn">print</span>(<span class="st">f"Can access: {can_access}"</span>)   <span class="cm"># True — not banned = can access</span>
+
+<span class="cm"># Another example: check if a list is empty</span>
+my_list = []
+<span class="fn">print</span>(<span class="kw">not</span> my_list)          <span class="cm"># True — empty list is falsy, not empty = True</span>
+
+shopping_cart = [<span class="st">"milk"</span>, <span class="st">"bread"</span>]
+<span class="fn">print</span>(<span class="kw">not</span> shopping_cart)    <span class="cm"># False — not empty</span>
+
+<span class="cm"># Combining all three: complex conditions</span>
+age = <span class="nm">25</span>
+is_member = <span class="kw">True</span>
+has_debt = <span class="kw">False</span>
+
+<span class="cm"># Eligible if: adult, member, AND no outstanding debt</span>
+eligible = age >= <span class="nm">18</span> <span class="kw">and</span> is_member <span class="kw">and</span> <span class="kw">not</span> has_debt
+<span class="fn">print</span>(<span class="st">f"Eligible: {eligible}"</span>)  <span class="cm"># True</span></pre>
+  </div>
+
+  <!-- TRUTH TABLE -->
+  <h3>Truth table — the full picture</h3>
+  <div class="table-wrap">
+    <table class="truth-table">
+      <thead><tr><th>A</th><th>B</th><th>A and B</th><th>A or B</th><th>not A</th></tr></thead>
+      <tbody>
+        <tr><td class="tt-true">True</td><td class="tt-true">True</td><td class="tt-true">True</td><td class="tt-true">True</td><td class="tt-false">False</td></tr>
+        <tr><td class="tt-true">True</td><td class="tt-false">False</td><td class="tt-false">False</td><td class="tt-true">True</td><td class="tt-false">False</td></tr>
+        <tr><td class="tt-false">False</td><td class="tt-true">True</td><td class="tt-false">False</td><td class="tt-true">True</td><td class="tt-true">True</td></tr>
+        <tr><td class="tt-false">False</td><td class="tt-false">False</td><td class="tt-false">False</td><td class="tt-false">False</td><td class="tt-true">True</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- S5: TRUTHY AND FALSY -->
+<section id="s5">
+  <h2><span class="section-num">05</span> Truthy and falsy values <span class="done-check" onclick="toggleDone(this)"><div class="done-check-box"><span class="done-check-trick">✓</span></div>Mark done</span></h2>
+
+  <p>Here's something Python does that surprises almost every beginner: values that are <em>not</em> booleans can still be evaluated as true or false in a boolean context. This is called <strong>truthiness</strong>. Some values behave like <code>True</code>, others like <code>False</code>.</p>
+
+  <div class="card explain-card">
+    <div class="card-header">💡 What makes something "falsy" in Python?</div>
+    <div class="card-body">
+      <p>Python's rule is: <strong>empty things and zero things are falsy.</strong> Everything else is truthy. Once you understand that one rule, you can predict the behaviour of any value.</p>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Value</th><th>Type</th><th>Truthy or Falsy?</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td><code>0</code></td><td>int</td><td class="tt-false">Falsy</td><td>Zero = nothing</td></tr>
+        <tr><td><code>0.0</code></td><td>float</td><td class="tt-false">Falsy</td><td>Zero = nothing</td></tr>
+        <tr><td><code>""</code></td><td>str</td><td class="tt-false">Falsy</td><td>Empty string</td></tr>
+        <tr><td><code>[]</code></td><td>list</td><td class="tt-false">Falsy</td><td>Empty list</td></tr>
+        <tr><td><code>{}</code></td><td>dict</td><td class="tt-false">Falsy</td><td>Empty dict</td></tr>
+        <tr><td><code>None</code></td><td>NoneType</td><td class="tt-false">Falsy</td><td>The "nothing" value</td></tr>
+        <tr><td><code>False</code></td><td>bool</td><td class="tt-false">Falsy</td><td>Literally False</td></tr>
+        <tr><td><code>1</code>, <code>-5</code>, <code>3.14</code></td><td>int/float</td><td class="tt-true">Truthy</td><td>Non-zero numbers</td></tr>
+        <tr><td><code>"hello"</code>, <code>"0"</code></td><td>str</td><td class="tt-true">Truthy</td><td>Non-empty strings</td></tr>
+        <tr><td><code>[1, 2]</code>, <code>[False]</code></td><td>list</td><td class="tt-true">Truthy</td><td>Non-empty (even if contents are falsy)</td></tr>
+        <tr><td><code>True</code></td><td>bool</td><td class="tt-true">Truthy</td><td>Literally True</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 Truthiness in practice</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># bool() converts any value to its boolean equivalent</span>
+<span class="fn">print</span>(<span class="bi">bool</span>(<span class="nm">0</span>))       <span class="cm"># False</span>
+<span class="fn">print</span>(<span class="bi">bool</span>(<span class="nm">1</span>))       <span class="cm"># True</span>
+<span class="fn">print</span>(<span class="bi">bool</span>(<span class="st">""</span>))      <span class="cm"># False</span>
+<span class="fn">print</span>(<span class="bi">bool</span>(<span class="st">"Hi"</span>))   <span class="cm"># True</span>
+<span class="fn">print</span>(<span class="bi">bool</span>([]))      <span class="cm"># False</span>
+<span class="fn">print</span>(<span class="bi">bool</span>([<span class="nm">0</span>]))    <span class="cm"># True — list has one item, even if that item is 0</span>
+<span class="fn">print</span>(<span class="bi">bool</span>(<span class="kw">None</span>))   <span class="cm"># False</span>
+
+<span class="cm"># Truthy/falsy is used everywhere. You can skip the == True check!</span>
+name = <span class="st">"Kofi"</span>
+
+<span class="cm"># VERBOSE — works but unnecessary</span>
+<span class="kw">if</span> name != <span class="st">""</span>:
+    <span class="fn">print</span>(<span class="st">"Name is set"</span>)
+
+<span class="cm"># PYTHONIC — same thing, cleaner</span>
+<span class="kw">if</span> name:
+    <span class="fn">print</span>(<span class="st">"Name is set"</span>)   <span class="cm"># This runs because "Kofi" is truthy</span>
+
+<span class="cm"># Check if a list has items</span>
+results = []
+<span class="kw">if</span> <span class="kw">not</span> results:
+    <span class="fn">print</span>(<span class="st">"No results found"</span>)   <span class="cm"># Runs because [] is falsy</span>
+
+results = [<span class="st">"item1"</span>, <span class="st">"item2"</span>]
+<span class="kw">if</span> results:
+    <span class="fn">print</span>(<span class="st">f"Found {len(results)} results"</span>)   <span class="cm"># Runs because list is non-empty</span></pre>
+  </div>
+
+  <div class="callout"><strong>Pythonic style:</strong> In Python, it's considered cleaner to write <code>if name:</code> instead of <code>if name != "":</code>, and <code>if not items:</code> instead of <code>if len(items) == 0:</code>. Python developers rely on truthiness constantly. Learn it now and your code will look professional immediately.</div>
+</section>
+
+<!-- S6: SHORT-CIRCUIT EVALUATION -->
+<section id="s6">
+  <h2><span class="section-num">06</span> Short-circuit evaluation <span class="done-check" onclick="toggleDone(this)"><div class="done-check-box"><span class="done-check-tick">✓</span></div>Mark done</span></h2>
+
+  <p>Python is lazy about evaluating logical expressions — in the best way. It stops as soon as it knows the answer. This is called <strong>short-circuit evaluation</strong> and it has practical implications you need to understand.</p>
+
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 How short-circuiting works</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># With 'and': if the FIRST condition is False, Python skips the second</span>
+<span class="cm"># It already knows the result can't be True</span>
+<span class="fn">print</span>(<span class="kw">False</span> <span class="kw">and</span> <span class="nm">1</span>/<span class="nm">0</span>)   <span class="cm"># False — 1/0 would crash, but it's never evaluated!</span>
+
+<span class="cm"># With 'or': if the FIRST condition is True, Python skips the second</span>
+<span class="cm"># It already knows the result must be True</span>
+<span class="fn">print</span>(<span class="kw">True</span> <span class="kw">or</span> <span class="nm">1</span>/<span class="nm">0</span>)    <span class="cm"># True — 1/0 is never evaluated</span>
+
+<span class="cm"># PRACTICAL USE 1: Safe division (avoid ZeroDivisionError)</span>
+denominator = <span class="nm">0</span>
+<span class="cm"># Check denominator is non-zero FIRST — if False, division never runs</span>
+result = denominator != <span class="nm">0</span> <span class="kw">and</span> <span class="nm">100</span> / denominator
+<span class="fn">print</span>(result)  <span class="cm"># False — safe, no error</span>
+
+denominator = <span class="nm">4</span>
+result = denominator != <span class="nm">0</span> <span class="kw">and</span> <span class="nm">100</span> / denominator
+<span class="fn">print</span>(result)  <span class="cm"># 25.0</span>
+
+<span class="cm"># PRACTICAL USE 2: Default values with 'or'</span>
+<span class="cm"># If the first value is falsy, 'or' returns the second value</span>
+user_name = <span class="st">""</span>
+display_name = user_name <span class="kw">or</span> <span class="st">"Guest"</span>
+<span class="fn">print</span>(display_name)  <span class="cm"># Guest — user_name is empty (falsy), so or returns "Guest"</span>
+
+user_name = <span class="st">"Amara"</span>
+display_name = user_name <span class="kw">or</span> <span class="st">"Guest"</span>
+<span class="fn">print</span>(display_name)  <span class="cm"># Amara — user_name is truthy, or returns it directly</span></pre>
+  </div>
+
+  <div class="card explain-card">
+    <div class="card-header">💡 and and or don't just return True/False — they return values</div>
+    <div class="card-body">
+      <p>This is a deeper nuance: Python's <code>and</code> and <code>or</code> return one of the actual operands, not necessarily a <code>bool</code>.</p>
+      <ul>
+        <li><code>and</code> returns the <strong>first falsy operand</strong>, or the <strong>last value</strong> if all are truthy.</li>
+        <li><code>or</code> returns the <strong>first truthy operand</strong>, or the <strong>last value</strong> if all are falsy.</li>
+      </ul>
+      <p>This is why <code>user_name or "Guest"</code> works — if <code>user_name</code> is empty (falsy), <code>or</code> returns <code>"Guest"</code>. This pattern is very common in Python for providing default values.</p>
+    </div>
+  </div>
+
+  <div class="win-box">You now understand the entire boolean system: how to create True/False values, how comparisons produce them, how to combine them with and/or/not, what makes any value truthy or falsy, and how Python evaluates logical expressions efficiently. This is the foundation of every if statement, loop condition, and filter operation you'll ever write.</div>
+</section>
+
+<!-- S7: CHALLENGE -->
+<section id="s7">
+  <h2><span class="section-num">07</span> Mini challenge <span class="done-check" onclick="toggleDone(this)"><div class="done-check-box"><span class="done-check-tick">✓</span></div>Mark done</span></h2>
+
+  <div class="challenge">
+    <div class="challenge-header" onclick="toggleChallenge(this)">🎯 Challenge — Access Control System</div>
+    <div class="challenge-body">
+      <p class="challenge-q">Build a multi-condition access control checker without using if statements — just boolean expressions.</p>
+      <p>
+        Given these variables:<br>
+        <code>age = 21</code>, <code>is_member = True</code>, <code>has_paid = False</code>, <code>is_staff = False</code>, <code>attempts = 3</code><br><br>
+        1. <code>can_enter_basic</code>: age is 18+<br>
+        2. <code>can_enter_paid</code>: is_member AND has_paid AND age is 18+<br>
+        3. <code>can_enter_vip</code>: is_staff OR (is_member AND has_paid AND age is 21+)<br>
+        4. <code>is_locked_out</code>: attempts >= 5<br>
+        5. <code>has_default_name</code>: use <code>user_name = ""</code> and the <code>or</code> trick to set display name to "Visitor"<br>
+        6. Print each result with a descriptive label
+      </p>
+      <button class="answer-toggle" onclick="toggleAnswer(this)">Show answer</button>
+      <div class="answer-box">
+        <div class="code-block" style="margin:.4rem 0 .6rem;">
+          <div class="code-label script"><span>🟡 Solution</span></div>
+          <pre>
+age = <span class="nm">21</span>
+is_member = <span class="kw">True</span>
+has_paid = <span class="kw">False</span>
+is_staff = <span class="kw">False</span>
+attempts = <span class="nm">3</span>
+user_name = <span class="st">""</span>
+
+can_enter_basic = age >= <span class="nm">18</span>
+can_enter_paid  = is_member <span class="kw">and</span> has_paid <span class="kw">and</span> age >= <span class="nm">18</span>
+can_enter_vip   = is_staff <span class="kw">or</span> (is_member <span class="kw">and</span> has_paid <span class="kw">and</span> age >= <span class="nm">21</span>)
+is_locked_out   = attempts >= <span class="nm">5</span>
+display_name    = user_name <span class="kw">or</span> <span class="st">"Visitor"</span>
+
+<span class="fn">print</span>(<span class="st">f"Display name:        {display_name}"</span>)
+<span class="fn">print</span>(<span class="st">f"Can enter (basic):   {can_enter_basic}"</span>)
+<span class="fn">print</span>(<span class="st">f"Can enter (paid):    {can_enter_paid}"</span>)
+<span class="fn">print</span>(<span class="st">f"Can enter (VIP):     {can_enter_vip}"</span>)
+<span class="fn">print</span>(<span class="st">f"Locked out:          {is_locked_out}"</span>)</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S8: TASKS -->
+<section id="s8">
+  <h2><span class="section-num">08</span> Practice tasks <span class="done-check" onclick="toggleDone(this)"><div class="done-check-box"><span class="done-check-tick">✓</span></div>Mark done</span></h2>
+
+  <div class="task-box">
+    <div class="task-num">Task 01 — Easy</div>
+    <p>Without running the code, predict the output of each line. Then run and verify:<br>
+    <code>print(True and True)</code> / <code>print(True and False)</code> / <code>print(False or True)</code> / <code>print(not False)</code> / <code>print(bool(0))</code> / <code>print(bool("hello"))</code></p>
+  </div>
+
+  <div class="task-box">
+    <div class="task-num">Task 02 — Easy</div>
+    <p>Write a boolean expression (no if statement) that checks: a <code>score</code> variable is between 70 and 89 inclusive. Store it in <code>is_grade_b</code>. Use a chained comparison. Test with scores 75, 90, and 70.</p>
+  </div>
+
+  <div class="task-box">
+    <div class="task-num">Task 03 — Medium</div>
+    <p>Given <code>cart = []</code> and <code>discount_code = "SAVE10"</code>: use truthiness (not <code>len()</code>, not <code>== ""</code>) to determine: <code>cart_has_items</code> (bool) and <code>has_discount</code> (bool). Print both.</p>
+  </div>
+
+  <div class="task-box">
+    <div class="task-num">Task 04 — Medium</div>
+    <p>Using boolean arithmetic (True = 1, False = 0): given 5 eligibility conditions stored as booleans, calculate what percentage of conditions the user meets. Print: <code>"User meets 3 of 5 conditions (60%)"</code>.</p>
+  </div>
+
+  <div class="task-box">
+    <div class="task-num">Task 05 — Challenge</div>
+    <p>Loan eligibility checker — no if statements, pure boolean expressions:<br>
+    <code>age = 28</code>, <code>monthly_income = 45000</code>, <code>credit_score = 680</code>, <code>existing_loans = 1</code>, <code>is_employed = True</code><br>
+    Conditions: age 21–60, income ≥ 30,000, credit score ≥ 650, existing loans ≤ 2, employed. Print each condition and a final <code>loan_approved</code> that requires ALL conditions to be True.</p>
+  </div>
+
+  <div class="task-box">
+    <div class="task-num">Task 06 — Challenge</div>
+    <p>Use the <code>or</code> default-value pattern to build a safe profile display. Given potentially empty variables: <code>first_name = ""</code>, <code>last_name = "Osei"</code>, <code>city = ""</code>, <code>occupation = ""</code>. Use <code>or</code> to set defaults ("Unknown", "Accra", "Not specified"). Print a full profile using f-strings.</p>
+  </div>
+</section>
+
+</main>
+
+<div class="page-nav">
+  <a href="03-numbers-and-operators.html" class="nav-btn"><span class="nav-sub">Previous</span>← 1.3 Numbers &amp; Operators</a>
+  <a href="05-getting-input.html" class="nav-btn next"><span class="nav-sub">Next lesson</span>1.5 Getting Input →</a>
+</div>
+
+<footer>
+  <strong>MLlabswithMel</strong> &mdash; Hands-on data &amp; AI education<br>
+  <span style="font-size:.8rem;margin-top:.3rem;display:block;color:var(--faint)">Phase 1 / Lesson 1.4: Booleans and Comparisons</span>
+</footer>
+
+<script>
+window.addEventListener('scroll',function(){var pct=window.scrollY/(document.documentElement.scrollHeight-window.innerHeight);document.getElementById('scroll-bar').style.transform='scaleX('+Math.min(pct,1)+')';},{passive:true});
+document.querySelectorAll('.card-header').forEach(function(h){h.addEventListener('click',function(){h.closest('.card').classList.toggle('open');});});
+function toggleChallenge(h){h.closest('.challenge').classList.toggle('open');}
+function toggleAnswer(btn){var box=btn.nextElementSibling;box.classList.toggle('show');btn.textContent=box.classList.contains('show')?'Hide answer':'Show answer';}
+function toggleDone(el){el.classList.toggle('checked');updateProgress();}
+function copyCode(btn){var pre=btn.closest('.code-block').querySelector('pre');navigator.clipboard.writeText(pre?pre.innerText:'').then(function(){btn.textContent='Copied!';btn.classList.add('copied');setTimeout(function(){btn.textContent='Copy';btn.classList.remove('copied');},2000);}).catch(function(){btn.textContent='Failed';setTimeout(function(){btn.textContent='Copy';},1500);});}
+function chipClick(chip,id){chip.classList.toggle('done');updateProgress();if(chip.classList.contains('done')){var el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth'});}}
+function updateProgress(){var total=document.querySelectorAll('.chip').length;var done=Math.max(document.querySelectorAll('.chip.done').length,document.querySelectorAll('.done-check.checked').length);document.getElementById('prog-fill').style.width=Math.round(done/total*100)+'%';document.getElementById('prog-text').textContent=done+' of '+total+' sections done';}
+var sections=document.querySelectorAll('main section[id]');var tocLinks=document.querySelectorAll('#toc-list a');
+function updateToc(){var y=window.scrollY+130,cur='';sections.forEach(function(s){if(s.offsetTop<=y)cur=s.id;});tocLinks.forEach(function(a){a.classList.toggle('toc-active',a.getAttribute('href')==='#'+cur);});}
+window.addEventListener('scroll',updateToc,{passive:true});updateToc();
+</script>
+</body>
+</html>

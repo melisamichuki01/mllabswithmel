@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.1 Variables & Data Types | MLlabswithMel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#faf9ff;--surface:#f3f0ff;--surface-2:#ede9ff;
+  --purple:#7f77dd;--purple-dk:#534ab7;--purple-lt:#e8e5ff;
+  --teal:#1d9e75;--teal-lt:#d4f0e6;
+  --coral:#d85a30;--coral-lt:#faecea;
+  --amber:#ba7517;--amber-lt:#fef3dc;
+  --text:#1a1633;--muted:#6b5fa8;--faint:#9b94cc;
+  --code-bg:#ede9ff;
+  --border:#c4bde8;--border-lt:#e2defc;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:1.05rem;line-height:1.8;}
+@keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.scroll-glow{position:fixed;top:0;left:0;width:100%;height:4px;z-index:1000;background:linear-gradient(90deg,#7f77dd,#534ab7,#9b8ff0,#7f77dd);background-size:300% 300%;animation:gradientShift 4s ease infinite;transform-origin:left;transform:scaleX(0);}
+.site-header{background:linear-gradient(135deg,var(--surface) 0%,#eceaff 60%,var(--surface) 100%);background-size:200% 200%;animation:gradientShift 8s ease infinite;border-bottom:2px solid var(--purple);padding:2rem 1.5rem 1.8rem;text-align:center;}
+.brand{font-size:.78rem;font-weight:700;color:var(--purple-dk);letter-spacing:.12em;text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin-bottom:.4rem;}
+.breadcrumb{font-size:.78rem;color:var(--faint);margin-bottom:.7rem;font-family:'JetBrains Mono',monospace;}
+.breadcrumb a{color:var(--purple);text-decoration:none;}
+.lesson-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;background:var(--purple);color:#fff;padding:.15rem .7rem;border-radius:999px;margin-bottom:.6rem;display:inline-block;}
+.site-header h1{font-size:clamp(1.7rem,4vw,2.6rem);font-weight:700;line-height:1.2;color:var(--text);margin-bottom:.5rem;}
+.site-header h1 em{color:var(--purple);font-style:normal;}
+.site-header .subtitle{color:var(--muted);font-size:.97rem;max-width:580px;margin:0 auto .8rem;}
+.tag-row{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;margin-top:.7rem;}
+.tag{background:var(--purple-lt);color:var(--purple-dk);font-size:.7rem;font-weight:600;padding:.18rem .65rem;border-radius:999px;font-family:'JetBrains Mono',monospace;}
+.tag.teal{background:var(--teal-lt);color:#0a4a30;}
+.tag.amber{background:var(--amber-lt);color:#6b3a00;}
+.lesson-strip{max-width:960px;margin:1.2rem auto 0;padding:0 1.5rem;}
+.lesson-strip-inner{display:flex;gap:.5rem;overflow-x:auto;padding-bottom:.3rem;}
+.ls-item{display:flex;align-items:center;gap:.4rem;background:var(--surface);border:1.5px solid var(--border-lt);border-radius:8px;padding:.4rem .85rem;text-decoration:none;font-size:.78rem;font-weight:600;color:var(--muted);white-space:nowrap;transition:all .15s;flex-shrink:0;}
+.ls-item:hover{border-color:var(--purple);color:var(--purple-dk);}
+.ls-item.active{background:var(--purple);border-color:var(--purple);color:#fff;}
+.ls-num{font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;}
+.progress-section{max-width:960px;margin:1.2rem auto 0;padding:0 1.5rem;}
+.progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;font-size:.83rem;color:var(--muted);font-weight:600;}
+.progress-track{height:7px;background:var(--surface-2);border-radius:999px;overflow:hidden;margin-bottom:1rem;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--purple),#9b8ff0);border-radius:999px;transition:width .4s ease;width:0%;}
+.topic-chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:.45rem;}
+.chip{display:flex;align-items:center;gap:.45rem;background:var(--surface);border:1.5px solid var(--border-lt);border-radius:7px;padding:.4rem .75rem;cursor:pointer;font-size:.78rem;font-weight:600;color:var(--muted);transition:all .15s;user-select:none;}
+.chip.done{border-color:var(--teal);background:var(--teal-lt);color:#0a4a30;}
+.chip-box{width:13px;height:13px;min-width:13px;border:1.5px solid var(--border);border-radius:3px;display:flex;align-items:center;justify-content:center;}
+.chip.done .chip-box{background:var(--teal);border-color:var(--teal);}
+.chip-tick{display:none;color:#fff;font-size:8px;font-weight:800;}
+.chip.done .chip-tick{display:block;}
+.toc{background:var(--surface);border:1.5px solid var(--border-lt);border-radius:12px;padding:1.3rem 1.5rem;margin:1.2rem auto;max-width:960px;}
+.toc h3{font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin-bottom:.7rem;}
+.toc ol{padding-left:1.2rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.3rem;}
+.toc ol li a{color:var(--purple-dk);text-decoration:none;font-size:.85rem;font-weight:500;}
+.toc ol li a:hover,.toc ol li a.toc-active{color:var(--purple);font-weight:700;}
+main{max-width:960px;margin:0 auto;padding:0 1.5rem 5rem;}
+section{margin-bottom:4rem;scroll-margin-top:2rem;}
+section h2{font-size:clamp(1.2rem,3vw,1.65rem);font-weight:700;color:var(--text);margin-bottom:1.2rem;padding-bottom:.6rem;border-bottom:2px solid var(--border-lt);display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;}
+.section-num{display:inline-flex;align-items:center;justify-content:center;background:var(--purple);color:#fff;font-size:.67rem;font-weight:700;width:24px;height:24px;border-radius:50%;flex-shrink:0;}
+.done-check{margin-left:auto;display:flex;align-items:center;gap:.4rem;font-size:.74rem;font-weight:600;color:var(--faint);cursor:pointer;user-select:none;}
+.done-check:hover,.done-check.checked{color:var(--teal);}
+.done-check-box{width:15px;height:15px;border:1.5px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;}
+.done-check.checked .done-check-box{background:var(--teal);border-color:var(--teal);}
+.done-check-tick{display:none;color:#fff;font-size:9px;font-weight:800;}
+.done-check.checked .done-check-tick{display:block;}
+section h3{font-size:1.05rem;font-weight:700;color:var(--purple-dk);margin:2rem 0 .6rem;}
+section p{margin-bottom:1rem;color:var(--muted);}
+section p strong{color:var(--text);}
+section ul,section ol.content-list{padding-left:1.4rem;margin-bottom:1rem;color:var(--muted);}
+section li{margin-bottom:.5rem;}
+section li strong{color:var(--text);}
+.card{border-radius:12px;margin:1.5rem 0;overflow:hidden;border-left:4px solid transparent;}
+.card-header{padding:.75rem 1.2rem;font-size:.9rem;font-weight:700;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;gap:.5rem;}
+.card-header::after{content:'▼';font-size:.58rem;transition:transform .2s;flex-shrink:0;}
+.card.open .card-header::after{transform:rotate(180deg);}
+.card-body{padding:1rem 1.2rem 1.2rem;display:none;font-size:.94rem;color:var(--muted);}
+.card.open .card-body{display:block;}
+.card-body p{margin-bottom:.7rem;}.card-body p:last-child{margin-bottom:0;}
+.card-body strong{color:var(--text);}
+.card-body ul{padding-left:1.2rem;}.card-body li{margin-bottom:.35rem;}
+.card-body code{background:var(--surface-2);padding:.08rem .35rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--purple-dk);}
+.slowdown-card{background:var(--coral-lt);border-color:var(--coral);}
+.slowdown-card .card-header{background:#f8dcd5;color:#8b2e10;}
+.explain-card{background:var(--purple-lt);border-color:var(--purple);}
+.explain-card .card-header{background:#ddd9f8;color:var(--purple-dk);}
+.analogy-card{background:var(--teal-lt);border-color:var(--teal);}
+.analogy-card .card-header{background:#c0e8d8;color:#0a4a30;}
+.challenge{background:var(--amber-lt);border:1.5px solid #f0c060;border-radius:12px;margin:1.8rem 0;overflow:hidden;}
+.challenge-header{background:#fde8a0;padding:.7rem 1.2rem;font-size:.88rem;font-weight:700;color:#6b3a00;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;}
+.challenge-header::after{content:'▼';font-size:.58rem;transition:transform .2s;}
+.challenge.open .challenge-header::after{transform:rotate(180deg);}
+.challenge-body{padding:1rem 1.2rem 1.2rem;display:none;font-size:.93rem;color:var(--muted);}
+.challenge.open .challenge-body{display:block;}
+.challenge-body p{margin-bottom:.7rem;}
+.challenge-q{font-weight:700;color:#6b3a00;margin-bottom:.6rem;font-size:.95rem;}
+.answer-toggle{background:none;border:1.5px solid #d4a020;border-radius:6px;padding:.3rem .9rem;font-size:.78rem;font-weight:700;color:#8b5a00;cursor:pointer;margin-top:.4rem;font-family:'Plus Jakarta Sans',sans-serif;transition:background .15s;}
+.answer-toggle:hover{background:#fde8a0;}
+.answer-box{background:#fff8e0;border-radius:8px;padding:.85rem 1rem;margin-top:.6rem;display:none;border:1px solid #f0c060;color:var(--muted);}
+.answer-box.show{display:block;}
+.answer-box p{margin-bottom:.5rem;}.answer-box p:last-child{margin-bottom:0;}
+.code-block{background:var(--code-bg);border-radius:12px;margin:1.2rem 0;overflow:hidden;border:1.5px solid var(--border-lt);}
+.code-label{display:flex;align-items:center;justify-content:space-between;padding:.45rem 1rem;font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:500;border-bottom:1px solid var(--border-lt);}
+.code-label.script{background:var(--amber-lt);color:#6b3a00;}
+.code-label.output{background:var(--surface-2);color:var(--muted);}
+.copy-btn{background:none;border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-size:.68rem;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s;}
+.copy-btn:hover{background:var(--purple);color:#fff;border-color:var(--purple);}
+.copy-btn.copied{background:var(--teal);color:#fff;border-color:var(--teal);}
+pre{padding:1rem 1.2rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:1.65;color:var(--text);}
+code{font-family:'JetBrains Mono',monospace;}
+.cm{color:#7a8a99;font-style:italic;}
+.kw{color:var(--purple-dk);font-weight:600;}
+.st{color:var(--teal);}
+.fn{color:var(--amber);}
+.nm{color:var(--coral);}
+.bi{color:#0a4a30;font-weight:600;}
+.illustration{background:var(--surface);border:1.5px solid var(--border-lt);border-radius:14px;padding:1.5rem;margin:1.5rem 0;text-align:center;}
+.illus-title{font-size:.73rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--faint);margin-bottom:1rem;}
+.var-diagram{display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;margin:1rem 0;}
+.var-box{background:#fff;border:2px solid var(--purple);border-radius:10px;padding:.8rem 1.2rem;text-align:center;min-width:120px;}
+.var-box .var-label{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;background:var(--purple-lt);color:var(--purple-dk);padding:.1rem .5rem;border-radius:4px;display:inline-block;margin-bottom:.4rem;}
+.var-box .var-name{font-family:'JetBrains Mono',monospace;font-size:1.05rem;font-weight:700;color:var(--text);margin-bottom:.2rem;}
+.var-box .var-val{font-family:'JetBrains Mono',monospace;font-size:.92rem;color:var(--purple);}
+.var-box.str-type{border-color:var(--teal);}
+.var-box.str-type .var-label{background:var(--teal-lt);color:#0a4a30;}
+.var-box.int-type{border-color:var(--coral);}
+.var-box.int-type .var-label{background:var(--coral-lt);color:#8b2e10;}
+.var-box.float-type{border-color:var(--amber);}
+.var-box.float-type .var-label{background:var(--amber-lt);color:#6b3a00;}
+.var-box.bool-type{border-color:var(--purple-dk);}
+.var-box.bool-type .var-label{background:var(--purple-lt);color:var(--purple-dk);}
+.dt-table{width:100%;border-collapse:separate;border-spacing:0;border-radius:10px;overflow:hidden;border:1.5px solid var(--border-lt);margin:1.2rem 0;}
+.dt-table th{background:var(--purple);color:#fff;padding:.65rem 1rem;font-size:.82rem;font-weight:700;text-align:left;}
+.dt-table td{padding:.65rem 1rem;font-size:.88rem;border-top:1px solid var(--border-lt);}
+.dt-table tr:nth-child(even) td{background:var(--surface);}
+.dt-table td code{background:var(--surface-2);padding:.08rem .35rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--purple-dk);}
+.type-badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;padding:.12rem .55rem;border-radius:5px;}
+.type-badge.str{background:var(--teal-lt);color:#0a4a30;}
+.type-badge.int{background:var(--coral-lt);color:#8b2e10;}
+.type-badge.float{background:var(--amber-lt);color:#6b3a00;}
+.type-badge.bool{background:var(--purple-lt);color:var(--purple-dk);}
+.rules-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.2rem 0;}
+.rule-card{border-radius:10px;padding:1rem 1.1rem;}
+.rule-card.ok{background:#d4f0e6;border:1.5px solid var(--teal);}
+.rule-card.no{background:#faecea;border:1.5px solid var(--coral);}
+.rule-card h4{font-size:.82rem;font-weight:700;margin-bottom:.5rem;}
+.rule-card.ok h4{color:#0a4a30;}
+.rule-card.no h4{color:#8b2e10;}
+.rule-card ul{padding-left:1rem;font-size:.83rem;color:var(--text);}
+.rule-card li{margin-bottom:.3rem;}
+.win-box{background:linear-gradient(135deg,#d4f0e6,#c0e8d8);border:2px solid var(--teal);border-radius:14px;padding:1.5rem 1.8rem;margin:2rem 0;text-align:center;}
+.win-box h3{font-size:1.25rem;color:#0a4a30;margin-bottom:.5rem;}
+.win-box p{color:#1a5e3a;font-size:.93rem;margin-bottom:0;}
+.practice-tasks{background:var(--surface);border:1.5px solid var(--border-lt);border-radius:14px;padding:1.5rem 1.8rem;margin:2rem 0;}
+.practice-tasks h3{font-size:1rem;font-weight:700;color:var(--purple-dk);margin-bottom:1rem;}
+.task-list{list-style:none;padding:0;}
+.task-list li{display:flex;align-items:flex-start;gap:.75rem;padding:.6rem 0;border-bottom:1px solid var(--border-lt);font-size:.92rem;color:var(--muted);}
+.task-list li:last-child{border-bottom:none;}
+.task-num{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;background:var(--purple);color:#fff;width:22px;height:22px;min-width:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:.15rem;}
+.page-nav{display:flex;justify-content:space-between;gap:1rem;margin-top:3rem;padding-top:2rem;border-top:1.5px solid var(--border-lt);}
+.page-nav a{display:flex;align-items:center;gap:.5rem;text-decoration:none;font-size:.85rem;font-weight:700;color:var(--purple-dk);background:var(--surface);border:1.5px solid var(--border-lt);border-radius:10px;padding:.6rem 1.1rem;transition:all .15s;}
+.page-nav a:hover{border-color:var(--purple);background:var(--purple-lt);}
+footer{text-align:center;padding:2rem 1rem;font-size:.8rem;color:var(--faint);border-top:1px solid var(--border-lt);}
+footer strong{color:var(--purple);}
+.callout{display:flex;gap:.75rem;background:var(--purple-lt);border-left:4px solid var(--purple);border-radius:0 10px 10px 0;padding:1rem 1.2rem;margin:1.2rem 0;font-size:.9rem;color:var(--muted);}
+.callout-icon{font-size:1.1rem;flex-shrink:0;margin-top:.1rem;}
+.callout p{margin-bottom:.4rem;}.callout p:last-child{margin-bottom:0;}
+.callout.teal{background:var(--teal-lt);border-color:var(--teal);}
+.callout.coral{background:var(--coral-lt);border-color:var(--coral);}
+.callout.amber{background:var(--amber-lt);border-color:var(--amber);}
+.convert-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem;margin:1rem 0;}
+.convert-card{background:var(--surface);border:1.5px solid var(--border-lt);border-radius:10px;padding:.85rem 1rem;font-size:.86rem;}
+.convert-card .from-to{font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:700;color:var(--purple-dk);margin-bottom:.3rem;}
+.convert-card .example{color:var(--muted);}
+.convert-card code{background:var(--surface-2);padding:.05rem .3rem;border-radius:3px;font-size:.78rem;color:var(--purple-dk);}
+.recap-section{background:var(--surface);border:1.5px solid var(--border-lt);border-radius:16px;padding:2rem;margin-bottom:3rem;scroll-margin-top:2rem;}
+@media(max-width:600px){
+  .rules-grid{grid-template-columns:1fr;}
+  .toc ol{grid-template-columns:1fr;}
+  .page-nav{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<div class="scroll-glow" id="scrollGlow"></div>
+
+<header class="site-header">
+  <div class="brand">MLlabswithMel</div>
+  <div class="breadcrumb">
+    <a href="../../index.html">Home</a> &rsaquo; <a href="../phase1.html">Phase 1: Python Basics</a> &rsaquo; Lesson 1.1
+  </div>
+  <div class="lesson-label">Lesson 1.1</div>
+  <h1>Variables &amp; <em>Data Types</em></h1>
+  <p class="subtitle">Everything in Python lives somewhere. Here's how to create a home for your data — and what types of data Python actually understands.</p>
+  <div class="tag-row">
+    <span class="tag">variables</span>
+    <span class="tag">str</span>
+    <span class="tag teal">int</span>
+    <span class="tag teal">float</span>
+    <span class="tag amber">bool</span>
+    <span class="tag">type()</span>
+    <span class="tag">type conversion</span>
+    <span class="tag">print()</span>
+    <span class="tag">f-strings</span>
+  </div>
+</header>
+
+<div class="lesson-strip">
+  <div class="lesson-strip-inner">
+    <a href="01-variables-and-data-types.html" class="ls-item active"><span class="ls-num">1.1</span> Variables &amp; Data Types</a>
+    <a href="02-strings-in-depth.html" class="ls-item"><span class="ls-num">1.2</span> Strings In Depth</a>
+    <a href="03-numbers-and-operators.html" class="ls-item"><span class="ls-num">1.3</span> Numbers &amp; Operators</a>
+    <a href="04-booleans-and-comparisons.html" class="ls-item"><span class="ls-num">1.4</span> Booleans &amp; Comparisons</a>
+    <a href="05-getting-input.html" class="ls-item"><span class="ls-num">1.5</span> Getting Input</a>
+  </div>
+</div>
+
+<div class="progress-section">
+  <div class="progress-header">
+    <span>Your progress — Lesson 1.1</span>
+    <span id="progressLabel">0 / 8 sections done</span>
+  </div>
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="topic-chips" id="chipContainer">
+    <div class="chip" data-sec="s1"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>What is a Variable?</div>
+    <div class="chip" data-sec="s2"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>The 4 Core Types</div>
+    <div class="chip" data-sec="s3"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>Naming Rules</div>
+    <div class="chip" data-sec="s4"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>Reassigning Variables</div>
+    <div class="chip" data-sec="s5"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>Checking Types</div>
+    <div class="chip" data-sec="s6"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>Type Conversion</div>
+    <div class="chip" data-sec="s7"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>print() Mastery</div>
+    <div class="chip" data-sec="s8"><div class="chip-box"><span class="chip-tick">&#10003;</span></div>Practice Tasks</div>
+  </div>
+</div>
+
+<nav class="toc" aria-label="Table of contents">
+  <h3>&#128214; In this lesson</h3>
+  <ol id="tocList">
+    <li><a href="#s1">What is a Variable?</a></li>
+    <li><a href="#s2">The 4 Core Data Types</a></li>
+    <li><a href="#s3">Naming Rules</a></li>
+    <li><a href="#s4">Reassigning Variables</a></li>
+    <li><a href="#s5">Checking the Type</a></li>
+    <li><a href="#s6">Type Conversion</a></li>
+    <li><a href="#s7">print() Mastery</a></li>
+    <li><a href="#s8">Practice Tasks</a></li>
+  </ol>
+</nav>
+
+<main>
+
+<!-- SECTION 1 -->
+<section id="s1">
+  <h2>
+    <span class="section-num">1</span>
+    What is a Variable?
+    <span class="done-check" data-sec="s1"><div class="done-check-box"><span class="done-check-tick">&#10003;</span></div> done</span>
+  </h2>
+
+  <p>Before we look at any code, let's understand what a variable actually <em>is</em> — because the word sounds more complicated than the idea.</p>
+
+  <div class="card analogy-card open">
+    <div class="card-header">&#128260; In plain life terms...</div>
+    <div class="card-body">
+      <p>Imagine you're cooking ugali. You have different containers in your kitchen — one for unga, one for salt, one for water. Each container has a label, and inside it is some specific thing.</p>
+      <p>A <strong>variable</strong> in Python works exactly the same way. The <strong>label</strong> is the variable name. The <strong>contents</strong> is the value you're storing. When you say <code>name = "Wanjiku"</code>, you're creating a container called <code>name</code> and putting the value <code>"Wanjiku"</code> inside it. From that point on, every time you say <code>name</code> in your code, Python goes and fetches <code>"Wanjiku"</code> for you.</p>
+    </div>
+  </div>
+
+  <p>Here's how you create a variable in Python. The pattern is always the same:</p>
+
+  <div class="code-block">
+    <div class="code-label script">&#128257; Python Script<button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="cm"># The pattern: variable_name = value</span>
+<span class="cm"># The = sign means "store this value here"</span>
+
+name <span class="kw">=</span> <span class="st">"Wanjiku"</span>       <span class="cm"># A container called "name" holding the text "Wanjiku"</span>
+age <span class="kw">=</span> <span class="nm">24</span>              <span class="cm"># A container called "age" holding the number 24</span>
+height <span class="kw">=</span> <span class="nm">1.65</span>         <span class="cm"># A container called "height" holding a decimal number</span>
+is_student <span class="kw">=</span> <span class="bi">True</span>    <span class="cm"># A container called "is_student" holding True or False</span></pre>
+  </div>
+
+  <div class="card slowdown-card">
+    <div class="card-header">&#128680; Wait — the = sign doesn't mean "equals" here!</div>
+    <div class="card-body">
+      <p>This is one of the most confusing things for beginners. In Python, <code>=</code> is the <strong>assignment operator</strong> — it means "put the thing on the right into the container on the left."</p>
+      <p>It is <strong>not</strong> asking "are these two things equal?" That's a completely different thing (<code>==</code> — two equals signs). We'll get to that in Lesson 1.4.</p>
+      <p>So when you see <code>age = 24</code>, read it in your head as: <em>"age gets the value 24"</em> — not "age equals 24."</p>
+    </div>
+  </div>
+
+  <div class="illustration">
+    <div class="illus-title">&#128230; Your variables as labelled containers</div>
+    <div class="var-diagram">
+      <div class="var-box str-type">
+        <div class="var-label">str</div>
+        <div class="var-name">name</div>
+        <div class="var-val">"Wanjiku"</div>
+      </div>
+      <div class="var-box int-type">
+        <div class="var-label">int</div>
+        <div class="var-name">age</div>
+        <div class="var-val">24</div>
+      </div>
+      <div class="var-box float-type">
+        <div class="var-label">float</div>
+        <div class="var-name">height</div>
+        <div class="var-val">1.65</div>
+      </div>
+      <div class="var-box bool-type">
+        <div class="var-label">bool</div>
+        <div class="var-name">is_student</div>
+        <div class="var-val">True</div>
+      </div>
+    </div>
+    <p style="font-size:.8rem;color:var(--faint);margin-top:.5rem;">Each variable has a name, a type, and a value. Python tracks all three automatically.</p>
+  </div>
+
+  <p>Notice that we never had to tell Python <em>what kind</em> of container to use. Python looked at the value and figured it out on its own. That's called <strong>dynamic typing</strong> — it's one of the things that makes Python beginner-friendly.</p>
+
+  <div class="card explain-card">
+    <div class="card-header">&#128161; What does "dynamic typing" actually mean?</div>
+    <div class="card-body">
+      <p>In some programming languages (like Java or C++), you have to declare the type of a variable before you use it. You'd write something like: <code>String name = "Wanjiku";</code> — specifying upfront that this container holds text only.</p>
+      <p>Python doesn't need that. You just write <code>name = "Wanjiku"</code> and Python says "I see quotes around this, so this must be text. Got it." Python reads the value and assigns the type automatically.</p>
+      <p>This means Python is flexible — but it also means you need to be aware of what type your variables are, because Python will behave differently depending on the type. We'll see exactly why that matters later in this lesson.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 2 -->
+<section id="s2">
+  <h2>
+    <span class="section-num">2</span>
+    The 4 Core Data Types
+    <span class="done-check" data-sec="s2"><div class="done-check-box"><span class="done-check-tick">&#10003;</span></div> done</span>
+  </h2>
+
+  <p>Python knows about many different kinds of data. But at this stage, there are four that you'll use constantly. Learn these four and you can handle the vast majority of beginner problems.</p>
+
+  <table class="dt-table">
+    <tr>
+      <th>Type</th><th>Full Name</th><th>What it stores</th><th>Example</th>
+    </tr>
+    <tr>
+      <td><span class="type-badge str">str</span></td>
+      <td>String</td>
+      <td>Text — anything in quotes</td>
+      <td><code>"Nairobi"</code>, <code>'hello'</code></td>
+    </tr>
+    <tr>
+      <td><span class="type-badge int">int</span></td>
+      <td>Integer</td>
+      <td>Whole numbers, no decimal</td>
+      <td><code>5</code>, <code>-3</code>, <code>1000</code></td>
+    </tr>
+    <tr>
+      <td><span class="type-badge float">float</span></td>
+      <td>Float</td>
+      <td>Decimal numbers</td>
+      <td><code>3.14</code>, <code>99.9</code>, <code>-0.5</code></td>
+    </tr>
+    <tr>
+      <td><span class="type-badge bool">bool</span></td>
+      <td>Boolean</td>
+      <td>Only True or False</td>
+      <td><code>True</code>, <code>False</code></td>
+    </tr>
+  </table>
+
+  <h3>&#127991;&#65039; Strings (str)</h3>
+  <p>A <strong>string</strong> is any piece of text. The defining feature is the quotes around it. You can use single quotes or double quotes — Python treats them the same way.</p>
+
+  <div class="code-block">
+    <div class="code-label script">&#128257; Python Script<button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="cm"># All of these are strings — notice the quotes</span>
+city <span class="kw">=</span> <span class="st">"Nairobi"</span>
+greeting <span class="kw">=</span> <span class="st">'Mambo vipi!'</span>
+sentence <span class="kw">=</span> <span class="st">"She scored 98% in the exam"</span>
+empty_string <span class="kw">=</span> <span class="st">""</span>        <span class="cm"># An empty string — still a string!</span>
+
+<span class="cm"># Triple quotes for multi-line text</span>
+message <span class="kw">=</span> <span class="st">"""This is a message
+that spans multiple
+lines."""</span></pre>
+  </div>
+
+  <div class="card slowdown-card">
+    <div class="card-header">&#128680; "42" is NOT the same as 42 — this trips everyone up</div>
+    <div class="card-body">
+      <p>Look at these two things side by side:</p>
+      <ul>
+        <li><code>"42"</code> — this is a <strong>string</strong>. It's text that happens to look like a number. Python sees the quotes and treats it like letters.</li>
+        <li><code>42</code> — this is an <strong>integer</strong>. It's an actual number. You can do maths with it.</li>
+      </ul>
+      <p>Why does this matter? Because if you try to add <code>"42" + 8</code>, Python will throw an error. You can't do maths with text. We'll learn how to convert between types later in this lesson.</p>
+    </div>
+  </div>
+
+  <h3>&#128290; Integers (int)</h3>
+  <p>An <strong>integer</strong> is a whole number — positive, negative, or zero. No decimal point.</p>
+
+  <div class="code-block">
+    <div class="code-label script">&#128257; Python Script<button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+    <pre>students_in_class <span class="kw">=</span> <span class="nm">32</span>
+temperature_today <span class="kw">=</span> <span class="nm">28</span>       <span class="cm"># Degrees Celsius in Nairobi</span>
+bank_balance <span class="kw">=</span> <span class="nm">-500</span>           <span class="cm"># Negative numbers work too</span>
+items_in_basket <span class="kw">=</span> <span class="nm">0</span>           <span class="cm"># Zero is a valid integer</span>
+
+<span class="cm"># Pro tip: use underscores in large numbers for readability</span>
+population_nairobi <span class="kw">=</span> <span class="nm">4_500_000</span>   <span class="cm"># Python ignores the underscores</span></pre>
+  </div>
+
+  <h3>&#128310; Floats (float)</h3>
+  <p>A <strong>float</strong> is a number with a decimal point. Use floats when precision matters: prices, measurements, scientific values, percentages, averages.</p>
+
+  <div class="code-block">
+    <div class="code-label script">&#128257; Python Script<button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+    <pre>price_of_milk <span class="kw">=</span> <span class="nm">65.50</span>         <span class="cm"># Kenyan shillings — decimal needed</span>
+gpa <span class="kw">=</span> <span class="nm">3.7</span>
+weight_kg <span class="kw">=</span> <span class="nm">72.4</span>
+pi <span class="kw">=</span> <span class="nm">3.14159</span>
+
+<span class="cm"># Watch this! Even if there's nothing meaningful after the decimal, it's still a float</span>
+score <span class="kw">=</span> <span class="nm">95.0</span>   <span class="cm"># This is a float, NOT an integer</span></pre>
+  </div>
+
+  <div class="card explain-card">
+    <div class="card-header">&#128161; When to use int vs float?</div>
+    <div class="card-body">
+      <p><strong>Use int</strong> when counting things that can't be split — number of students, number of M-Pesa transactions, number of items in a list.</p>
+      <p><strong>Use float</strong> when measuring things that can have fractional values — prices, weights, heights, percentages, test averages.</p>
+      <p>Here's something slightly surprising: if you divide two integers in Python, you might get a float back. <code>9 / 2</code> gives you <code>4.5</code> — not <code>4</code>. Python is being accurate by preserving the decimal.</p>
+    </div>
+  </div>
+
+  <h3>&#128161; Booleans (bool)</h3>
+  <p>A <strong>boolean</strong> has only two possible values: <code>True</code> or <code>False</code>. That's it. Nothing else. The simplest data type in Python, but incredibly powerful — it drives all the decision-making in your programs.</p>
+
+  <div class="code-block">
+    <div class="code-label script">&#128257; Python Script<button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+    <pre>is_logged_in <span class="kw">=</span> <span class="bi">True</span>
+has_paid_fees <span class="kw">=</span> <span class="bi">False</span>
+exam_passed <span class="kw">=</span> <span class="bi">True</span>
+is_raining <span class="kw">=</span> <span class="bi">False</span>
+
+<span class="cm"># IMPORTANT: True and False must have capital first letters</span>
+<span class="cm"># Writing "true" or "false" (lowercase) will cause a NameError!</span></pre>
+  </div>
+
+  <div class="card analogy-card">
+    <div class="card-header">&#128260; Think of booleans like a light switch</div>
+    <div class="card-body">
+      <p>A light switch has exactly two states: ON or OFF. There's no "maybe" position, no 30% on, no 80% off. It's binary — one or the other.</p>
+      <p>That's exactly what a boolean is. <code>True</code> is the switch being ON. <code>False</code> is the switch being OFF. When Python is making decisions — "should I show this message?" or "should I let this user log in?" — it's always asking a boolean question, and the answer is always True or False.</p>
+    </div>
+  </div>
+
+  <div class="callout coral">
+    <div class="callout-icon">&#9888;&#65039;</div>
+    <div>
+      <p><strong>Capital letters are not optional for booleans.</strong> <code>True</code> and <code>False</code> must start with capital letters. Write <code>true</code> or <code>false</code> and Python throws a <code>NameError</code> — it thinks you're trying to use a variable called <code>true</code> that doesn't exist.</p>
+    </div>
+  </div>
+
+  <div class="challenge">
+    <div class="challenge-header">&#9889; Quick Check — Spot the Type</div>
+    <div class="challenge-body">
+      <p class="challenge-q">For each value below, what type is it — str, int, float, or bool?</p>
+      <ul>
+        <li><code>"Kisumu"</code></li>
+        <li><code>100</code></li>
+        <li><code>False</code></li>
+        <li><code>3.14</code></li>
+        <li><code>"True"</code></li>
+        <li><code>0</code></li>
+        <li><code>-7.5</code></li>
+      </ul>
+      <button class="answer-toggle" onclick="toggleAnswer(this)">Show answers &rarr;</button>
+      <div class="answer-box">
+        <p><code>"Kisumu"</code> &rarr; <strong>str</strong> — it has quotes</p>
+        <p><code>100</code> &rarr; <strong>int</strong> — whole number, no quotes</p>
+        <p><code>False</code> &rarr; <strong>bool</strong> — capital F, no quotes</p>
+        <p><code>3.14</code> &rarr; <strong>float</strong> — has a decimal point</p>
+        <p><code>"True"</code> &rarr; <strong>str</strong> — it has quotes! The quotes override everything. This is NOT a boolean.</p>
+        <p><code>0</code> &rarr; <strong>int</strong> — still a number, just zero</p>
+        <p><code>-7.5</code> &rarr; <strong>float</strong> — negative decimal</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3 -->
+<section id="s3">
+  <h2>
+    <span class="section-num">3</span>
+    Naming Rules
+    <span class="done-check" data-sec="s3"><div class="done-check-box"><span class="done-check-tick">&#10003;</span></div> done</span>
+  </h2>
+
+  <p>You can name a variable almost anything — but there are a few rules Python enforces, and some conventions that experienced Python developers follow. Learn both.</p>
+
+  <div class="rules-grid">
+    <div class="rule-card ok">
+      <h4>&#9989; These are allowed</h4>
+      <ul>
+        <li>Start with a letter or underscore: <code>name</code>, <code>_hidden</code></li>
+        <li>Use letters, numbers, underscores: <code>student_2</code>, <code>total_score</code></li>
+        <li>Any length works</li>
+      </ul>
+    </div>
+    <div class="rule-card no">
+      <h4>&#10060; These will cause errors</h4>
+      <ul>
+        <li>Start with a number: <code>2students</code></li>
+        <li>Contain spaces: <code>my name</code></li>
+        <li>Use special characters: <code>price@shop</code></li>
+        <li>Use Python keywords: <code>if</code>, <code>for</code>, <code>True</code></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label script">&#128257; Valid vs invalid variable names<button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="cm"># All of these are valid Python variable names</span>
+student_name <span class="kw">=</span> <span class="st">"Aisha"</span>
+total_score2 <span class="kw">=</span> <span class="nm">98</span>         <span class="cm"># Number at the END is fine</span>
+x <span class="kw">=</span> <span class="nm">10</span>                    <span class="cm"># Single letters are valid — but not very descriptive</span>
+
+<span class="cm"># These would cause errors — don't try them</span>
+<span class="cm"># 2student = "Brian"       # Can't start with a number</span>
+<span class="cm"># my name = "Mel"          # Can't have spaces</span>
+<span class="cm"># price@mpesa = 500        # Can't use @ symbol</span></pre>
+  </div>
+
+  <h3>Python convention: use snake_case</h3>
+  <p>Python programmers follow a style called <strong>snake_case</strong> for variable names — all lowercase letters, with underscores between words. It's not enforced by Python itself, but you'll see it in every Python codebase in the world. Follow it from day one.</p>
+
+  <div class="code-block">
+    <div class="code-label script">&#128257; Convention: snake_case<button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="cm"># Correct Python convention (snake_case)</span>
+student_name <span class="kw">=</span> <span class="st">"Wanjiru"</span>
+total_marks <span class="kw">=</span> <span class="nm">87</span>
+is_enrolled <span class="kw">=</span> <span class="bi">True</span>
+number_of_courses <span class="kw">=</span> <span class="nm">4</span>
+
+<span class="cm"># These work but go against Python convention</span>
+<span class="cm"># studentName = "Wanjiru"   # camelCase — Java style, not Python</span>
+<span class="cm"># StudentName = "Wanjiru"   # PascalCase — used for class names, not variables</span></pre>
+  </div>
+
+  <div class="callout teal">
+    <div class="callout-icon">&#128161;</div>
+    <div>
+      <p><strong>Python is case-sensitive.</strong> <code>name</code>, <code>Name</code>, and <code>NAME</code> are three completely different variables. If you create <code>student_name</code> on line 1 and try to use <code>Student_name</code> on line 5, Python throws a <code>NameError</code> — because as far as Python is concerned, that second variable doesn't exist.</p>
+    </div>
+  </div>
+
+  <h3>Make your names descriptive</h3>
+  <p>One of the most important habits you can build early: give your variables names that explain what they hold.</p>
+
+  <div class="code-block">
+    <div class="code-label script">&#128257; Bad names vs good names<button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="cm"># What does any of this mean?</span>
+a <span class="kw">=</span> <span class="nm">28</span>
+b <span class="kw">=</span> <span class="nm">5</span>
+c <span class="kw">=</span> <span class="nm">140</span>
+
+<span class="cm"># Now it's obvious</span>
+temperature_celsius <span class="kw">=</span> <span class="nm">28</span>
+number_of_items <span class="kw">=</span> <span class="nm">5</span>
+price_in_shillings <span class="kw">=</span> <span class="nm">140</span></pre>
+  </div>
+</section>
+
+<!-- SECTION 4 -->
+<section id="s4">
+  <h2>
+    <span class="section-num">4</span>
+    Reassigning Variables
+    <span class="done-check" data-sec="s4"><div class="done-check-box"><span class="done-check-tick">&#10003;</span></div> done</span>
+  </h2>
+
+  <p>Variables aren't permanent. You can change what they hold at any point by simply assigning a new value. The old value is gone — replaced by the new one.</p>
+
+  <div class="code-block">
+    <div class="code-label script">&#128257; Python Script<button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+    <pre>mood <span class="kw">=</span> <span class="st">"stressed"</span>
+<span class="fn">print</span>(mood)        <span class="cm"># Output: stressed</span>
+
+mood <span class="kw">=</span> <span class="st">"excited"</span>    <span class="cm"># Reassigned — old value is gone</span>
+<span class="fn">print</span>(mood)        <span class="cm"># Output: excited</span>
+
+mood <span class="kw">=</span> <span class="st">"tired"</span>      <span class="cm"># Reassign again — perfectly fine</span>
+<span class="fn">print</span>(mood)        <span class="cm"># Output: tired</span></pre>
+  </div>
+
+  <div class="card analogy-card">
+    <div class="card-header">&#128260; Here's the everyday version of that</div>
+    <div class="card-body">
+      <p>Think of a whiteboard with your name written on it. You can erase what's on it and write something new. The whiteboard is still the same whiteboard — but the content has changed.</p>
+      <p>That's what reassigning a variable does. The container (the whiteboard) stays. The value (what's written on it) gets replaced.</p>
+    </div>
+  </div>
+
+  <h3>Python also lets you change the type when reassigning</h3>
+  <p>Because Python is dynamically typed, you can assign a completely different type of value to a variable you already created. Python just updates the type automatically.</p>
+
+  <div class="code-block">
+    <div class="code-label script">&#128257; Python Script<button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+    <pre>score <span class="kw">=</span> <span class="nm">75</span>          <span class="cm"># score is currently an integer</span>
+<span class="fn">print</span>(<span class="fn">type</span>(score))  <span class="cm"># Output: &lt;class 'int'&gt;</span>
+
+score <span class="kw">=</span> <span class="st">"Merit"</span>      <span class="cm"># Now score is a string — Python allows this</span>
+<span class="fn">print</span>(<span class="fn">type</span>(score))  <span class="cm"># Output: &lt;class 'str'&gt;</span></pre>
+  </div>
+
+  <h3>Multiple assignment shortcuts</h3>
+  <div class="code-block">
+    <div class="code-label script">&#128257; Python Script<button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="cm"># Assign the same value to multiple variables at once</span>
+x <span class="kw">=</span> y <span class="kw">=</span> z <span class="kw">=</span> <span class="nm">0</span>
+<span class="fn">print</span>(x, y, z)    <span class="cm"># Output: 0 0 0</span>
+
+<span class="cm"># Assign different values to multiple variables in one line</span>
+name, age, city <span class="kw">=</span> <span class="st">"Kamau"</span>, <span class="nm">30</span>, <span class="st">"Mombasa"</span>
+<span class="fn">print</span>(name)    <span class="cm"># Output: Kamau</span>
+<span class="fn">print</span>(age)     <span class="cm"># Output: 30</span>
+<span class="fn">print</span>(city)    <span class="cm"># Output: Mombasa</span></pre>
+  </div>
+</section>
+
+<!-- SECTION 5 -->
+<section id="s5">
+  <h2>
+    <span class="section-num">5</span>
+    Checking the Type of a Variable
+    <span class="done-check" data-sec="s5"><div class="done-check-box"><span class="done-check-tick">&#10003;</span></div> done</span>
+  </h2>
+
+  <p>Python gives you a built-in function called <code>type()</code> that tells you exactly what type a variable is. This is extremely useful when debugging — when something's going wrong and you're not sure why, checking the type often solves the mystery.</p>
+
+  <div class="code-block">
+    <div class="code-label script">&#128257; Python Script<button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+    <pre>name <span class="kw">=</span> <span class="st">"Otieno"</span>
+age <span class="kw">=</span> <span class="nm">22</span>
+gpa <span class="kw">=</span> <span class="nm">3.8</span>
+is_enrolled <span class="kw">=</span> <span class="bi">True</span>
+
+<span class="fn">print</span>(<span class="fn">type</span>(name))         <span class="cm"># Output: &lt;class 'str'&gt;</span>
+<span class="fn">print</span>(<span class="fn">type</span>(age))          <span class="cm"># Output: &lt;class 'int'&gt;</span>
+<span class="fn">print</span>(<span class="fn">type</span>(gpa))          <span class="cm"># Output: &lt;class 'float'&gt;</span>
+<span class="fn">print</span>(<span class="fn">type</span>(is_enrolled))  <span class="cm"># Output: &lt;class 'bool'&gt;</span>
+
+<span class="cm"># You can also use type() on a value directly</span>
+<span class="fn">print</span>(<span class="fn">type</span>(<span class="nm">42</span>))       <span class="cm"># &lt;class 'int'&gt;</span>
+<span class="fn">print</span>(<span class="fn">type</span>(<span class="st">"42"</span>))     <span class="cm"># &lt;class 'str'&gt; — the quotes make it text!</span></pre>
+  </div>
+
+  <div class="challenge">
+    <div class="challenge-header">&#9889; Mini Challenge — Use type() to investigate</div>
+    <div class="challenge-body">
+      <p class="challenge-q">Before running this code, predict what type() will return for each variable. Then run it and check your predictions.</p>
+      <div class="code-block">
+        <div class="code-label script">&#128257; Try this</div>
+        <pre>a <span class="kw">=</span> <span class="nm">100</span>
+b <span class="kw">=</span> <span class="nm">100.0</span>
+c <span class="kw">=</span> <span class="st">"100"</span>
+d <span class="kw">=</span> <span class="bi">True</span>
+e <span class="kw">=</span> <span class="bi">False</span> <span class="kw">+</span> <span class="nm">5</span>   <span class="cm"># What happens when you add False to a number?</span>
+
+<span class="fn">print</span>(<span class="fn">type</span>(a), a)
+<span class="fn">print</span>(<span class="fn">type</span>(b), b)
+<span class="fn">print</span>(<span class="fn">type</span>(c), c)
+<span class="fn">print</span>(<span class="fn">type</span>(d), d)
+<span class="fn">print</span>(<span class="fn">type</span>(e), e)</pre>
+      </div>
+      <button class="answer-toggle" onclick="toggleAnswer(this)">Show answers &rarr;</button>
+      <div class="answer-box">
+        <p><code>a</code> &rarr; <strong>int</strong>, value: 100</p>
+        <p><code>b</code> &rarr; <strong>float</strong>, value: 100.0 (the .0 makes it a float)</p>
+        <p><code>c</code> &rarr; <strong>str</strong>, value: 100 displayed as text</p>
+        <p><code>d</code> &rarr; <strong>bool</strong>, value: True</p>
+        <p><code>e</code> &rarr; <strong>int</strong>, value: 5 — in Python, False = 0 mathematically, so 0 + 5 = 5. This is a quirk of booleans we'll explore in Lesson 1.4!</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 6 -->
+<section id="s6">
+  <h2>
+    <span class="section-num">6</span>
+    Type Conversion
+    <span class="done-check" data-sec="s6"><div class="done-check-box"><span class="done-check-tick">&#10003;</span></div> done</span>
+  </h2>
+
+  <p>Sometimes you have a value in one type but you need it in another. When a user types their age into your program, Python receives it as a string — text — not a number. If you want to do maths with it, you need to convert it. This process is called <strong>type conversion</strong> or <strong>casting</strong>.</p>
+
+  <div class="card analogy-card">
+    <div class="card-header">&#128260; Real world version</div>
+    <div class="card-body">
+      <p>Imagine someone hands you their age on a piece of paper. It says "24". That paper is text — you can read it, but you can't add 5 years to a piece of paper. You need to take the number off the paper and put it into your calculator first.</p>
+      <p>That's what type conversion does. It takes data that exists in one form and transforms it into a form your program can work with.</p>
+    </div>
+  </div>
+
+  <p>Python gives you four main conversion functions:</p>
+
+  <div class="convert-grid">
+    <div class="convert-card">
+      <div class="from-to">&rarr; str()</div>
+      <div class="example">Converts to text<br><code>str(42)</code> &rarr; <code>"42"</code></div>
+    </div>
+    <div class="convert-card">
+      <div class="from-to">&rarr; int()</div>
+      <div class="example">Converts to whole number<br><code>int("25")</code> &rarr; <code>25</code></div>
+    </div>
+    <div class="convert-card">
+      <div class="from-to">&rarr; float()</div>
+      <div class="example">Converts to decimal<br><code>float("3.14")</code> &rarr; <code>3.14</code></div>
+    </div>
+    <div class="convert-card">
+      <div class="from-to">&rarr; bool()</div>
+      <div class="example">Converts to True/False<br><code>bool(0)</code> &rarr; <code>False</code></div>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label script">&#128257; Type conversion in action<button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="cm"># Converting TO string</span>
+age <span class="kw">=</span> <span class="nm">24</span>
+age_as_text <span class="kw">=</span> <span class="fn">str</span>(age)         <span class="cm"># 24 (int) → "24" (str)</span>
+<span class="fn">print</span>(<span class="fn">type</span>(age_as_text))        <span class="cm"># Output: &lt;class 'str'&gt;</span>
+
+<span class="cm"># Converting TO integer</span>
+user_input <span class="kw">=</span> <span class="st">"35"</span>              <span class="cm"># Imagine this came from a user typing</span>
+actual_age <span class="kw">=</span> <span class="fn">int</span>(user_input)    <span class="cm"># "35" (str) → 35 (int)</span>
+<span class="fn">print</span>(actual_age <span class="kw">+</span> <span class="nm">5</span>)           <span class="cm"># Output: 40 — now we can do maths!</span>
+
+<span class="cm"># Converting TO float</span>
+price_text <span class="kw">=</span> <span class="st">"299.99"</span>
+price <span class="kw">=</span> <span class="fn">float</span>(price_text)       <span class="cm"># "299.99" (str) → 299.99 (float)</span>
+<span class="fn">print</span>(price <span class="kw">*</span> <span class="nm">2</span>)                <span class="cm"># Output: 599.98</span>
+
+<span class="cm"># int → float and back</span>
+x <span class="kw">=</span> <span class="nm">10</span>
+<span class="fn">print</span>(<span class="fn">float</span>(x))                 <span class="cm"># Output: 10.0 — adds the decimal</span>
+
+y <span class="kw">=</span> <span class="nm">7.9</span>
+<span class="fn">print</span>(<span class="fn">int</span>(y))                   <span class="cm"># Output: 7 — chops the decimal (does NOT round!)</span></pre>
+  </div>
+
+  <div class="card slowdown-card">
+    <div class="card-header">&#128680; int() chops, it doesn't round — pay attention to this one</div>
+    <div class="card-body">
+      <p>When you convert a float to an int using <code>int()</code>, Python removes everything after the decimal point. It does <strong>not</strong> round.</p>
+      <p><code>int(7.9)</code> gives you <code>7</code>, not <code>8</code>. <code>int(3.1)</code> gives you <code>3</code>.</p>
+      <p>This is called <strong>truncation</strong>. If you want proper rounding, use <code>round()</code> instead: <code>round(7.9)</code> gives <code>8</code>.</p>
+    </div>
+  </div>
+
+  <h3>When conversion fails</h3>
+  <p>You can only convert values that make sense. Python can't convert the word "hello" into a number. If you try, you'll get a <code>ValueError</code>.</p>
+
+  <div class="code-block">
+    <div class="code-label script">&#128257; Conversion errors<button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="cm"># This works — "42" looks like a number</span>
+<span class="fn">print</span>(<span class="fn">int</span>(<span class="st">"42"</span>))         <span class="cm"># Output: 42</span>
+
+<span class="cm"># This fails — "hello" has no numeric equivalent</span>
+<span class="cm"># print(int("hello"))     # ValueError!</span>
+
+<span class="cm"># This also fails — "3.14" has a decimal, int() can't handle that directly</span>
+<span class="cm"># print(int("3.14"))      # ValueError!</span>
+
+<span class="cm"># But you can go through float first</span>
+<span class="fn">print</span>(<span class="fn">int</span>(<span class="fn">float</span>(<span class="st">"3.14"</span>)))  <span class="cm"># Output: 3 — convert to float first, then to int</span></pre>
+  </div>
+
+  <div class="challenge">
+    <div class="challenge-header">&#9889; Mini Challenge — Fix the broken code</div>
+    <div class="challenge-body">
+      <p class="challenge-q">The code below is trying to calculate a student's total score. But it will throw an error. Can you spot why, and fix it?</p>
+      <div class="code-block">
+        <div class="code-label script">&#128257; Broken code — find the bug</div>
+        <pre>score_one <span class="kw">=</span> <span class="st">"45"</span>      <span class="cm"># Score from the first test</span>
+score_two <span class="kw">=</span> <span class="st">"52"</span>      <span class="cm"># Score from the second test</span>
+
+total <span class="kw">=</span> score_one <span class="kw">+</span> score_two
+<span class="fn">print</span>(<span class="st">"Total score:"</span>, total)</pre>
+      </div>
+      <button class="answer-toggle" onclick="toggleAnswer(this)">Show answer &rarr;</button>
+      <div class="answer-box">
+        <p>The scores are stored as strings (they have quotes). Adding two strings doesn't add their values — it <strong>joins</strong> them. So <code>"45" + "52"</code> gives <code>"4552"</code>, not <code>97</code>.</p>
+        <p><strong>Fix:</strong> Convert both to integers first.</p>
+        <pre style="background:var(--surface-2);border-radius:7px;padding:.7rem;font-family:'JetBrains Mono',monospace;font-size:.83rem;margin-top:.5rem;">score_one = int("45")
+score_two = int("52")
+total = score_one + score_two
+print("Total score:", total)  # Output: Total score: 97</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 7 -->
+<section id="s7">
+  <h2>
+    <span class="section-num">7</span>
+    print() Mastery
+    <span class="done-check" data-sec="s7"><div class="done-check-box"><span class="done-check-tick">&#10003;</span></div> done</span>
+  </h2>
+
+  <p>You've been using <code>print()</code> from the start. Let's go deeper — because knowing your print options makes debugging easier and your output much cleaner.</p>
+
+  <h3>Method 1: Basic print</h3>
+  <div class="code-block">
+    <div class="code-label script">&#128257; Python Script<button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+    <pre>name <span class="kw">=</span> <span class="st">"Amara"</span>
+<span class="fn">print</span>(name)       <span class="cm"># Output: Amara</span>
+<span class="fn">print</span>(<span class="st">"Hello!"</span>)   <span class="cm"># Output: Hello!</span>
+<span class="fn">print</span>(<span class="nm">42</span>)         <span class="cm"># Output: 42</span></pre>
+  </div>
+
+  <h3>Method 2: Multiple values separated by commas</h3>
+  <div class="code-block">
+    <div class="code-label script">&#128257; Python Script<button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+    <pre>name <span class="kw">=</span> <span class="st">"Amara"</span>
+age <span class="kw">=</span> <span class="nm">26</span>
+
+<span class="cm"># Separate values with commas — Python adds a space between them automatically</span>
+<span class="fn">print</span>(<span class="st">"Name:"</span>, name, <span class="st">"Age:"</span>, age)
+<span class="cm"># Output: Name: Amara Age: 26</span></pre>
+  </div>
+
+  <h3>Method 3: String concatenation</h3>
+  <div class="code-block">
+    <div class="code-label script">&#128257; Python Script<button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+    <pre>name <span class="kw">=</span> <span class="st">"Amara"</span>
+age <span class="kw">=</span> <span class="nm">26</span>
+
+<span class="cm"># Join strings with + — all values must be strings</span>
+<span class="cm"># Numbers must be wrapped in str() first</span>
+<span class="fn">print</span>(<span class="st">"My name is "</span> <span class="kw">+</span> name <span class="kw">+</span> <span class="st">" and I am "</span> <span class="kw">+</span> <span class="fn">str</span>(age) <span class="kw">+</span> <span class="st">" years old."</span>)
+<span class="cm"># Output: My name is Amara and I am 26 years old.</span></pre>
+  </div>
+
+  <h3>Method 4: f-strings &#11088; (The recommended way)</h3>
+  <p>f-strings are the modern Python way to build strings with variables. Put an <code>f</code> before the opening quote, then drop your variables into curly braces <code>{}</code>. No type conversion needed, easy to read, you can do calculations inline.</p>
+
+  <div class="code-block">
+    <div class="code-label script">&#128257; f-strings<button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+    <pre>name <span class="kw">=</span> <span class="st">"Amara"</span>
+age <span class="kw">=</span> <span class="nm">26</span>
+gpa <span class="kw">=</span> <span class="nm">3.75</span>
+
+<span class="cm"># f before the quote, {} around variables</span>
+<span class="fn">print</span>(<span class="st">f"My name is {name} and I am {age} years old."</span>)
+<span class="cm"># Output: My name is Amara and I am 26 years old.</span>
+
+<span class="cm"># You can do calculations inside the {}</span>
+<span class="fn">print</span>(<span class="st">f"In 5 years, {name} will be {age + 5} years old."</span>)
+<span class="cm"># Output: In 5 years, Amara will be 31 years old.</span>
+
+<span class="cm"># Format numbers — control decimal places</span>
+<span class="fn">print</span>(<span class="st">f"GPA: {gpa:.1f}"</span>)    <span class="cm"># Output: GPA: 3.8 (1 decimal place)</span>
+<span class="fn">print</span>(<span class="st">f"GPA: {gpa:.2f}"</span>)    <span class="cm"># Output: GPA: 3.75 (2 decimal places)</span></pre>
+  </div>
+
+  <div class="card explain-card">
+    <div class="card-header">&#128161; Why f-strings are the recommended way</div>
+    <div class="card-body">
+      <p>Compared to concatenation with <code>+</code>:</p>
+      <ul>
+        <li>No need to wrap numbers in <code>str()</code> — f-strings handle conversion for you</li>
+        <li>Much easier to read — you can see exactly what the output will look like</li>
+        <li>You can do maths, call functions, and format numbers right inside the <code>{}</code></li>
+      </ul>
+      <p>The <code>f</code> stands for "formatted string literal." They were introduced in Python 3.6 and are now the standard. If you ever see old code using <code>%s</code> or <code>.format()</code>, those are older approaches that do the same thing. Stick with f-strings.</p>
+    </div>
+  </div>
+
+  <h3>Useful print() extras</h3>
+  <div class="code-block">
+    <div class="code-label script">&#128257; print() options<button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="cm"># By default, print() adds a newline at the end</span>
+<span class="fn">print</span>(<span class="st">"Line 1"</span>)
+<span class="fn">print</span>(<span class="st">"Line 2"</span>)
+<span class="cm"># Output:</span>
+<span class="cm"># Line 1</span>
+<span class="cm"># Line 2</span>
+
+<span class="cm"># Use end="" to stay on the same line</span>
+<span class="fn">print</span>(<span class="st">"Hello"</span>, end<span class="kw">=</span><span class="st">" "</span>)
+<span class="fn">print</span>(<span class="st">"World"</span>)
+<span class="cm"># Output: Hello World</span>
+
+<span class="cm"># Use sep="" to change the separator between multiple values</span>
+<span class="fn">print</span>(<span class="st">"Mon"</span>, <span class="st">"Tue"</span>, <span class="st">"Wed"</span>, sep<span class="kw">=</span><span class="st">" | "</span>)
+<span class="cm"># Output: Mon | Tue | Wed</span>
+
+<span class="cm"># Print a blank line</span>
+<span class="fn">print</span>()
+<span class="cm"># Output: (blank line)</span></pre>
+  </div>
+</section>
+
+<!-- SECTION 8 -->
+<section id="s8">
+  <h2>
+    <span class="section-num">8</span>
+    Practice Tasks
+    <span class="done-check" data-sec="s8"><div class="done-check-box"><span class="done-check-tick">&#10003;</span></div> done</span>
+  </h2>
+
+  <div class="win-box">
+    <h3>&#127881; You made it through Lesson 1.1!</h3>
+    <p>You now understand variables, the four core data types, naming conventions, type conversion, and how to use print() properly. That's the foundation everything else is built on. Let's make sure it sticks.</p>
+  </div>
+
+  <div class="practice-tasks">
+    <h3>&#128221; Practice tasks — do these in VS Code or Jupyter</h3>
+    <ul class="task-list">
+      <li>
+        <span class="task-num">1</span>
+        <span>Create a variable for your name, age, city, and whether you're a student. Print all four using a single f-string sentence. Example: <em>"My name is Wanjiku, I'm 24, I'm from Kisumu, and student status: True."</em></span>
+      </li>
+      <li>
+        <span class="task-num">2</span>
+        <span>Create a variable called <code>score</code> and assign it the value <code>88.5</code>. Use <code>type()</code> to check its type. Then convert it to an integer and print the result. What happens to the decimal?</span>
+      </li>
+      <li>
+        <span class="task-num">3</span>
+        <span>Try reassigning the same variable three times — each time to a different data type. After each assignment, print the variable and its type. Notice how Python's type tracking changes automatically.</span>
+      </li>
+      <li>
+        <span class="task-num">4</span>
+        <span><strong>Bug hunt:</strong> The code below has two bugs. Find and fix both of them:<br><br>
+        <code style="background:var(--surface-2);padding:.3rem .6rem;border-radius:5px;font-size:.85rem;display:inline-block;margin-top:.4rem;">2fast = "Speed Racer"<br>print("Name: " + 2fast)</code></span>
+      </li>
+      <li>
+        <span class="task-num">5</span>
+        <span>Create variables for the price of 3 items at a shop (make up the prices). Calculate the total and print it using an f-string: <em>"The total for 3 items is KES [total]."</em></span>
+      </li>
+      <li>
+        <span class="task-num">6</span>
+        <span>Write a program that stores information about a student (name, age, course, GPA, and whether fees are paid). Print a formatted "profile card" using f-strings with each piece of information on its own line with a label.</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="challenge">
+    <div class="challenge-header">&#9889; Bonus Challenge — Student profile card</div>
+    <div class="challenge-body">
+      <p class="challenge-q">Build on task 6: use <code>print()</code> with borders to create a nicely formatted profile card. Your output should look something like:</p>
+      <pre style="background:var(--surface-2);border-radius:7px;padding:.7rem;font-family:'JetBrains Mono',monospace;font-size:.83rem;">============================
+  STUDENT PROFILE
+  Name: Zawadi Odhiambo
+  Age: 21
+  Course: Data Science
+  GPA: 3.80
+  Fees Paid: True
+============================</pre>
+      <button class="answer-toggle" onclick="toggleAnswer(this)">Show one approach &rarr;</button>
+      <div class="answer-box">
+        <pre style="font-family:'JetBrains Mono',monospace;font-size:.83rem;line-height:1.7;">name = "Zawadi Odhiambo"
+age = 21
+course = "Data Science"
+gpa = 3.8
+fees_paid = True
+
+print("=" * 28)
+print(f"  STUDENT PROFILE")
+print(f"  Name: {name}")
+print(f"  Age: {age}")
+print(f"  Course: {course}")
+print(f"  GPA: {gpa:.2f}")
+print(f"  Fees Paid: {fees_paid}")
+print("=" * 28)</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RECAP -->
+<section id="recap" class="recap-section">
+  <h2 style="border-bottom:none;padding-bottom:0;margin-bottom:1rem;">&#128279; How it all fits together</h2>
+  <p>Everything you learned today is foundational — every Python program you'll ever write, from a simple script to a machine learning model, uses variables and data types. Quick recap:</p>
+  <ul>
+    <li><strong>Variables</strong> are named containers that store values. The pattern is always <code>name = value</code>.</li>
+    <li><strong>Python is dynamically typed</strong> — it figures out the type automatically from the value you assign.</li>
+    <li>The <strong>4 core types:</strong> <code>str</code> (text), <code>int</code> (whole number), <code>float</code> (decimal), <code>bool</code> (True/False).</li>
+    <li><strong>Naming rules:</strong> snake_case, no spaces, no special characters, can't start with a number, case-sensitive.</li>
+    <li><strong>type()</strong> is your detective — use it whenever you're unsure what type something is.</li>
+    <li><strong>Type conversion:</strong> <code>int()</code>, <code>float()</code>, <code>str()</code>, <code>bool()</code> — but only convert values that make sense.</li>
+    <li><strong>f-strings</strong> are the best way to print variables inside text. Use them as your default.</li>
+  </ul>
+  <p style="margin-bottom:0;">In the next lesson, we go deep on strings — one of the most used types in Python. You'll learn how to slice them, search them, replace parts of them, and format them like a pro.</p>
+</section>
+
+<div class="page-nav">
+  <a href="../phase1.html">&larr; Phase 1 Overview</a>
+  <a href="02-strings-in-depth.html">Next: Strings In Depth &rarr;</a>
+</div>
+
+</main>
+
+<footer>
+  <strong>MLlabswithMel</strong> &mdash; Hands-on data &amp; AI education &nbsp;|&nbsp; Nairobi, Kenya
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = docHeight > 0 ? scrollTop / docHeight : 0;
+  document.getElementById('scrollGlow').style.transform = `scaleX(${progress})`;
+});
+
+document.querySelectorAll('.card-header').forEach(h => {
+  h.addEventListener('click', () => { h.parentElement.classList.toggle('open'); });
+});
+
+document.querySelectorAll('.challenge-header').forEach(h => {
+  h.addEventListener('click', () => { h.parentElement.classList.toggle('open'); });
+});
+
+function toggleAnswer(btn) {
+  const box = btn.nextElementSibling;
+  box.classList.toggle('show');
+  btn.textContent = box.classList.contains('show') ? 'Hide answer \u2191' : 'Show answer \u2192';
+}
+
+function copyCode(btn) {
+  const pre = btn.closest('.code-block').querySelector('pre');
+  navigator.clipboard.writeText(pre.innerText).then(() => {
+    btn.textContent = 'copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 1800);
+  });
+}
+
+const TOTAL = 8;
+let doneSet = new Set();
+try { doneSet = new Set(JSON.parse(localStorage.getItem('done_1_1') || '[]')); } catch(e) {}
+
+function updateProgress() {
+  const pct = Math.round((doneSet.size / TOTAL) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = `${doneSet.size} / ${TOTAL} sections done`;
+}
+
+function syncUI() {
+  document.querySelectorAll('.chip').forEach(c => {
+    c.classList.toggle('done', doneSet.has(c.dataset.sec));
+  });
+  document.querySelectorAll('.done-check').forEach(dc => {
+    dc.classList.toggle('checked', doneSet.has(dc.dataset.sec));
+  });
+}
+
+function toggle(sec) {
+  if (doneSet.has(sec)) doneSet.delete(sec); else doneSet.add(sec);
+  try { localStorage.setItem('done_1_1', JSON.stringify([...doneSet])); } catch(e) {}
+  syncUI(); updateProgress();
+}
+
+document.querySelectorAll('.chip').forEach(c => c.addEventListener('click', () => toggle(c.dataset.sec)));
+document.querySelectorAll('.done-check').forEach(dc => dc.addEventListener('click', () => toggle(dc.dataset.sec)));
+
+const sections = document.querySelectorAll('section[id]');
+const tocLinks = document.querySelectorAll('.toc a');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      tocLinks.forEach(a => a.classList.remove('toc-active'));
+      const active = document.querySelector(`.toc a[href="#${e.target.id}"]`);
+      if (active) active.classList.add('toc-active');
+    }
+  });
+}, { rootMargin: '-25% 0px -65% 0px' });
+sections.forEach(s => observer.observe(s));
+
+syncUI(); updateProgress();
+</script>
+</body>
+</html>

@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0.4 Jupyter Notebooks | MLlabswithMel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#faf9ff;--surface:#f3f0ff;--surface-2:#ede9ff;--purple:#7f77dd;--purple-dk:#534ab7;--purple-lt:#e8e5ff;--teal:#1d9e75;--teal-lt:#d4f0e6;--coral:#d85a30;--coral-lt:#faecea;--amber:#ba7517;--amber-lt:#fef3dc;--text:#1a1633;--muted:#6b5fa8;--faint:#9b94cc;--code-bg:#ede9ff;--code-text:#534ab7;--border:#c4bde8;--border-lt:#e2defc;}
+html{scroll-behavior:smooth;}body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:1.05rem;line-height:1.75;}
+@keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.scroll-glow{position:fixed;top:0;left:0;width:100%;height:4px;z-index:1000;background:linear-gradient(90deg,#7f77dd,#534ab7,#9b8ff0,#7f77dd);background-size:300% 300%;animation:gradientShift 4s ease infinite;transform-origin:left;transform:scaleX(0);}
+.site-header{background:linear-gradient(135deg,var(--surface) 0%,#eceaff 60%,var(--surface) 100%);background-size:200% 200%;animation:gradientShift 8s ease infinite;border-bottom:2px solid var(--purple);padding:2rem 1.5rem 1.8rem;text-align:center;}
+.brand{font-size:.78rem;font-weight:700;color:var(--purple-dk);letter-spacing:.12em;text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin-bottom:.4rem;}
+.breadcrumb{font-size:.78rem;color:var(--faint);margin-bottom:.7rem;font-family:'JetBrains Mono',monospace;}
+.breadcrumb a{color:var(--purple);text-decoration:none;}.breadcrumb a:hover{text-decoration:underline;}
+.lesson-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;background:var(--teal);color:#fff;padding:.15rem .7rem;border-radius:999px;margin-bottom:.6rem;display:inline-block;}
+.site-header h1{font-size:clamp(1.7rem,4vw,2.6rem);font-weight:700;line-height:1.2;color:var(--text);margin-bottom:.5rem;}
+.site-header h1 em{color:var(--purple);font-style:normal;}
+.site-header .subtitle{color:var(--muted);font-size:.97rem;max-width:560px;margin:0 auto .8rem;}
+.tag-row{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;margin-top:.7rem;}
+.tag{background:var(--purple-lt);color:var(--purple-dk);font-size:.7rem;font-weight:600;padding:.18rem .65rem;border-radius:999px;font-family:'JetBrains Mono',monospace;}
+.tag.teal{background:var(--teal-lt);color:#0a4a30;}.tag.amber{background:var(--amber-lt);color:#6b3a00;}
+.lesson-strip{max-width:900px;margin:1.2rem auto 0;padding:0 1.5rem;}
+.lesson-strip-inner{display:flex;gap:.5rem;overflow-x:auto;padding-bottom:.3rem;}
+.ls-item{display:flex;align-items:center;gap:.4rem;background:var(--surface);border:1.5px solid var(--border-lt);border-radius:8px;padding:.4rem .8rem;text-decoration:none;font-size:.78rem;font-weight:600;color:var(--muted);white-space:nowrap;transition:all .15s;flex-shrink:0;}
+.ls-item:hover{border-color:var(--purple);color:var(--purple-dk);}
+.ls-item.active{background:var(--teal);border-color:var(--teal);color:#fff;}
+.ls-item.done{border-color:var(--teal);background:var(--teal-lt);color:#0a4a30;}
+.ls-num{font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;}
+.progress-section{max-width:900px;margin:1.2rem auto 0;padding:0 1.5rem;}
+.progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;font-size:.83rem;color:var(--muted);font-weight:600;}
+.progress-track{height:7px;background:var(--surface-2);border-radius:999px;overflow:hidden;margin-bottom:1rem;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--teal),#52c896);border-radius:999px;transition:width .4s ease;width:0%;}
+.topic-chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:.45rem;}
+.chip{display:flex;align-items:center;gap:.45rem;background:var(--surface);border:1.5px solid var(--border-lt);border-radius:7px;padding:.4rem .75rem;cursor:pointer;font-size:.78rem;font-weight:600;color:var(--muted);transition:all .15s;user-select:none;}
+.chip:hover{border-color:var(--border);color:var(--text);}.chip.done{border-color:var(--teal);background:var(--teal-lt);color:#0a4a30;}
+.chip-box{width:13px;height:13px;min-width:13px;border:1.5px solid var(--border);border-radius:3px;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.chip.done .chip-box{background:var(--teal);border-color:var(--teal);}
+.chip-tick{display:none;color:#fff;font-size:8px;font-weight:800;}.chip.done .chip-tick{display:block;}
+.toc{background:var(--surface);border:1.5px solid var(--border-lt);border-radius:12px;padding:1.3rem 1.5rem;margin:1.2rem auto;max-width:900px;}
+.toc h3{font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin-bottom:.7rem;}
+.toc ol{padding-left:1.2rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.25rem;}
+.toc ol li a{color:var(--purple-dk);text-decoration:none;font-size:.85rem;font-weight:500;transition:color .15s;}
+.toc ol li a:hover,.toc ol li a.active{color:var(--purple);font-weight:700;}
+main{max-width:900px;margin:0 auto;padding:0 1.5rem 4rem;}
+section{margin-bottom:3.5rem;scroll-margin-top:2rem;}
+section h2{font-size:clamp(1.2rem,3vw,1.65rem);font-weight:700;color:var(--text);margin-bottom:1.1rem;padding-bottom:.55rem;border-bottom:2px solid var(--border-lt);display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;}
+.section-num{display:inline-flex;align-items:center;justify-content:center;background:var(--teal);color:#fff;font-size:.67rem;font-weight:700;width:22px;height:22px;border-radius:50%;flex-shrink:0;}
+.done-check{margin-left:auto;display:flex;align-items:center;gap:.4rem;font-size:.74rem;font-weight:600;color:var(--faint);cursor:pointer;user-select:none;transition:color .15s;}
+.done-check:hover,.done-check.checked{color:var(--teal);}
+.done-check-box{width:15px;height:15px;border:1.5px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.done-check.checked .done-check-box{background:var(--teal);border-color:var(--teal);}
+.done-check-tick{display:none;color:#fff;font-size:9px;font-weight:800;}.done-check.checked .done-check-tick{display:block;}
+section h3{font-size:1.03rem;font-weight:700;color:var(--purple-dk);margin:1.7rem 0 .5rem;}
+section p{margin-bottom:.95rem;color:var(--muted);}section p strong{color:var(--text);}
+section ul,section ol{padding-left:1.3rem;margin-bottom:.95rem;color:var(--muted);}section li{margin-bottom:.45rem;}section li strong{color:var(--text);}
+.card{border-radius:10px;margin:1.4rem 0;overflow:hidden;border-left:4px solid transparent;}
+.card-header{padding:.7rem 1.1rem;font-size:.88rem;font-weight:700;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;}
+.card-header::after{content:'▼';font-size:.58rem;transition:transform .2s;}.card.open .card-header::after{transform:rotate(180deg);}
+.card-body{padding:.9rem 1.1rem 1.1rem;display:none;font-size:.93rem;color:var(--muted);}.card.open .card-body{display:block;}
+.card-body p{margin-bottom:.65rem;}.card-body p:last-child{margin-bottom:0;}.card-body strong{color:var(--text);}
+.card-body ul{padding-left:1.1rem;}.card-body li{margin-bottom:.3rem;}
+.slowdown-card{background:var(--coral-lt);border-color:var(--coral);}.slowdown-card .card-header{background:#f8dcd5;color:#8b2e10;}
+.explain-card{background:var(--purple-lt);border-color:var(--purple);}.explain-card .card-header{background:#ddd9f8;color:var(--purple-dk);}
+.analogy-card{background:var(--teal-lt);border-color:var(--teal);}.analogy-card .card-header{background:#c0e8d8;color:#0a4a30;}
+.challenge{background:var(--amber-lt);border:1.5px solid #f0c060;border-radius:10px;margin:1.6rem 0;overflow:hidden;}
+.challenge-header{background:#fde8a0;padding:.65rem 1.1rem;font-size:.86rem;font-weight:700;color:#6b3a00;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;}
+.challenge-header::after{content:'▼';font-size:.58rem;transition:transform .2s;}.challenge.open .challenge-header::after{transform:rotate(180deg);}
+.challenge-body{padding:.9rem 1.1rem 1.1rem;display:none;font-size:.91rem;color:var(--muted);}.challenge.open .challenge-body{display:block;}
+.challenge-body p{margin-bottom:.65rem;}.challenge-q{font-weight:700;color:#6b3a00;margin-bottom:.55rem;}
+.answer-toggle{background:none;border:1.5px solid #d4a020;border-radius:6px;padding:.28rem .85rem;font-size:.77rem;font-weight:700;color:#8b5a00;cursor:pointer;margin-top:.35rem;font-family:'Plus Jakarta Sans',sans-serif;transition:background .15s;}
+.answer-toggle:hover{background:#fde8a0;}
+.answer-box{background:#fff8e0;border-radius:6px;padding:.75rem .95rem;margin-top:.55rem;display:none;border:1px solid #f0c060;color:var(--muted);}.answer-box.show{display:block;}
+.answer-box p{margin-bottom:.45rem;}.answer-box p:last-child{margin-bottom:0;}
+.code-block{background:var(--code-bg);border-radius:10px;margin:1.1rem 0;overflow:hidden;border:1.5px solid var(--border-lt);}
+.code-label{display:flex;align-items:center;justify-content:space-between;padding:.42rem .95rem;font-family:'JetBrains Mono',monospace;font-size:.71rem;font-weight:500;border-bottom:1px solid var(--border-lt);}
+.code-label.terminal{background:#dff5ec;color:#0a4a30;}.code-label.script{background:var(--amber-lt);color:#6b3a00;}.code-label.output{background:var(--surface-2);color:var(--muted);}
+.copy-btn{background:none;border:1px solid var(--border);border-radius:4px;padding:2px 7px;font-size:.67rem;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s;}
+.copy-btn:hover{background:var(--purple-lt);color:var(--purple-dk);}.copy-btn.copied{color:var(--teal);border-color:var(--teal);}
+pre{padding:1.1rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.83rem;line-height:1.8;color:var(--code-text);white-space:pre;}
+.cm{color:#9b94cc;}.kw{color:var(--purple);}.st{color:var(--teal);}.fn{color:var(--amber);}.nm{color:var(--coral);}
+.table-wrap{overflow-x:auto;margin:1.1rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.89rem;}
+th{background:var(--surface);color:var(--purple-dk);font-size:.76rem;font-weight:700;text-align:left;padding:.6rem .95rem;border-bottom:2px solid var(--border);}
+td{padding:.55rem .95rem;border-bottom:1px solid var(--border-lt);vertical-align:top;color:var(--muted);}td strong{color:var(--text);}
+tr:hover td{background:var(--surface);}td code{background:var(--surface-2);padding:.1rem .35rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--purple-dk);}
+.step-list{display:flex;flex-direction:column;gap:.75rem;margin:1.1rem 0;}
+.step-item{display:flex;gap:.9rem;align-items:flex-start;background:#fff;border:1.5px solid var(--border-lt);border-radius:11px;padding:.9rem 1.1rem;}
+.step-num{background:var(--teal);color:#fff;font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;width:24px;height:24px;min-width:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:.1rem;}
+.step-item h4{font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:.18rem;}
+.step-item p{font-size:.84rem;color:var(--muted);margin:0;line-height:1.55;}
+.step-item code{background:var(--surface-2);padding:.05rem .3rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.79rem;color:var(--purple-dk);}
+.callout{background:var(--teal-lt);border-left:3px solid var(--teal);padding:.85rem 1.1rem;border-radius:0 8px 8px 0;margin:1.1rem 0;font-size:.91rem;color:#0a4a30;}
+.callout strong{color:var(--teal);}
+.callout-amber{background:var(--amber-lt);border-left:3px solid var(--amber);padding:.85rem 1.1rem;border-radius:0 8px 8px 0;margin:1.1rem 0;font-size:.91rem;color:#5a3800;}
+.callout-amber strong{color:var(--amber);}
+.win-box{background:var(--teal-lt);border:1.5px solid var(--teal);border-radius:10px;padding:.95rem 1.3rem;margin:1.6rem 0;color:#0a4a30;font-weight:600;font-size:.93rem;}
+.big-win{background:linear-gradient(135deg,var(--teal-lt),#d4f0e6);border:2px solid var(--teal);border-radius:14px;padding:1.4rem 1.6rem;margin:2rem 0;text-align:center;}
+.big-win h3{font-size:1.15rem;font-weight:700;color:#0a4a30;margin-bottom:.5rem;}
+.big-win p{color:#0a4a30;font-size:.95rem;margin:0;}
+.task-box{background:var(--surface);border:1.5px solid var(--border-lt);border-radius:10px;padding:1rem 1.3rem;margin:.9rem 0;}
+.task-num{font-size:.73rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--purple);margin-bottom:.28rem;}
+.task-box p{margin:0;font-size:.91rem;color:var(--muted);}
+.task-box p strong{color:var(--text);}
+.page-nav{display:flex;justify-content:space-between;align-items:center;max-width:900px;margin:2.5rem auto 0;padding:0 1.5rem 1.5rem;gap:1rem;}
+.nav-btn{display:inline-flex;align-items:center;gap:.45rem;background:var(--surface);border:1.5px solid var(--border-lt);border-radius:10px;padding:.65rem 1.1rem;text-decoration:none;font-size:.85rem;font-weight:700;color:var(--purple-dk);transition:all .18s;}
+.nav-btn:hover{border-color:var(--purple);background:var(--purple-lt);}
+.nav-btn.next{background:var(--teal);color:#fff;border-color:var(--teal);}.nav-btn.next:hover{background:#18875f;}
+.nav-btn .nav-sub{display:block;font-size:.67rem;font-weight:500;opacity:.75;font-family:'JetBrains Mono',monospace;}
+footer{background:var(--surface);border-top:1.5px solid var(--border-lt);text-align:center;padding:1.8rem 1.5rem;color:var(--muted);font-size:.85rem;}
+footer strong{color:var(--purple-dk);font-weight:700;}
+@media(max-width:640px){.toc ol,.topic-chips{grid-template-columns:1fr;}pre{font-size:.74rem;}.page-nav{flex-direction:column;}}
+</style>
+</head>
+<body>
+<div class="scroll-glow" id="scroll-bar"></div>
+<header class="site-header">
+  <div class="brand">MLlabswithMel</div>
+  <div class="breadcrumb"><a href="../../index.html">Portal</a> / <a href="../../phase0.html">Phase 0</a> / Lesson 0.4</div>
+  <div class="lesson-label">Lesson 0.4 of 4 — Final lesson</div>
+  <h1>Jupyter Notebooks <em>in VS Code</em></h1>
+  <p class="subtitle">Jupyter notebooks let you run code one block at a time, see results inline, and mix code with notes. The standard tool for data exploration and learning.</p>
+  <div class="tag-row">
+    <span class="tag">Jupyter</span>
+    <span class="tag">.ipynb</span>
+    <span class="tag">Cells</span>
+    <span class="tag">Kernel</span>
+    <span class="tag teal">Phase 0 Complete</span>
+    <span class="tag amber">~30 minutes</span>
+  </div>
+</header>
+<div class="lesson-strip">
+  <div class="lesson-strip-inner">
+    <a href="01-terminal.html" class="ls-item done"><span class="ls-num">0.1</span>The Terminal</a>
+    <a href="02-anaconda.html" class="ls-item done"><span class="ls-num">0.2</span>Anaconda</a>
+    <a href="03-vscode.html" class="ls-item done"><span class="ls-num">0.3</span>VS Code</a>
+    <a href="04-jupyter.html" class="ls-item active"><span class="ls-num">0.4</span>Jupyter</a>
+  </div>
+</div>
+<div class="progress-section">
+  <div class="progress-header"><span>This lesson</span><span id="prog-text">0 of 4 sections done</span></div>
+  <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
+  <div class="topic-chips">
+    <div class="chip" onclick="chipClick(this,'s1')"><div class="chip-box"><span class="chip-tick">✓</span></div>What notebooks are</div>
+    <div class="chip" onclick="chipClick(this,'s2')"><div class="chip-box"><span class="chip-tick">✓</span></div>Creating your first one</div>
+    <div class="chip" onclick="chipClick(this,'s3')"><div class="chip-box"><span class="chip-tick">✓</span></div>Cells and the kernel</div>
+    <div class="chip" onclick="chipClick(this,'s4')"><div class="chip-box"><span class="chip-tick">✓</span></div>Notebook vs script</div>
+  </div>
+</div>
+<div class="toc" style="margin-left:auto;margin-right:auto;">
+  <h3>In this lesson</h3>
+  <ol id="toc-list">
+    <li><a href="#s1">What is a Jupyter notebook?</a></li>
+    <li><a href="#s2">Creating your first notebook in VS Code</a></li>
+    <li><a href="#s3">Cells, markdown, and the kernel</a></li>
+    <li><a href="#s4">Notebook vs script: when to use each</a></li>
+    <li><a href="#s5">Your first Python in a notebook</a></li>
+    <li><a href="#s6">Mini challenge</a></li>
+    <li><a href="#s7">Practice tasks</a></li>
+    <li><a href="#s8">Phase 0 complete</a></li>
+  </ol>
+</div>
+<main>
+
+<section id="s1">
+  <h2><span class="section-num">01</span> What is a Jupyter notebook? <span class="done-check" onclick="toggleDone(this)"><span class="done-check-box"><span class="done-check-tick">✓</span></span>Mark done</span></h2>
+  <div class="card analogy-card open">
+    <div class="card-header">🔁 Think of a scientist's laboratory notebook</div>
+    <div class="card-body">
+      <p>A scientist's lab notebook doesn't just have results. It has the experiment, the setup, the results, the notes about what went wrong, and a sketch of what to try next — all in one place, in order.</p>
+      <p>A Jupyter notebook works the same way. Each block (called a <strong>cell</strong>) can contain code or notes. You run one cell at a time. The output appears right below it. You can go back, change something, and run it again. You can add text between cells to explain what you're doing and why.</p>
+      <p>This makes notebooks perfect for data work: you can try something, see the result, understand what happened, and adjust — all without leaving the page.</p>
+    </div>
+  </div>
+  <p>Jupyter notebooks are saved as <strong>.ipynb files</strong> — that stands for "Interactive Python Notebook". They're the standard format in data science, used everywhere from university courses to Google and NASA. You'll use them throughout Track A of this course for all data exploration work.</p>
+</section>
+
+<section id="s2">
+  <h2><span class="section-num">02</span> Creating your first notebook in VS Code <span class="done-check" onclick="toggleDone(this)"><span class="done-check-box"><span class="done-check-tick">✓</span></span>Mark done</span></h2>
+  <p>You installed the Jupyter extension in Lesson 0.3. VS Code can now open, create, and run .ipynb files directly — no browser, no separate Jupyter server.</p>
+  <div class="step-list">
+    <div class="step-item"><div class="step-num">1</div><div><h4>Open the Command Palette</h4><p>Press <code>Ctrl + Shift + P</code>.</p></div></div>
+    <div class="step-item"><div class="step-num">2</div><div><h4>Create a new notebook</h4><p>Type "Jupyter: Create New Jupyter Notebook" and select it. A new .ipynb file opens with one empty code cell.</p></div></div>
+    <div class="step-item"><div class="step-num">3</div><div><h4>Select the kernel</h4><p>In the top right of the notebook, click "Select Kernel". Choose the option that matches your mllabs conda environment — it will say something like <code>Python 3.11.5 (mllabs)</code>.</p></div></div>
+    <div class="step-item"><div class="step-num">4</div><div><h4>Save it</h4><p>Press <code>Ctrl + S</code>. Name it <code>my_first_notebook.ipynb</code>. It saves into your current workspace folder.</p></div></div>
+  </div>
+  <div class="card slowdown-card">
+    <div class="card-header">🚨 I don't see the mllabs kernel in the list</div>
+    <div class="card-body">
+      <p>When you installed packages in lesson 0.2, you should have included <code>ipykernel</code>. If the mllabs kernel isn't showing up, try this: open Anaconda Prompt, activate mllabs, and run <code>python -m ipykernel install --user --name mllabs --display-name "Python (mllabs)"</code>. Then restart VS Code and try selecting the kernel again.</p>
+    </div>
+  </div>
+</section>
+
+<section id="s3">
+  <h2><span class="section-num">03</span> Cells, markdown, and the kernel <span class="done-check" onclick="toggleDone(this)"><span class="done-check-box"><span class="done-check-tick">✓</span></span>Mark done</span></h2>
+  <h3>Cell types</h3>
+  <p>Every notebook is made up of cells. There are two types you need to know:</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Cell type</th><th>What it contains</th><th>How to run it</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Code cell</strong></td><td>Python code. When you run it, the output appears directly below.</td><td>Shift + Enter, or click the ▶ button</td></tr>
+        <tr><td><strong>Markdown cell</strong></td><td>Formatted text: headings, bold, bullet points, links. Good for notes and explanations.</td><td>Shift + Enter renders the formatting</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>To switch a cell type: click the cell, then look at the cell type dropdown in the top-right area of the cell (it says "Code" or "Markdown"). Click it to switch.</p>
+
+  <h3>The kernel — what it is and why it matters</h3>
+  <div class="card explain-card">
+    <div class="card-header">💡 Here's what's going on under the hood</div>
+    <div class="card-body">
+      <p>The <strong>kernel</strong> is the engine running your notebook. When you run a cell, VS Code sends your code to the kernel, the kernel executes it, and sends the result back to display below the cell.</p>
+      <p>The kernel also has <strong>memory</strong>. If you define a variable in cell 1, cell 5 can still use it — because the kernel remembers everything that's been run in this session. This shared memory is what makes notebooks so powerful for exploration.</p>
+      <p><strong>When things go wrong:</strong> if a variable gives unexpected results, or something is behaving strangely, the fix is almost always to restart the kernel: go to the Kernel menu at the top and click "Restart". This wipes the memory and starts fresh. Then run your cells in order from the top.</p>
+    </div>
+  </div>
+
+  <h3>Essential notebook keyboard shortcuts</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Shortcut</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td><code>Shift + Enter</code></td><td>Run the current cell and move to the next one</td></tr>
+        <tr><td><code>Ctrl + Enter</code></td><td>Run the current cell and stay on it</td></tr>
+        <tr><td><code>Esc</code> then <code>A</code></td><td>Insert a new cell above the current one</td></tr>
+        <tr><td><code>Esc</code> then <code>B</code></td><td>Insert a new cell below the current one</td></tr>
+        <tr><td><code>Esc</code> then <code>M</code></td><td>Change the current cell to Markdown</td></tr>
+        <tr><td><code>Esc</code> then <code>Y</code></td><td>Change the current cell back to Code</td></tr>
+        <tr><td><code>Esc</code> then <code>DD</code></td><td>Delete the current cell</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="s4">
+  <h2><span class="section-num">04</span> Notebook vs script: when to use each <span class="done-check" onclick="toggleDone(this)"><span class="done-check-box"><span class="done-check-tick">✓</span></span>Mark done</span></h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th></th><th>.ipynb Notebook</th><th>.py Script</th></tr></thead>
+      <tbody>
+        <tr><td><strong>How you run it</strong></td><td>Cell by cell with Shift+Enter</td><td>All at once: <code>python filename.py</code></td></tr>
+        <tr><td><strong>Output appears</strong></td><td>Inline, below each cell</td><td>In the terminal</td></tr>
+        <tr><td><strong>Memory between runs</strong></td><td>Kernel remembers everything until restarted</td><td>Fresh every run</td></tr>
+        <tr><td><strong>Best for</strong></td><td>Exploring data, learning, showing work</td><td>Automations, tools, pipelines, anything that runs on its own</td></tr>
+        <tr><td><strong>This course</strong></td><td>Track A data exploration, learning new concepts</td><td>Projects, automation tasks, anything you build to run</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout"><strong>Quick rule:</strong> if you're figuring something out, use a notebook. If you're building something, write a script. Most data scientists use both, switching between them depending on what they're doing. You'll do the same.</div>
+</section>
+
+<section id="s5">
+  <h2><span class="section-num">05</span> Your first Python in a notebook <span class="done-check" onclick="toggleDone(this)"><span class="done-check-box"><span class="done-check-tick">✓</span></span>Mark done</span></h2>
+  <p>Open <code>my_first_notebook.ipynb</code> and type the code from each cell below. Run each cell with <strong>Shift + Enter</strong> before moving to the next.</p>
+
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 Cell 1 — Basic Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># Your first cell — a simple print statement</span>
+<span class="fn">print</span>(<span class="st">"Hello from Jupyter!"</span>)
+<span class="fn">print</span>(<span class="st">"My environment is working."</span>)</pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 Cell 2 — Variables and expressions</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># Notebooks show the value of the last expression automatically</span>
+<span class="cm"># (you don't always need print())</span>
+name = <span class="st">"Mel"</span>
+course = <span class="st">"From Novice to Ninja"</span>
+phase = <span class="nm">0</span>
+
+<span class="st">f"Welcome {name} — you're on Phase {phase} of {course}"</span></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 Cell 3 — Prove the kernel remembers cell 2</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># name and phase are still available — the kernel remembers them</span>
+<span class="fn">print</span>(<span class="st">f"Name from cell 2: {name}"</span>)
+<span class="fn">print</span>(<span class="st">f"Phase from cell 2: {phase}"</span>)</pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 Cell 4 — Import a library and use it</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">from</span> datetime <span class="kw">import</span> date
+
+<span class="fn">print</span>(<span class="st">f"Pandas version: {pd.__version__}"</span>)
+<span class="fn">print</span>(<span class="st">f"Today is: {date.today()}"</span>)
+<span class="fn">print</span>(<span class="st">"Phase 0 is complete. You are ready."</span>)</pre>
+  </div>
+
+  <div class="challenge">
+    <div class="challenge-header" onclick="toggleChallenge(this)">🎯 Final Challenge — Phase 0 Notebook</div>
+    <div class="challenge-body">
+      <p class="challenge-q">In a new notebook called <code>phase0_complete.ipynb</code>:</p>
+      <p>
+        1. Cell 1: Write a markdown cell with a heading "Phase 0 Setup Check" and your name.<br>
+        2. Cell 2: Import pandas, numpy, and matplotlib. Print all three version numbers.<br>
+        3. Cell 3: Create a list of the four tools you set up in Phase 0. Loop through it and print each one.<br>
+        4. Cell 4: Define a variable in this cell, then add a new cell 5 that uses that variable — proving kernel memory works.<br>
+        5. Save the notebook. You've just completed Phase 0.
+      </p>
+      <button class="answer-toggle" onclick="toggleAnswer(this)">Show answer</button>
+      <div class="answer-box">
+        <div class="code-block" style="margin:.3rem 0 .5rem;">
+          <div class="code-label output"><span>🟡 Cell 1 — Markdown (change cell type to Markdown first)</span></div>
+          <pre>
+# Phase 0 Setup Check
+Name: Mel</pre>
+        </div>
+        <div class="code-block" style="margin:.3rem 0 .5rem;">
+          <div class="code-label script"><span>🟡 Cell 2</span></div>
+          <pre>
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">import</span> matplotlib
+<span class="fn">print</span>(pd.__version__, np.__version__, matplotlib.__version__)</pre>
+        </div>
+        <div class="code-block" style="margin:.3rem 0 .5rem;">
+          <div class="code-label script"><span>🟡 Cell 3</span></div>
+          <pre>
+tools = [<span class="st">"Terminal"</span>, <span class="st">"Anaconda"</span>, <span class="st">"VS Code"</span>, <span class="st">"Jupyter"</span>]
+<span class="kw">for</span> tool <span class="kw">in</span> tools:
+    <span class="fn">print</span>(<span class="st">f"✓ {tool}"</span>)</pre>
+        </div>
+        <div class="code-block" style="margin:.3rem 0 .5rem;">
+          <div class="code-label script"><span>🟡 Cell 4</span></div>
+          <pre>
+setup_complete = <span class="kw">True</span></pre>
+        </div>
+        <div class="code-block" style="margin:.3rem 0 .5rem;">
+          <div class="code-label script"><span>🟡 Cell 5</span></div>
+          <pre>
+<span class="fn">print</span>(<span class="st">f"Setup complete: {setup_complete}"</span>)
+<span class="cm"># setup_complete came from cell 4 — the kernel remembers it</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="s6">
+  <h2><span class="section-num">06</span> Practice tasks <span class="done-check" onclick="toggleDone(this)"><span class="done-check-box"><span class="done-check-tick">✓</span></span>Mark done</span></h2>
+  <div class="task-box">
+    <div class="task-num">Task 01 — Easy</div>
+    <p>In a notebook, write three cells. Cell 1: define two numbers. Cell 2: add them. Cell 3: multiply them. Run them in order. Then change cell 1's numbers and run all three again — notice how cells 2 and 3 update.</p>
+  </div>
+  <div class="task-box">
+    <div class="task-num">Task 02 — Easy</div>
+    <p>Add a Markdown cell to your notebook. Write a heading, some bold text, and a bullet list. Run the cell to see it render. Edit the markdown and run again. This is how you annotate your work in data science.</p>
+  </div>
+  <div class="task-box">
+    <div class="task-num">Task 03 — Medium</div>
+    <p>Run your cells out of order on purpose — run cell 3 before cell 2, or cell 2 before cell 1. Notice what happens. Then restart the kernel and run everything in order. This teaches you why cell order matters and why "Restart and Run All" is such an important button.</p>
+  </div>
+  <div class="task-box">
+    <div class="task-num">Task 04 — Challenge</div>
+    <p>Write a notebook that demonstrates the kernel memory in a breaking scenario: define a variable, restart the kernel without running that cell, then try to use the variable in a later cell. Document what error appears and why with a Markdown cell explaining the cause.</p>
+  </div>
+</section>
+
+<section id="s7">
+  <h2><span class="section-num">07</span> Phase 0 complete <span class="done-check" onclick="toggleDone(this)"><span class="done-check-box"><span class="done-check-tick">✓</span></span>Mark done</span></h2>
+
+  <div class="big-win">
+    <h3>🎉 Phase 0 Done</h3>
+    <p>You set up the terminal, installed Anaconda, created a Python environment, installed VS Code and its extensions, selected your interpreter, and ran your first code in a notebook. That's the complete developer setup. Everything from here is actual Python.</p>
+  </div>
+
+  <h3>What you've built</h3>
+  <ul>
+    <li><strong>Terminal skills:</strong> navigate your machine, create folders, run commands</li>
+    <li><strong>Anaconda:</strong> Python installed, <code>mllabs</code> environment active, core packages ready</li>
+    <li><strong>VS Code:</strong> editor configured, interpreter set, integrated terminal working</li>
+    <li><strong>Jupyter:</strong> can create and run notebooks, understand cells and kernel memory</li>
+  </ul>
+
+  <h3>What's next: Phase 1</h3>
+  <p>Phase 1 covers Python basics — variables, data types, strings, numbers, booleans, user input. You'll write code in every lesson, run it in your environment, and build toward your first complete script by the end of the phase.</p>
+  <div class="callout"><strong>Every time you start a new session:</strong> open Anaconda Prompt, run <code>conda activate mllabs</code>, then open VS Code with <code>code .</code> from your project folder. Those three steps are your daily ritual.</div>
+</section>
+
+</main>
+<div class="page-nav">
+  <a href="03-vscode.html" class="nav-btn"><span class="nav-sub">Previous</span>← 0.3 VS Code</a>
+  <a href="../../index.html" class="nav-btn next"><span class="nav-sub">Phase 0 complete</span>Back to Portal →</a>
+</div>
+<footer>
+  <strong>MLlabswithMel</strong> &mdash; Hands-on data &amp; AI education<br>
+  <span style="font-size:.8rem;margin-top:.3rem;display:block;color:var(--faint)">Phase 0 / Lesson 0.4: Jupyter Notebooks — Phase Complete</span>
+</footer>
+<script>
+window.addEventListener('scroll',function(){var pct=window.scrollY/(document.documentElement.scrollHeight-window.innerHeight);document.getElementById('scroll-bar').style.transform='scaleX('+Math.min(pct,1)+')';});
+document.querySelectorAll('.card-header').forEach(function(h){h.addEventListener('click',function(){h.closest('.card').classList.toggle('open');});});
+function toggleChallenge(h){h.closest('.challenge').classList.toggle('open');}
+function toggleAnswer(btn){var box=btn.nextElementSibling;box.classList.toggle('show');btn.textContent=box.classList.contains('show')?'Hide answer':'Show answer';}
+function toggleDone(el){el.classList.toggle('checked');updateProgress();}
+function copyCode(btn){var pre=btn.closest('.code-block').querySelector('pre');navigator.clipboard.writeText(pre?pre.innerText:'').then(function(){btn.textContent='Copied!';btn.classList.add('copied');setTimeout(function(){btn.textContent='Copy';btn.classList.remove('copied');},2000);}).catch(function(){btn.textContent='Failed';setTimeout(function(){btn.textContent='Copy';},1500);});}
+function chipClick(chip,sectionId){chip.classList.toggle('done');updateProgress();if(chip.classList.contains('done'))document.getElementById(sectionId).scrollIntoView({behavior:'smooth'});}
+function updateProgress(){var total=document.querySelectorAll('.chip').length;var done=Math.max(document.querySelectorAll('.chip.done').length,document.querySelectorAll('.done-check.checked').length);document.getElementById('prog-fill').style.width=Math.round(done/total*100)+'%';document.getElementById('prog-text').textContent=done+' of '+total+' sections done';}
+var sections=document.querySelectorAll('main section[id]');var tocLinks=document.querySelectorAll('#toc-list a');
+function updateToc(){var y=window.scrollY+120,cur='';sections.forEach(function(s){if(s.offsetTop<=y)cur=s.id;});tocLinks.forEach(function(a){a.classList.toggle('active',a.getAttribute('href')==='#'+cur);});}
+window.addEventListener('scroll',updateToc,{passive:true});updateToc();
+</script>
+</body>
+</html>

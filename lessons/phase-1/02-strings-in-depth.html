@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.2 Strings In Depth | MLlabswithMel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#faf9ff;--surface:#f3f0ff;--surface-2:#ede9ff;--purple:#7f77dd;--purple-dk:#534ab7;--purple-lt:#e8e5ff;--teal:#1d9e75;--teal-lt:#d4f0e6;--coral:#d85a30;--coral-lt:#faecea;--amber:#ba7517;--amber-lt:#fef3dc;--text:#1a1633;--muted:#6b5fa8;--faint:#9b94cc;--code-bg:#ede9ff;--code-text:#534ab7;--border:#c4bde8;--border-lt:#e2defc;}
+html{scroll-behavior:smooth;}body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:1.05rem;line-height:1.8;}
+@keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.scroll-glow{position:fixed;top:0;left:0;width:100%;height:4px;z-index:1000;background:linear-gradient(90deg,#7f77dd,#534ab7,#9b8ff0,#7f77dd);background-size:300% 300%;animation:gradientShift 4s ease infinite;transform-origin:left;transform:scaleX(0);}
+.site-header{background:linear-gradient(135deg,var(--surface) 0%,#eceaff 60%,var(--surface) 100%);background-size:200% 200%;animation:gradientShift 8s ease infinite;border-bottom:2px solid var(--purple);padding:2rem 1.5rem 1.8rem;text-align:center;}
+.brand{font-size:.78rem;font-weight:700;color:var(--purple-dk);letter-spacing:.12em;text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin-bottom:.4rem;}
+.breadcrumb{font-size:.78rem;color:var(--faint);margin-bottom:.7rem;font-family:'JetBrains Mono',monospace;}
+.breadcrumb a{color:var(--purple);text-decoration:none;}.breadcrumb a:hover{text-decoration:underline;}
+.lesson-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;background:var(--purple);color:#fff;padding:.15rem .7rem;border-radius:999px;margin-bottom:.6rem;display:inline-block;}
+.site-header h1{font-size:clamp(1.7rem,4vw,2.6rem);font-weight:700;line-height:1.2;color:var(--text);margin-bottom:.5rem;}
+.site-header h1 em{color:var(--purple);font-style:normal;}
+.site-header .subtitle{color:var(--muted);font-size:.97rem;max-width:580px;margin:0 auto .8rem;}
+.tag-row{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;margin-top:.7rem;}
+.tag{background:var(--purple-lt);color:var(--purple-dk);font-size:.7rem;font-weight:600;padding:.18rem .65rem;border-radius:999px;font-family:'JetBrains Mono',monospace;}
+.tag.teal{background:var(--teal-lt);color:#0a4a30;}.tag.amber{background:var(--amber-lt);color:#6b3a00;}
+.lesson-strip{max-width:960px;margin:1.2rem auto 0;padding:0 1.5rem;}
+.lesson-strip-inner{display:flex;gap:.5rem;overflow-x:auto;padding-bottom:.3rem;}
+.ls-item{display:flex;align-items:center;gap:.4rem;background:var(--surface);border:1.5px solid var(--border-lt);border-radius:8px;padding:.4rem .85rem;text-decoration:none;font-size:.78rem;font-weight:600;color:var(--muted);white-space:nowrap;transition:all .15s;flex-shrink:0;}
+.ls-item:hover{border-color:var(--purple);color:var(--purple-dk);}.ls-item.active{background:var(--purple);border-color:var(--purple);color:#fff;}
+.ls-num{font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;}
+.progress-section{max-width:960px;margin:1.2rem auto 0;padding:0 1.5rem;}
+.progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;font-size:.83rem;color:var(--muted);font-weight:600;}
+.progress-track{height:7px;background:var(--surface-2);border-radius:999px;overflow:hidden;margin-bottom:1rem;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--purple),#9b8ff0);border-radius:999px;transition:width .4s ease;width:0%;}
+.topic-chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:.45rem;}
+.chip{display:flex;align-items:center;gap:.45rem;background:var(--surface);border:1.5px solid var(--border-lt);border-radius:7px;padding:.4rem .75rem;cursor:pointer;font-size:.78rem;font-weight:600;color:var(--muted);transition:all .15s;user-select:none;}
+.chip.done{border-color:var(--teal);background:var(--teal-lt);color:#0a4a30;}
+.chip-box{width:13px;height:13px;min-width:13px;border:1.5px solid var(--border);border-radius:3px;display:flex;align-items:center;justify-content:center;}
+.chip.done .chip-box{background:var(--teal);border-color:var(--teal);}
+.chip-tick{display:none;color:#fff;font-size:8px;font-weight:800;}.chip.done .chip-tick{display:block;}
+.toc{background:var(--surface);border:1.5px solid var(--border-lt);border-radius:12px;padding:1.3rem 1.5rem;margin:1.2rem auto;max-width:960px;}
+.toc h3{font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin-bottom:.7rem;}
+.toc ol{padding-left:1.2rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.3rem;}
+.toc ol li a{color:var(--purple-dk);text-decoration:none;font-size:.85rem;font-weight:500;}
+.toc ol li a:hover,.toc ol li a.toc-active{color:var(--purple);font-weight:700;}
+main{max-width:960px;margin:0 auto;padding:0 1.5rem 5rem;}
+section{margin-bottom:4rem;scroll-margin-top:2rem;}
+section h2{font-size:clamp(1.2rem,3vw,1.65rem);font-weight:700;color:var(--text);margin-bottom:1.2rem;padding-bottom:.6rem;border-bottom:2px solid var(--border-lt);display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;}
+.section-num{display:inline-flex;align-items:center;justify-content:center;background:var(--purple);color:#fff;font-size:.67rem;font-weight:700;width:24px;height:24px;border-radius:50%;flex-shrink:0;}
+.done-check{margin-left:auto;display:flex;align-items:center;gap:.4rem;font-size:.74rem;font-weight:600;color:var(--faint);cursor:pointer;user-select:none;}
+.done-check:hover,.done-check.checked{color:var(--teal);}
+.done-check-box{width:15px;height:15px;border:1.5px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;}
+.done-check.checked .done-check-box{background:var(--teal);border-color:var(--teal);}
+.done-check-tick{display:none;color:#fff;font-size:9px;font-weight:800;}.done-check.checked .done-check-tick{display:block;}
+section h3{font-size:1.05rem;font-weight:700;color:var(--purple-dk);margin:2rem 0 .6rem;}
+section p{margin-bottom:1rem;color:var(--muted);}section p strong{color:var(--text);}
+section ul{padding-left:1.4rem;margin-bottom:1rem;color:var(--muted);}section li{margin-bottom:.5rem;}section li strong{color:var(--text);}
+.card{border-radius:12px;margin:1.5rem 0;overflow:hidden;border-left:4px solid transparent;}
+.card-header{padding:.75rem 1.2rem;font-size:.9rem;font-weight:700;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;gap:.5rem;}
+.card-header::after{content:'▼';font-size:.58rem;transition:transform .2s;flex-shrink:0;}.card.open .card-header::after{transform:rotate(180deg);}
+.card-body{padding:1rem 1.2rem 1.2rem;display:none;font-size:.94rem;color:var(--muted);}.card.open .card-body{display:block;}
+.card-body p{margin-bottom:.7rem;}.card-body p:last-child{margin-bottom:0;}.card-body strong{color:var(--text);}
+.card-body ul{padding-left:1.2rem;}.card-body li{margin-bottom:.35rem;}
+.card-body code{background:var(--surface-2);padding:.08rem .35rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--purple-dk);}
+.slowdown-card{background:var(--coral-lt);border-color:var(--coral);}.slowdown-card .card-header{background:#f8dcd5;color:#8b2e10;}
+.explain-card{background:var(--purple-lt);border-color:var(--purple);}.explain-card .card-header{background:#ddd9f8;color:var(--purple-dk);}
+.analogy-card{background:var(--teal-lt);border-color:var(--teal);}.analogy-card .card-header{background:#c0e8d8;color:#0a4a30;}
+.challenge{background:var(--amber-lt);border:1.5px solid #f0c060;border-radius:12px;margin:1.8rem 0;overflow:hidden;}
+.challenge-header{background:#fde8a0;padding:.7rem 1.2rem;font-size:.88rem;font-weight:700;color:#6b3a00;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;}
+.challenge-header::after{content:'▼';font-size:.58rem;transition:transform .2s;}.challenge.open .challenge-header::after{transform:rotate(180deg);}
+.challenge-body{padding:1rem 1.2rem 1.2rem;display:none;font-size:.93rem;color:var(--muted);}.challenge.open .challenge-body{display:block;}
+.challenge-body p{margin-bottom:.7rem;}.challenge-q{font-weight:700;color:#6b3a00;margin-bottom:.6rem;font-size:.95rem;}
+.answer-toggle{background:none;border:1.5px solid #d4a020;border-radius:6px;padding:.3rem .9rem;font-size:.78rem;font-weight:700;color:#8b5a00;cursor:pointer;margin-top:.4rem;font-family:'Plus Jakarta Sans',sans-serif;transition:background .15s;}
+.answer-toggle:hover{background:#fde8a0;}
+.answer-box{background:#fff8e0;border-radius:8px;padding:.85rem 1rem;margin-top:.6rem;display:none;border:1px solid #f0c060;color:var(--muted);}.answer-box.show{display:block;}
+.answer-box p{margin-bottom:.5rem;}.answer-box p:last-child{margin-bottom:0;}
+.code-block{background:var(--code-bg);border-radius:12px;margin:1.2rem 0;overflow:hidden;border:1.5px solid var(--border-lt);}
+.code-label{display:flex;align-items:center;justify-content:space-between;padding:.45rem 1rem;font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:500;border-bottom:1px solid var(--border-lt);}
+.code-label.script{background:var(--amber-lt);color:#6b3a00;}
+.code-label.output{background:var(--surface-2);color:var(--muted);}
+.copy-btn{background:none;border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-size:.68rem;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s;}
+.copy-btn:hover{background:var(--purple-lt);color:var(--purple-dk);}.copy-btn.copied{color:var(--teal);border-color:var(--teal);}
+pre{padding:1.2rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.84rem;line-height:1.85;color:var(--code-text);white-space:pre;}
+.cm{color:#9b94cc;font-style:italic;}.kw{color:var(--purple);font-weight:600;}.st{color:var(--teal);}.fn{color:var(--amber);}.nm{color:var(--coral);}.bi{color:#534ab7;}
+.table-wrap{overflow-x:auto;margin:1.2rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.9rem;}
+th{background:var(--surface);color:var(--purple-dk);font-size:.77rem;font-weight:700;text-align:left;padding:.65rem 1rem;border-bottom:2px solid var(--border);}
+td{padding:.6rem 1rem;border-bottom:1px solid var(--border-lt);vertical-align:top;color:var(--muted);}td strong{color:var(--text);}
+tr:hover td{background:var(--surface);}
+td code,th code{background:var(--surface-2);padding:.08rem .35rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--purple-dk);}
+.callout{background:var(--teal-lt);border-left:3px solid var(--teal);padding:.9rem 1.2rem;border-radius:0 8px 8px 0;margin:1.2rem 0;font-size:.93rem;color:#0a4a30;}
+.callout strong{color:var(--teal);}
+.callout-amber{background:var(--amber-lt);border-left:3px solid var(--amber);padding:.9rem 1.2rem;border-radius:0 8px 8px 0;margin:1.2rem 0;font-size:.93rem;color:#5a3800;}
+.callout-coral{background:var(--coral-lt);border-left:3px solid var(--coral);padding:.9rem 1.2rem;border-radius:0 8px 8px 0;margin:1.2rem 0;font-size:.93rem;color:#6b1c00;}
+/* index diagram for string */
+.index-diagram{display:flex;justify-content:center;margin:1.4rem 0;gap:0;flex-wrap:wrap;}
+.idx-group{display:flex;flex-direction:column;align-items:center;}
+.idx-char{background:var(--purple-lt);border:2px solid var(--purple);padding:.5rem .75rem;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.1rem;color:var(--purple-dk);}
+.idx-group:first-child .idx-char{border-radius:8px 0 0 8px;}
+.idx-group:last-child .idx-char{border-radius:0 8px 8px 0;}
+.idx-pos{font-size:.65rem;font-family:'JetBrains Mono',monospace;color:var(--muted);margin-top:.3rem;}
+.idx-neg{font-size:.62rem;font-family:'JetBrains Mono',monospace;color:var(--coral);margin-top:.1rem;}
+.win-box{background:var(--teal-lt);border:1.5px solid var(--teal);border-radius:12px;padding:1rem 1.4rem;margin:1.8rem 0;color:#0a4a30;font-weight:600;font-size:.95rem;}
+.task-box{background:var(--surface);border:1.5px solid var(--border-lt);border-radius:12px;padding:1.1rem 1.4rem;margin:1rem 0;}
+.task-num{font-size:.73rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--purple);margin-bottom:.3rem;}
+.task-box p{margin:0;font-size:.92rem;color:var(--muted);}
+.task-box p strong{color:var(--text);}
+.task-box code{background:var(--surface-2);padding:.05rem .32rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--purple-dk);}
+.page-nav{display:flex;justify-content:space-between;align-items:center;max-width:960px;margin:2.5rem auto 0;padding:0 1.5rem 2rem;gap:1rem;}
+.nav-btn{display:inline-flex;align-items:center;gap:.5rem;background:var(--surface);border:1.5px solid var(--border-lt);border-radius:12px;padding:.7rem 1.2rem;text-decoration:none;font-size:.87rem;font-weight:700;color:var(--purple-dk);transition:all .18s;}
+.nav-btn:hover{border-color:var(--purple);background:var(--purple-lt);}
+.nav-btn.next{background:var(--purple);color:#fff;border-color:var(--purple);}.nav-btn.next:hover{background:var(--purple-dk);}
+.nav-btn .nav-sub{display:block;font-size:.67rem;font-weight:500;opacity:.75;font-family:'JetBrains Mono',monospace;}
+footer{background:var(--surface);border-top:1.5px solid var(--border-lt);text-align:center;padding:1.8rem 1.5rem;color:var(--muted);font-size:.86rem;}
+footer strong{color:var(--purple-dk);font-weight:700;}
+p code,li code{background:var(--surface-2);padding:.08rem .38rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.83rem;color:var(--purple-dk);}
+@media(max-width:640px){.toc ol,.topic-chips{grid-template-columns:1fr;}pre{font-size:.76rem;}.page-nav{flex-direction:column;}index-diagram{gap:0;}}
+</style>
+</head>
+<body>
+<div class="scroll-glow" id="scroll-bar"></div>
+<header class="site-header">
+  <div class="brand">MLlabswithMel</div>
+  <div class="breadcrumb"><a href="../../index.html">Portal</a> / <a href="../../phase1.html">Phase 1</a> / Lesson 1.2</div>
+  <div class="lesson-label">Lesson 1.2 of 5</div>
+  <h1>Strings <em>In Depth</em></h1>
+  <p class="subtitle">Strings are the most common data type in real-world programming. You use them every time you work with names, messages, files, user input, or data from the web. Time to really know them.</p>
+  <div class="tag-row">
+    <span class="tag">str</span>
+    <span class="tag">indexing</span>
+    <span class="tag">slicing</span>
+    <span class="tag">methods</span>
+    <span class="tag">f-strings</span>
+    <span class="tag teal">No new concepts needed</span>
+    <span class="tag amber">~50 minutes</span>
+  </div>
+</header>
+<div class="lesson-strip">
+  <div class="lesson-strip-inner">
+    <a href="01-variables-and-data-types.html" class="ls-item"><span class="ls-num">1.1</span>Variables &amp; Types</a>
+    <a href="02-strings-in-depth.html" class="ls-item active"><span class="ls-num">1.2</span>Strings In Depth</a>
+    <a href="03-numbers-and-operators.html" class="ls-item"><span class="ls-num">1.3</span>Numbers &amp; Operators</a>
+    <a href="04-booleans-and-comparisons.html" class="ls-item"><span class="ls-num">1.4</span>Booleans &amp; Comparisons</a>
+    <a href="05-getting-input.html" class="ls-item"><span class="ls-num">1.5</span>Getting Input</a>
+  </div>
+</div>
+<div class="progress-section">
+  <div class="progress-header"><span>Lesson progress</span><span id="prog-text">0 of 6 sections done</span></div>
+  <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
+  <div class="topic-chips">
+    <div class="chip" onclick="chipClick(this,'s1')"><div class="chip-box"><span class="chip-tick">✓</span></div>Defining strings</div>
+    <div class="chip" onclick="chipClick(this,'s2')"><div class="chip-box"><span class="chip-tick">✓</span></div>Indexing &amp; slicing</div>
+    <div class="chip" onclick="chipClick(this,'s3')"><div class="chip-box"><span class="chip-tick">✓</span></div>Escape characters</div>
+    <div class="chip" onclick="chipClick(this,'s4')"><div class="chip-box"><span class="chip-tick">✓</span></div>String methods</div>
+    <div class="chip" onclick="chipClick(this,'s5')"><div class="chip-box"><span class="chip-tick">✓</span></div>f-strings deep dive</div>
+    <div class="chip" onclick="chipClick(this,'s6')"><div class="chip-box"><span class="chip-tick">✓</span></div>split() and join()</div>
+  </div>
+</div>
+<div class="toc" style="margin-left:auto;margin-right:auto;">
+  <h3>In this lesson</h3>
+  <ol id="toc-list">
+    <li><a href="#s1">Defining strings — all the ways</a></li>
+    <li><a href="#s2">Indexing and slicing</a></li>
+    <li><a href="#s3">Escape characters</a></li>
+    <li><a href="#s4">String methods</a></li>
+    <li><a href="#s5">f-strings deep dive</a></li>
+    <li><a href="#s6">split() and join()</a></li>
+    <li><a href="#s7">Mini challenge</a></li>
+    <li><a href="#s8">Practice tasks</a></li>
+  </ol>
+</div>
+
+<main>
+
+<!-- S1: DEFINING STRINGS -->
+<section id="s1">
+  <h2><span class="section-num">01</span> Defining strings — all the ways <span class="done-check" onclick="toggleDone(this)"><div class="done-check-box"><span class="done-check-tick">✓</span></div>Mark done</span></h2>
+
+  <div class="card analogy-card open">
+    <div class="card-header">🔁 A string is like a bead necklace</div>
+    <div class="card-body">
+      <p>Picture a necklace where each bead is a character — a letter, space, number, or symbol. The word <code>"Python"</code> is a necklace of 6 beads: P, y, t, h, o, n. In that exact order. That sequence is what makes it a string.</p>
+      <p>You can look at any individual bead (indexing). You can cut out a section of beads (slicing). You can count the beads (length). You can rearrange them. But the string itself is just a sequence of characters in a specific order.</p>
+    </div>
+  </div>
+
+  <p>A string can be created with single quotes, double quotes, or triple quotes. They all produce the same thing.</p>
+
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 All ways to define a string</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># Single quotes and double quotes are identical in Python</span>
+a = <span class="st">'Hello'</span>
+b = <span class="st">"Hello"</span>
+<span class="fn">print</span>(a == b)   <span class="cm"># True — they are the same string</span>
+
+<span class="cm"># When to use which: use double quotes when your string contains a single quote</span>
+message = <span class="st">"It's a great day"</span>   <span class="cm"># single quote inside = use double outside</span>
+quote = <span class="st">'She said "hello"'</span>     <span class="cm"># double quote inside = use single outside</span>
+
+<span class="cm"># Triple quotes — for multi-line strings or large blocks of text</span>
+bio = <span class="st">"""My name is Kofi.
+I am a data analyst.
+I work in Accra."""</span>
+
+<span class="fn">print</span>(bio)
+
+<span class="cm"># The string's length — len() counts every character including spaces</span>
+word = <span class="st">"Python"</span>
+<span class="fn">print</span>(<span class="bi">len</span>(word))     <span class="cm"># 6</span>
+<span class="fn">print</span>(<span class="bi">len</span>(<span class="st">"Hi!"</span>))   <span class="cm"># 3</span>
+<span class="fn">print</span>(<span class="bi">len</span>(<span class="st">""</span>))      <span class="cm"># 0 — empty string has length 0</span></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label output"><span>Output for bio</span></div>
+    <pre>
+My name is Kofi.
+I am a data analyst.
+I work in Accra.</pre>
+  </div>
+
+  <div class="callout"><strong>len() is your most used string function.</strong> It tells you how many characters are in a string. You'll use it constantly — to validate user input length, slice strings, and loop through characters.</div>
+
+  <h3>Concatenation and repetition</h3>
+  <p>Strings support the <code>+</code> and <code>*</code> operators — but they work differently than with numbers.</p>
+
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 Joining and repeating strings</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># + joins strings together (concatenation)</span>
+first = <span class="st">"Data"</span>
+second = <span class="st">" Science"</span>
+combined = first + second
+<span class="fn">print</span>(combined)     <span class="cm"># Data Science</span>
+
+<span class="cm"># * repeats a string N times</span>
+border = <span class="st">"="</span> * <span class="nm">30</span>
+<span class="fn">print</span>(border)       <span class="cm"># ============================== (30 equals signs)</span>
+
+laugh = <span class="st">"Ha"</span> * <span class="nm">4</span>
+<span class="fn">print</span>(laugh)        <span class="cm"># HaHaHaHa</span>
+
+<span class="cm"># IMPORTANT: you cannot concatenate a string and a number directly</span>
+age = <span class="nm">28</span>
+<span class="cm"># print("Age: " + age)       — TypeError! Must convert first</span>
+<span class="fn">print</span>(<span class="st">"Age: "</span> + <span class="bi">str</span>(age))  <span class="cm"># Age: 28</span></pre>
+  </div>
+</section>
+
+<!-- S2: INDEXING AND SLICING -->
+<section id="s2">
+  <h2><span class="section-num">02</span> Indexing and slicing <span class="done-check" onclick="toggleDone(this)"><div class="done-check-box"><span class="done-check-tick">✓</span></div>Mark done</span></h2>
+
+  <p>Because a string is a <em>sequence</em> of characters, you can access any individual character using its position number — called an <strong>index</strong>. Python counts from <strong>zero</strong>, not from one. The first character is at position 0.</p>
+
+  <!-- INDEX DIAGRAM -->
+  <div class="index-diagram">
+    <div class="idx-group"><div class="idx-char">P</div><div class="idx-pos">0</div><div class="idx-neg">-6</div></div>
+    <div class="idx-group"><div class="idx-char">y</div><div class="idx-pos">1</div><div class="idx-neg">-5</div></div>
+    <div class="idx-group"><div class="idx-char">t</div><div class="idx-pos">2</div><div class="idx-neg">-4</div></div>
+    <div class="idx-group"><div class="idx-char">h</div><div class="idx-pos">3</div><div class="idx-neg">-3</div></div>
+    <div class="idx-group"><div class="idx-char">o</div><div class="idx-pos">4</div><div class="idx-neg">-2</div></div>
+    <div class="idx-group"><div class="idx-char">n</div><div class="idx-pos">5</div><div class="idx-neg">-1</div></div>
+  </div>
+  <p style="text-align:center;font-size:.82rem;color:var(--faint);font-family:'JetBrains Mono',monospace;margin-top:-.3rem;">The string "Python" — positive indices (top) and negative indices (bottom)</p>
+
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 Indexing — accessing individual characters</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+word = <span class="st">"Python"</span>
+
+<span class="cm"># Positive indexing — count from the start</span>
+<span class="fn">print</span>(word[<span class="nm">0</span>])   <span class="cm"># P  — first character</span>
+<span class="fn">print</span>(word[<span class="nm">1</span>])   <span class="cm"># y</span>
+<span class="fn">print</span>(word[<span class="nm">3</span>])   <span class="cm"># h</span>
+<span class="fn">print</span>(word[<span class="nm">5</span>])   <span class="cm"># n  — last character (index = length-1)</span>
+
+<span class="cm"># Negative indexing — count from the END</span>
+<span class="fn">print</span>(word[<span class="nm">-1</span>])  <span class="cm"># n  — last character</span>
+<span class="fn">print</span>(word[<span class="nm">-2</span>])  <span class="cm"># o  — second from last</span>
+<span class="fn">print</span>(word[<span class="nm">-6</span>])  <span class="cm"># P  — same as word[0]</span>
+
+<span class="cm"># Common use: get the first and last character of any string</span>
+name = <span class="st">"Nakamura"</span>
+<span class="fn">print</span>(<span class="st">f"First: {name[0]}, Last: {name[-1]}"</span>)   <span class="cm"># First: N, Last: a</span></pre>
+  </div>
+
+  <div class="card slowdown-card">
+    <div class="card-header">🚨 IndexError — you went past the end of the string</div>
+    <div class="card-body">
+      <p>If you try to access an index that doesn't exist — for example <code>word[10]</code> on a 6-character string — Python throws an <code>IndexError: string index out of range</code>.</p>
+      <p>The valid range for a string of length n is: <code>0</code> to <code>n-1</code> for positive indexes, and <code>-1</code> to <code>-n</code> for negative. Any index outside this range causes an error.</p>
+    </div>
+  </div>
+
+  <h3>Slicing — extracting a portion</h3>
+  <p>If indexing is getting one bead from the necklace, <strong>slicing</strong> is cutting out a section of beads. Use <code>[start:stop]</code> where <code>start</code> is included and <code>stop</code> is <em>not</em> included.</p>
+
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 Slicing strings</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+text = <span class="st">"Python is great"</span>
+<span class="cm">#       0123456789...  (positions for reference)</span>
+
+<span class="cm"># [start:stop] — from start UP TO BUT NOT INCLUDING stop</span>
+<span class="fn">print</span>(text[<span class="nm">0</span>:<span class="nm">6</span>])    <span class="cm"># Python  (positions 0,1,2,3,4,5)</span>
+<span class="fn">print</span>(text[<span class="nm">7</span>:<span class="nm">9</span>])    <span class="cm"># is</span>
+<span class="fn">print</span>(text[<span class="nm">10</span>:])   <span class="cm"># great  (omit stop = go to the end)</span>
+<span class="fn">print</span>(text[:<span class="nm">6</span>])    <span class="cm"># Python (omit start = begin from 0)</span>
+<span class="fn">print</span>(text[:])     <span class="cm"># Python is great (whole string)</span>
+
+<span class="cm"># [start:stop:step] — third number controls step size</span>
+<span class="fn">print</span>(text[::<span class="nm">2</span>])   <span class="cm"># Pto sget — every 2nd character</span>
+<span class="fn">print</span>(text[::<span class="nm">3</span>])   <span class="cm"># Ph ra — every 3rd character</span>
+
+<span class="cm"># The famous reverse trick: step of -1 goes backwards</span>
+<span class="fn">print</span>(text[::<span class="nm">-1</span>])  <span class="cm"># taerg si nohtyP — reversed!</span>
+
+<span class="cm"># Practical uses</span>
+filename = <span class="st">"report_2024.csv"</span>
+extension = filename[<span class="nm">-4</span>:]    <span class="cm"># .csv — get the last 4 characters</span>
+<span class="fn">print</span>(extension)</pre>
+  </div>
+
+  <div class="card explain-card">
+    <div class="card-header">💡 Why does stop not include the character at that index?</div>
+    <div class="card-body">
+      <p>This is called <strong>exclusive end</strong> (or half-open intervals) and it's a Python convention inherited from mathematics. It feels weird at first but it has advantages:</p>
+      <ul>
+        <li><code>text[:n]</code> always gives you exactly <code>n</code> characters. No off-by-one calculation needed.</li>
+        <li><code>text[:6]</code> + <code>text[6:]</code> perfectly reconstructs the full string with no overlap.</li>
+        <li>The length of a slice <code>[start:stop]</code> is always <code>stop - start</code>.</li>
+      </ul>
+      <p>Once you accept this convention and stop fighting it, it becomes very natural.</p>
+    </div>
+  </div>
+</section>
+
+<!-- S3: ESCAPE CHARACTERS -->
+<section id="s3">
+  <h2><span class="section-num">03</span> Escape characters <span class="done-check" onclick="toggleDone(this)"><div class="done-check-box"><span class="done-check-tick">✓</span></div>Mark done</span></h2>
+
+  <p>An <strong>escape character</strong> is a backslash <code>\</code> followed by a letter. Together they form a special character that would otherwise be hard or impossible to type directly inside a string.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Escape</th><th>What it produces</th><th>Example</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td><code>\n</code></td><td>New line (line break)</td><td><code>"Hello\nWorld"</code></td><td>Hello<br>World</td></tr>
+        <tr><td><code>\t</code></td><td>Tab (horizontal indent)</td><td><code>"Name:\tBrian"</code></td><td>Name: &nbsp;&nbsp;&nbsp;Brian</td></tr>
+        <tr><td><code>\'</code></td><td>Single quote</td><td><code>'It\'s fine'</code></td><td>It's fine</td></tr>
+        <tr><td><code>\"</code></td><td>Double quote</td><td><code>"She said \"hi\""</code></td><td>She said "hi"</td></tr>
+        <tr><td><code>\\</code></td><td>Literal backslash</td><td><code>"C:\\Users\\Mel"</code></td><td>C:\Users\Mel</td></tr>
+        <tr><td><code>\r</code></td><td>Carriage return</td><td>Rarely needed in Python</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 Escape characters in action</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># \n creates a new line within the string</span>
+poem = <span class="st">"Roses are red,\nViolets are blue,\nPython is cool,\nAnd so are you."</span>
+<span class="fn">print</span>(poem)
+
+<span class="cm"># \t creates a tab — useful for formatting tables</span>
+<span class="fn">print</span>(<span class="st">"Name:\t\tAge:\t\tCity:"</span>)
+<span class="fn">print</span>(<span class="st">"Wanjiru\t\t26\t\tNairobi"</span>)
+<span class="fn">print</span>(<span class="st">"Kwame\t\t31\t\tAccra"</span>)
+
+<span class="cm"># Quotes inside strings</span>
+<span class="fn">print</span>(<span class="st">"The professor said, \"Practice every day.\""</span>)
+<span class="fn">print</span>(<span class="st">'Don\'t give up.'</span>)
+
+<span class="cm"># Windows file paths need double backslashes (or use raw strings)</span>
+windows_path = <span class="st">"C:\\Users\\Mel\\Documents"</span>
+<span class="fn">print</span>(windows_path)   <span class="cm"># C:\Users\Mel\Documents</span>
+
+<span class="cm"># RAW strings: put r before the quote to treat backslashes literally</span>
+raw_path = <span class="kw">r</span><span class="st">"C:\Users\Mel\Documents"</span>
+<span class="fn">print</span>(raw_path)        <span class="cm"># Same output — easier to type</span></pre>
+  </div>
+
+  <div class="callout"><strong>Raw strings (r"..."):</strong> When you prefix a string with <code>r</code>, Python treats every backslash as a literal backslash — no escape processing. Extremely useful for Windows file paths and regular expressions (which you'll use in Track A).</div>
+</section>
+
+<!-- S4: STRING METHODS -->
+<section id="s4">
+  <h2><span class="section-num">04</span> String methods <span class="done-check" onclick="toggleDone(this)"><div class="done-check-box"><span class="done-check-tick">✓</span></div>Mark done</span></h2>
+
+  <p>A <strong>method</strong> is a function that belongs to a specific data type and is called using dot notation: <code>variable.method()</code>. Strings have dozens of built-in methods. Here are the ones you will actually use regularly.</p>
+
+  <div class="card explain-card">
+    <div class="card-header">💡 Methods don't modify the original string — they return a new one</div>
+    <div class="card-body">
+      <p>Strings in Python are <strong>immutable</strong> — they cannot be changed once created. Every string method returns a <em>new</em> string rather than modifying the original.</p>
+      <p>So <code>name.upper()</code> does not change <code>name</code>. It creates a new uppercase string and returns it. If you want to keep that result, you must assign it: <code>upper_name = name.upper()</code>.</p>
+    </div>
+  </div>
+
+  <h3>Case methods</h3>
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 Changing case</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+text = <span class="st">"hello world from python"</span>
+
+<span class="fn">print</span>(text.<span class="fn">upper</span>())       <span class="cm"># HELLO WORLD FROM PYTHON</span>
+<span class="fn">print</span>(text.<span class="fn">lower</span>())       <span class="cm"># hello world from python (already lower)</span>
+<span class="fn">print</span>(text.<span class="fn">capitalize</span>())  <span class="cm"># Hello world from python (first char only)</span>
+<span class="fn">print</span>(text.<span class="fn">title</span>())       <span class="cm"># Hello World From Python (each word)</span>
+<span class="fn">print</span>(text.<span class="fn">swapcase</span>())    <span class="cm"># HELLO WORLD FROM PYTHON (flips every case)</span>
+
+<span class="cm"># Original string is unchanged</span>
+<span class="fn">print</span>(text)               <span class="cm"># hello world from python</span>
+
+<span class="cm"># Practical use: case-insensitive comparison</span>
+user_input = <span class="st">"NAIROBI"</span>
+<span class="fn">print</span>(user_input.<span class="fn">lower</span>() == <span class="st">"nairobi"</span>)   <span class="cm"># True — compare apples to apples</span></pre>
+  </div>
+
+  <h3>Trimming whitespace</h3>
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 strip(), lstrip(), rstrip()</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># User input often has accidental spaces. strip() removes them.</span>
+messy = <span class="st">"   hello there   "</span>
+
+<span class="fn">print</span>(messy.<span class="fn">strip</span>())    <span class="cm"># "hello there"   — removes both ends</span>
+<span class="fn">print</span>(messy.<span class="fn">lstrip</span>())   <span class="cm"># "hello there   " — removes left only</span>
+<span class="fn">print</span>(messy.<span class="fn">rstrip</span>())   <span class="cm"># "   hello there" — removes right only</span>
+
+<span class="cm"># Always strip() user input before comparing or storing it</span>
+email = <span class="st">"  mel@mllabs.com  "</span>
+clean_email = email.<span class="fn">strip</span>()
+<span class="fn">print</span>(clean_email)      <span class="cm"># mel@mllabs.com</span></pre>
+  </div>
+
+  <h3>Searching within strings</h3>
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 find(), count(), startswith(), endswith(), in</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+sentence = <span class="st">"Data science is the future of data work"</span>
+
+<span class="cm"># find() — returns the index of the FIRST match, or -1 if not found</span>
+<span class="fn">print</span>(sentence.<span class="fn">find</span>(<span class="st">"data"</span>))    <span class="cm"># 0 — first "data" starts at index 0</span>
+<span class="fn">print</span>(sentence.<span class="fn">find</span>(<span class="st">"future"</span>))  <span class="cm"># 26</span>
+<span class="fn">print</span>(sentence.<span class="fn">find</span>(<span class="st">"Python"</span>))  <span class="cm"># -1 — not found</span>
+
+<span class="cm"># count() — how many times does this substring appear?</span>
+<span class="fn">print</span>(sentence.<span class="fn">count</span>(<span class="st">"data"</span>))   <span class="cm"># 2 — "Data" + "data" ... wait</span>
+<span class="fn">print</span>(sentence.<span class="fn">count</span>(<span class="st">"Data"</span>))   <span class="cm"># 1 — case-sensitive!</span>
+
+<span class="cm"># The 'in' keyword — simplest check: True or False</span>
+<span class="fn">print</span>(<span class="st">"science"</span> <span class="kw">in</span> sentence)    <span class="cm"># True</span>
+<span class="fn">print</span>(<span class="st">"Python"</span> <span class="kw">in</span> sentence)     <span class="cm"># False</span>
+
+<span class="cm"># startswith() and endswith()</span>
+filename = <span class="st">"report_2024.csv"</span>
+<span class="fn">print</span>(filename.<span class="fn">endswith</span>(<span class="st">".csv"</span>))   <span class="cm"># True — check file type</span>
+<span class="fn">print</span>(filename.<span class="fn">startswith</span>(<span class="st">"rep"</span>))  <span class="cm"># True</span></pre>
+  </div>
+
+  <h3>Replacing and modifying</h3>
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 replace()</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+original = <span class="st">"I love Java. Java is great. Java forever."</span>
+
+<span class="cm"># replace(old, new) — replaces ALL occurrences by default</span>
+updated = original.<span class="fn">replace</span>(<span class="st">"Java"</span>, <span class="st">"Python"</span>)
+<span class="fn">print</span>(updated)
+<span class="cm"># I love Python. Python is great. Python forever.</span>
+
+<span class="cm"># replace(old, new, count) — only replace the first N occurrences</span>
+partial = original.<span class="fn">replace</span>(<span class="st">"Java"</span>, <span class="st">"Python"</span>, <span class="nm">1</span>)
+<span class="fn">print</span>(partial)
+<span class="cm"># I love Python. Java is great. Java forever.</span>
+
+<span class="cm"># replace() returns a new string — original is unchanged</span>
+<span class="fn">print</span>(original)   <span class="cm"># I love Java. Java is great. Java forever.</span></pre>
+  </div>
+
+  <h3>Checking string content</h3>
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 isalpha(), isdigit(), isalnum(), isspace()</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># These check what kind of characters are in the string</span>
+<span class="cm"># All return True or False</span>
+
+<span class="fn">print</span>(<span class="st">"hello"</span>.<span class="fn">isalpha</span>())    <span class="cm"># True  — only letters</span>
+<span class="fn">print</span>(<span class="st">"hello1"</span>.<span class="fn">isalpha</span>())   <span class="cm"># False — contains a digit</span>
+<span class="fn">print</span>(<span class="st">"12345"</span>.<span class="fn">isdigit</span>())    <span class="cm"># True  — only digits</span>
+<span class="fn">print</span>(<span class="st">"3.14"</span>.<span class="fn">isdigit</span>())     <span class="cm"># False — decimal point is not a digit</span>
+<span class="fn">print</span>(<span class="st">"abc123"</span>.<span class="fn">isalnum</span>())   <span class="cm"># True  — letters AND digits</span>
+<span class="fn">print</span>(<span class="st">"   "</span>.<span class="fn">isspace</span>())       <span class="cm"># True  — only whitespace</span>
+
+<span class="cm"># Practical use: validate that user typed a number</span>
+user_age = <span class="st">"25"</span>
+<span class="kw">if</span> user_age.<span class="fn">isdigit</span>():
+    <span class="fn">print</span>(<span class="st">f"Age is: {int(user_age)}"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="st">"That doesn't look like a valid age"</span>)</pre>
+  </div>
+</section>
+
+<!-- S5: F-STRINGS DEEP DIVE -->
+<section id="s5">
+  <h2><span class="section-num">05</span> f-strings deep dive <span class="done-check" onclick="toggleDone(this)"><div class="done-check-box"><span class="done-check-tick">✓</span></div>Mark done</span></h2>
+
+  <p>f-strings (formatted string literals) are Python's best way to embed variables and expressions directly inside a string. They're cleaner than concatenation, more readable than <code>.format()</code>, and powerful enough to do formatting in-place.</p>
+
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 f-strings — from basics to power features</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+name = <span class="st">"Amara"</span>
+score = <span class="nm">87.654</span>
+passed = <span class="kw">True</span>
+
+<span class="cm"># Basic: embed a variable</span>
+<span class="fn">print</span>(<span class="st">f"Hello, {name}!"</span>)          <span class="cm"># Hello, Amara!</span>
+
+<span class="cm"># Expressions inside {} — anything that evaluates to a value</span>
+<span class="fn">print</span>(<span class="st">f"Score + 5 = {score + 5}"</span>)  <span class="cm"># Score + 5 = 92.654</span>
+<span class="fn">print</span>(<span class="st">f"Passed: {score >= 50}"</span>)    <span class="cm"># Passed: True</span>
+<span class="fn">print</span>(<span class="st">f"Name has {len(name)} letters"</span>)  <span class="cm"># Name has 5 letters</span>
+
+<span class="cm"># Method calls inside {}</span>
+<span class="fn">print</span>(<span class="st">f"Upper: {name.upper()}"</span>)     <span class="cm"># Upper: AMARA</span>
+
+<span class="cm"># Number formatting with :.Nf  (N decimal places)</span>
+<span class="fn">print</span>(<span class="st">f"Score: {score:.2f}"</span>)        <span class="cm"># Score: 87.65 (rounded to 2 dp)</span>
+<span class="fn">print</span>(<span class="st">f"Score: {score:.0f}"</span>)        <span class="cm"># Score: 88 (no decimals)</span>
+
+<span class="cm"># :, adds comma separators to large numbers</span>
+salary = <span class="nm">120000</span>
+<span class="fn">print</span>(<span class="st">f"Salary: KES {salary:,}"</span>)    <span class="cm"># Salary: KES 120,000</span>
+
+<span class="cm"># Padding: >N right-align, &lt;N left-align, ^N center, in a field of width N</span>
+<span class="fn">print</span>(<span class="st">f"{'Item':<span class="nm">15</span>}{'Price':>10}"</span>)    <span class="cm"># aligned column headers</span>
+<span class="fn">print</span>(<span class="st">f"{'Notebook':<span class="nm">15</span>}{350:>10}"</span>)
+<span class="fn">print</span>(<span class="st">f"{'Pen':<span class="nm">15</span>}{45:>10}"</span>)
+
+<span class="cm"># Multi-line f-strings</span>
+report = <span class="st">f"""
+Student: {name}
+Score:   {score:.1f}
+Passed:  {passed}
+"""</span>
+<span class="fn">print</span>(report)</pre>
+  </div>
+
+  <div class="callout-amber"><strong>Python version note:</strong> f-strings require Python 3.6 or later. Since your mllabs environment uses Python 3.11, you'll never hit this issue. Just remember the <code>f</code> before the opening quote — forgetting it means Python treats <code>{name}</code> as literal text, not a variable.</div>
+</section>
+
+<!-- S6: SPLIT AND JOIN -->
+<section id="s6">
+  <h2><span class="section-num">06</span> split() and join() <span class="done-check" onclick="toggleDone(this)"><div class="done-check-box"><span class="done-check-tick">✓</span></div>Mark done</span></h2>
+
+  <p>These two methods are among the most used in real data work. <code>split()</code> breaks a string into a list. <code>join()</code> assembles a list back into a string. They're each other's inverse.</p>
+
+  <div class="card analogy-card open">
+    <div class="card-header">🔁 Like chopping and assembling</div>
+    <div class="card-body">
+      <p><strong>split()</strong> is like chopping a sentence into individual words at every space. You get back a list of pieces.</p>
+      <p><strong>join()</strong> is like reassembling those pieces — gluing them back together with whatever separator you choose. You decide whether the glue is a space, a comma, a hyphen, or nothing at all.</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 split() — breaking a string into parts</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># split() with no argument splits on whitespace (spaces, tabs, newlines)</span>
+sentence = <span class="st">"The quick brown fox"</span>
+words = sentence.<span class="fn">split</span>()
+<span class="fn">print</span>(words)   <span class="cm"># ['The', 'quick', 'brown', 'fox']</span>
+
+<span class="cm"># split(delimiter) splits on a specific character or string</span>
+csv_row = <span class="st">"Nairobi,Kenya,EA,Africa"</span>
+parts = csv_row.<span class="fn">split</span>(<span class="st">","</span>)
+<span class="fn">print</span>(parts)   <span class="cm"># ['Nairobi', 'Kenya', 'EA', 'Africa']</span>
+
+<span class="cm"># Access specific pieces after splitting</span>
+city = parts[<span class="nm">0</span>]
+continent = parts[<span class="nm">3</span>]
+<span class="fn">print</span>(<span class="st">f"{city} is in {continent}"</span>)  <span class="cm"># Nairobi is in Africa</span>
+
+<span class="cm"># split(delimiter, maxsplit) — limit how many splits happen</span>
+line = <span class="st">"name=Wanjiru=student=2024"</span>
+first_split = line.<span class="fn">split</span>(<span class="st">"="</span>, <span class="nm">1</span>)  <span class="cm"># only split once</span>
+<span class="fn">print</span>(first_split)   <span class="cm"># ['name', 'Wanjiru=student=2024']</span></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 join() — assembling parts into a string</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># join() syntax: "separator".join(list_of_strings)</span>
+<span class="cm"># The separator goes BETWEEN each item</span>
+
+words = [<span class="st">"Python"</span>, <span class="st">"is"</span>, <span class="st">"really"</span>, <span class="st">"fun"</span>]
+
+<span class="cm"># Join with a space</span>
+sentence = <span class="st">" "</span>.<span class="fn">join</span>(words)
+<span class="fn">print</span>(sentence)    <span class="cm"># Python is really fun</span>
+
+<span class="cm"># Join with a hyphen</span>
+slug = <span class="st">"-"</span>.<span class="fn">join</span>(words)
+<span class="fn">print</span>(slug)        <span class="cm"># Python-is-really-fun</span>
+
+<span class="cm"># Join with nothing — collapses everything together</span>
+squished = <span class="st">""</span>.<span class="fn">join</span>(words)
+<span class="fn">print</span>(squished)    <span class="cm"># Pythonjsreallyfun</span>
+
+<span class="cm"># Practical use: building a CSV-formatted string from a list</span>
+record = [<span class="st">"Kofi"</span>, <span class="st">"28"</span>, <span class="st">"Engineer"</span>, <span class="st">"Accra"</span>]
+csv_line = <span class="st">","</span>.<span class="fn">join</span>(record)
+<span class="fn">print</span>(csv_line)    <span class="cm"># Kofi,28,Engineer,Accra</span>
+
+<span class="cm"># IMPORTANT: join only works on a list of STRINGS</span>
+<span class="cm"># If you have numbers, convert them first</span>
+numbers = [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>]
+<span class="cm"># ",".join(numbers)              — TypeError!</span>
+result = <span class="st">","</span>.<span class="fn">join</span>(<span class="bi">str</span>(n) <span class="kw">for</span> n <span class="kw">in</span> numbers)
+<span class="fn">print</span>(result)      <span class="cm"># 1,2,3,4</span></pre>
+  </div>
+
+  <div class="win-box">You can now work with strings like a developer. Indexing, slicing, methods, f-strings, and split/join — these tools appear in almost every real Python program. Data cleaning, file processing, API responses — all of it uses strings constantly.</div>
+</section>
+
+<!-- S7: CHALLENGE -->
+<section id="s7">
+  <h2><span class="section-num">07</span> Mini challenge <span class="done-check" onclick="toggleDone(this)"><div class="done-check-box"><span class="done-check-tick">✓</span></div>Mark done</span></h2>
+
+  <div class="challenge">
+    <div class="challenge-header" onclick="toggleChallenge(this)">🎯 Challenge — String Data Cleaner</div>
+    <div class="challenge-body">
+      <p class="challenge-q">You've received dirty data from a form submission. Clean it up using string methods.</p>
+      <div class="code-block" style="margin:.4rem 0 .7rem;">
+        <div class="code-label script"><span>🟡 Starting data — run this first</span></div>
+        <pre>
+raw_name = <span class="st">"  AMINA OSEI  "</span>
+raw_email = <span class="st">"  AMINA.OSEI@GMAIL.COM   "</span>
+raw_age = <span class="st">"27"</span>
+raw_city = <span class="st">"nairobi,kenya"</span></pre>
+      </div>
+      <p>
+        1. Clean the name: strip spaces and convert to title case.<br>
+        2. Clean the email: strip spaces and convert to lowercase.<br>
+        3. Convert age to integer and calculate birth year (assume current year is 2025).<br>
+        4. Split the city string on the comma. Print city and country separately.<br>
+        5. Check if the email contains "@" — print True or False.<br>
+        6. Print a formatted profile using an f-string with all cleaned values.
+      </p>
+      <button class="answer-toggle" onclick="toggleAnswer(this)">Show answer</button>
+      <div class="answer-box">
+        <div class="code-block" style="margin:.4rem 0 .6rem;">
+          <div class="code-label script"><span>🟡 Solution</span></div>
+          <pre>
+raw_name = <span class="st">"  AMINA OSEI  "</span>
+raw_email = <span class="st">"  AMINA.OSEI@GMAIL.COM   "</span>
+raw_age = <span class="st">"27"</span>
+raw_city = <span class="st">"nairobi,kenya"</span>
+
+clean_name = raw_name.<span class="fn">strip</span>().<span class="fn">title</span>()
+clean_email = raw_email.<span class="fn">strip</span>().<span class="fn">lower</span>()
+age = <span class="bi">int</span>(raw_age)
+birth_year = <span class="nm">2025</span> - age
+city_parts = raw_city.<span class="fn">split</span>(<span class="st">","</span>)
+city = city_parts[<span class="nm">0</span>].<span class="fn">title</span>()
+country = city_parts[<span class="nm">1</span>].<span class="fn">title</span>()
+has_at = <span class="st">"@"</span> <span class="kw">in</span> clean_email
+
+<span class="fn">print</span>(<span class="st">f"Name:       {clean_name}"</span>)
+<span class="fn">print</span>(<span class="st">f"Email:      {clean_email}"</span>)
+<span class="fn">print</span>(<span class="st">f"Age:        {age} (born ~{birth_year})"</span>)
+<span class="fn">print</span>(<span class="st">f"City:       {city}, {country}"</span>)
+<span class="fn">print</span>(<span class="st">f"Valid email: {has_at}"</span>)</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S8: TASKS -->
+<section id="s8">
+  <h2><span class="section-num">08</span> Practice tasks <span class="done-check" onclick="toggleDone(this)"><div class="done-check-box"><span class="done-check-tick">✓</span></div>Mark done</span></h2>
+
+  <div class="task-box">
+    <div class="task-num">Task 01 — Easy</div>
+    <p>Create a string with your full name. Print: the first character, the last character, the length, and the string reversed using slicing.</p>
+  </div>
+
+  <div class="task-box">
+    <div class="task-num">Task 02 — Easy</div>
+    <p>Given <code>sentence = "  Python Programming is Fun!  "</code>, strip it, convert to lowercase, and replace "fun" with "powerful". Print the result.</p>
+  </div>
+
+  <div class="task-box">
+    <div class="task-num">Task 03 — Medium</div>
+    <p>Given <code>data = "Wanjiru:26:Data Analyst:Nairobi"</code>, split on <code>":"</code> and use the parts to print:<br><code>"Wanjiru is a 26-year-old Data Analyst based in Nairobi."</code><br>Use an f-string for the output.</p>
+  </div>
+
+  <div class="task-box">
+    <div class="task-num">Task 04 — Medium</div>
+    <p>Write a program that counts how many times the letter "a" (case-insensitive) appears in: <code>"Amara from Kampala loves data analysis"</code>. Print the count.</p>
+  </div>
+
+  <div class="task-box">
+    <div class="task-num">Task 05 — Challenge</div>
+    <p>Given a list of names: <code>["alice", "bob", "charlie", "diana"]</code>, build a single comma-separated string where each name is title-cased. Expected output: <code>"Alice, Bob, Charlie, Diana"</code>. Do it in one line using <code>join()</code> and a comprehension.</p>
+  </div>
+
+  <div class="task-box">
+    <div class="task-num">Task 06 — Challenge</div>
+    <p>Write a program that takes any string and prints a formatted box around it using <code>*</code> borders. For example, "Hello" should print:<br>
+    <code>*******</code><br>
+    <code>* Hello *</code><br>
+    <code>*******</code><br>
+    Make the box width adapt to the length of the string.</p>
+  </div>
+</section>
+
+</main>
+
+<div class="page-nav">
+  <a href="01-variables-and-data-types.html" class="nav-btn"><span class="nav-sub">Previous</span>← 1.1 Variables &amp; Data Types</a>
+  <a href="03-numbers-and-operators.html" class="nav-btn next"><span class="nav-sub">Next lesson</span>1.3 Numbers &amp; Operators →</a>
+</div>
+
+<footer>
+  <strong>MLlabswithMel</strong> &mdash; Hands-on data &amp; AI education<br>
+  <span style="font-size:.8rem;margin-top:.3rem;display:block;color:var(--faint)">Phase 1 / Lesson 1.2: Strings In Depth</span>
+</footer>
+
+<script>
+window.addEventListener('scroll',function(){var pct=window.scrollY/(document.documentElement.scrollHeight-window.innerHeight);document.getElementById('scroll-bar').style.transform='scaleX('+Math.min(pct,1)+')';},{passive:true});
+document.querySelectorAll('.card-header').forEach(function(h){h.addEventListener('click',function(){h.closest('.card').classList.toggle('open');});});
+function toggleChallenge(h){h.closest('.challenge').classList.toggle('open');}
+function toggleAnswer(btn){var box=btn.nextElementSibling;box.classList.toggle('show');btn.textContent=box.classList.contains('show')?'Hide answer':'Show answer';}
+function toggleDone(el){el.classList.toggle('checked');updateProgress();}
+function copyCode(btn){var pre=btn.closest('.code-block').querySelector('pre');navigator.clipboard.writeText(pre?pre.innerText:'').then(function(){btn.textContent='Copied!';btn.classList.add('copied');setTimeout(function(){btn.textContent='Copy';btn.classList.remove('copied');},2000);}).catch(function(){btn.textContent='Failed';setTimeout(function(){btn.textContent='Copy';},1500);});}
+function chipClick(chip,id){chip.classList.toggle('done');updateProgress();if(chip.classList.contains('done')){var el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth'});}}
+function updateProgress(){var total=document.querySelectorAll('.chip').length;var done=Math.max(document.querySelectorAll('.chip.done').length,document.querySelectorAll('.done-check.checked').length);document.getElementById('prog-fill').style.width=Math.round(done/total*100)+'%';document.getElementById('prog-text').textContent=done+' of '+total+' sections done';}
+var sections=document.querySelectorAll('main section[id]');var tocLinks=document.querySelectorAll('#toc-list a');
+function updateToc(){var y=window.scrollY+130,cur='';sections.forEach(function(s){if(s.offsetTop<=y)cur=s.id;});tocLinks.forEach(function(a){a.classList.toggle('toc-active',a.getAttribute('href')==='#'+cur);});}
+window.addEventListener('scroll',updateToc,{passive:true});updateToc();
+</script>
+</body>
+</html>

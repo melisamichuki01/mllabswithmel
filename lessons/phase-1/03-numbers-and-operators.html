@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.3 Numbers & Operators | MLlabswithMel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#faf9ff;--surface:#f3f0ff;--surface-2:#ede9ff;--purple:#7f77dd;--purple-dk:#534ab7;--purple-lt:#e8e5ff;--teal:#1d9e75;--teal-lt:#d4f0e6;--coral:#d85a30;--coral-lt:#faecea;--amber:#ba7517;--amber-lt:#fef3dc;--text:#1a1633;--muted:#6b5fa8;--faint:#9b94cc;--code-bg:#ede9ff;--code-text:#534ab7;--border:#c4bde8;--border-lt:#e2defc;}
+html{scroll-behavior:smooth;}body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:1.05rem;line-height:1.8;}
+@keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.scroll-glow{position:fixed;top:0;left:0;width:100%;height:4px;z-index:1000;background:linear-gradient(90deg,#7f77dd,#534ab7,#9b8ff0,#7f77dd);background-size:300% 300%;animation:gradientShift 4s ease infinite;transform-origin:left;transform:scaleX(0);}
+.site-header{background:linear-gradient(135deg,var(--surface) 0%,#eceaff 60%,var(--surface) 100%);background-size:200% 200%;animation:gradientShift 8s ease infinite;border-bottom:2px solid var(--purple);padding:2rem 1.5rem 1.8rem;text-align:center;}
+.brand{font-size:.78rem;font-weight:700;color:var(--purple-dk);letter-spacing:.12em;text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin-bottom:.4rem;}
+.breadcrumb{font-size:.78rem;color:var(--faint);margin-bottom:.7rem;font-family:'JetBrains Mono',monospace;}
+.breadcrumb a{color:var(--purple);text-decoration:none;}.breadcrumb a:hover{text-decoration:underline;}
+.lesson-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;background:var(--purple);color:#fff;padding:.15rem .7rem;border-radius:999px;margin-bottom:.6rem;display:inline-block;}
+.site-header h1{font-size:clamp(1.7rem,4vw,2.6rem);font-weight:700;line-height:1.2;color:var(--text);margin-bottom:.5rem;}
+.site-header h1 em{color:var(--purple);font-style:normal;}
+.site-header .subtitle{color:var(--muted);font-size:.97rem;max-width:580px;margin:0 auto .8rem;}
+.tag-row{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;margin-top:.7rem;}
+.tag{background:var(--purple-lt);color:var(--purple-dk);font-size:.7rem;font-weight:600;padding:.18rem .65rem;border-radius:999px;font-family:'JetBrains Mono',monospace;}
+.tag.teal{background:var(--teal-lt);color:#0a4a30;}.tag.amber{background:var(--amber-lt);color:#6b3a00;}
+.lesson-strip{max-width:960px;margin:1.2rem auto 0;padding:0 1.5rem;}
+.lesson-strip-inner{display:flex;gap:.5rem;overflow-x:auto;padding-bottom:.3rem;}
+.ls-item{display:flex;align-items:center;gap:.4rem;background:var(--surface);border:1.5px solid var(--border-lt);border-radius:8px;padding:.4rem .85rem;text-decoration:none;font-size:.78rem;font-weight:600;color:var(--muted);white-space:nowrap;transition:all .15s;flex-shrink:0;}
+.ls-item:hover{border-color:var(--purple);color:var(--purple-dk);}.ls-item.active{background:var(--purple);border-color:var(--purple);color:#fff;}
+.ls-num{font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;}
+.progress-section{max-width:960px;margin:1.2rem auto 0;padding:0 1.5rem;}
+.progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;font-size:.83rem;color:var(--muted);font-weight:600;}
+.progress-track{height:7px;background:var(--surface-2);border-radius:999px;overflow:hidden;margin-bottom:1rem;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--purple),#9b8ff0);border-radius:999px;transition:width .4s ease;width:0%;}
+.topic-chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:.45rem;}
+.chip{display:flex;align-items:center;gap:.45rem;background:var(--surface);border:1.5px solid var(--border-lt);border-radius:7px;padding:.4rem .75rem;cursor:pointer;font-size:.78rem;font-weight:600;color:var(--muted);transition:all .15s;user-select:none;}
+.chip.done{border-color:var(--teal);background:var(--teal-lt);color:#0a4a30;}
+.chip-box{width:13px;height:13px;min-width:13px;border:1.5px solid var(--border);border-radius:3px;display:flex;align-items:center;justify-content:center;}
+.chip.done .chip-box{background:var(--teal);border-color:var(--teal);}
+.chip-tick{display:none;color:#fff;font-size:8px;font-weight:800;}.chip.done .chip-tick{display:block;}
+.toc{background:var(--surface);border:1.5px solid var(--border-lt);border-radius:12px;padding:1.3rem 1.5rem;margin:1.2rem auto;max-width:960px;}
+.toc h3{font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin-bottom:.7rem;}
+.toc ol{padding-left:1.2rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.3rem;}
+.toc ol li a{color:var(--purple-dk);text-decoration:none;font-size:.85rem;font-weight:500;}
+.toc ol li a:hover,.toc ol li a.toc-active{color:var(--purple);font-weight:700;}
+main{max-width:960px;margin:0 auto;padding:0 1.5rem 5rem;}
+section{margin-bottom:4rem;scroll-margin-top:2rem;}
+section h2{font-size:clamp(1.2rem,3vw,1.65rem);font-weight:700;color:var(--text);margin-bottom:1.2rem;padding-bottom:.6rem;border-bottom:2px solid var(--border-lt);display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;}
+.section-num{display:inline-flex;align-items:center;justify-content:center;background:var(--purple);color:#fff;font-size:.67rem;font-weight:700;width:24px;height:24px;border-radius:50%;flex-shrink:0;}
+.done-check{margin-left:auto;display:flex;align-items:center;gap:.4rem;font-size:.74rem;font-weight:600;color:var(--faint);cursor:pointer;user-select:none;}
+.done-check:hover,.done-check.checked{color:var(--teal);}
+.done-check-box{width:15px;height:15px;border:1.5px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;}
+.done-check.checked .done-check-box{background:var(--teal);border-color:var(--teal);}
+.done-check-tick{display:none;color:#fff;font-size:9px;font-weight:800;}.done-check.checked .done-check-tick{display:block;}
+section h3{font-size:1.05rem;font-weight:700;color:var(--purple-dk);margin:2rem 0 .6rem;}
+section p{margin-bottom:1rem;color:var(--muted);}section p strong{color:var(--text);}
+section ul{padding-left:1.4rem;margin-bottom:1rem;color:var(--muted);}section li{margin-bottom:.5rem;}section li strong{color:var(--text);}
+.card{border-radius:12px;margin:1.5rem 0;overflow:hidden;border-left:4px solid transparent;}
+.card-header{padding:.75rem 1.2rem;font-size:.9rem;font-weight:700;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;gap:.5rem;}
+.card-header::after{content:'▼';font-size:.58rem;transition:transform .2s;flex-shrink:0;}.card.open .card-header::after{transform:rotate(180deg);}
+.card-body{padding:1rem 1.2rem 1.2rem;display:none;font-size:.94rem;color:var(--muted);}.card.open .card-body{display:block;}
+.card-body p{margin-bottom:.7rem;}.card-body p:last-child{margin-bottom:0;}.card-body strong{color:var(--text);}
+.card-body ul{padding-left:1.2rem;}.card-body li{margin-bottom:.35rem;}
+.card-body code{background:var(--surface-2);padding:.08rem .35rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--purple-dk);}
+.slowdown-card{background:var(--coral-lt);border-color:var(--coral);}.slowdown-card .card-header{background:#f8dcd5;color:#8b2e10;}
+.explain-card{background:var(--purple-lt);border-color:var(--purple);}.explain-card .card-header{background:#ddd9f8;color:var(--purple-dk);}
+.analogy-card{background:var(--teal-lt);border-color:var(--teal);}.analogy-card .card-header{background:#c0e8d8;color:#0a4a30;}
+.challenge{background:var(--amber-lt);border:1.5px solid #f0c060;border-radius:12px;margin:1.8rem 0;overflow:hidden;}
+.challenge-header{background:#fde8a0;padding:.7rem 1.2rem;font-size:.88rem;font-weight:700;color:#6b3a00;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;}
+.challenge-header::after{content:'▼';font-size:.58rem;transition:transform .2s;}.challenge.open .challenge-header::after{transform:rotate(180deg);}
+.challenge-body{padding:1rem 1.2rem 1.2rem;display:none;font-size:.93rem;color:var(--muted);}.challenge.open .challenge-body{display:block;}
+.challenge-body p{margin-bottom:.7rem;}.challenge-q{font-weight:700;color:#6b3a00;margin-bottom:.6rem;font-size:.95rem;}
+.answer-toggle{background:none;border:1.5px solid #d4a020;border-radius:6px;padding:.3rem .9rem;font-size:.78rem;font-weight:700;color:#8b5a00;cursor:pointer;margin-top:.4rem;font-family:'Plus Jakarta Sans',sans-serif;transition:background .15s;}
+.answer-toggle:hover{background:#fde8a0;}
+.answer-box{background:#fff8e0;border-radius:8px;padding:.85rem 1rem;margin-top:.6rem;display:none;border:1px solid #f0c060;color:var(--muted);}.answer-box.show{display:block;}
+.answer-box p{margin-bottom:.5rem;}
+.code-block{background:var(--code-bg);border-radius:12px;margin:1.2rem 0;overflow:hidden;border:1.5px solid var(--border-lt);}
+.code-label{display:flex;align-items:center;justify-content:space-between;padding:.45rem 1rem;font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:500;border-bottom:1px solid var(--border-lt);}
+.code-label.script{background:var(--amber-lt);color:#6b3a00;}.code-label.output{background:var(--surface-2);color:var(--muted);}
+.copy-btn{background:none;border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-size:.68rem;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s;}
+.copy-btn:hover{background:var(--purple-lt);color:var(--purple-dk);}.copy-btn.copied{color:var(--teal);border-color:var(--teal);}
+pre{padding:1.2rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.84rem;line-height:1.85;color:var(--code-text);white-space:pre;}
+.cm{color:#9b94cc;font-style:italic;}.kw{color:var(--purple);font-weight:600;}.st{color:var(--teal);}.fn{color:var(--amber);}.nm{color:var(--coral);}.bi{color:#534ab7;}
+.table-wrap{overflow-x:auto;margin:1.2rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.9rem;}
+th{background:var(--surface);color:var(--purple-dk);font-size:.77rem;font-weight:700;text-align:left;padding:.65rem 1rem;border-bottom:2px solid var(--border);}
+td{padding:.6rem 1rem;border-bottom:1px solid var(--border-lt);vertical-align:top;color:var(--muted);}td strong{color:var(--text);}
+tr:hover td{background:var(--surface);}
+td code{background:var(--surface-2);padding:.08rem .35rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--purple-dk);}
+.callout{background:var(--teal-lt);border-left:3px solid var(--teal);padding:.9rem 1.2rem;border-radius:0 8px 8px 0;margin:1.2rem 0;font-size:.93rem;color:#0a4a30;}
+.callout strong{color:var(--teal);}
+.callout-amber{background:var(--amber-lt);border-left:3px solid var(--amber);padding:.9rem 1.2rem;border-radius:0 8px 8px 0;margin:1.2rem 0;font-size:.93rem;color:#5a3800;}
+.callout-coral{background:var(--coral-lt);border-left:3px solid var(--coral);padding:.9rem 1.2rem;border-radius:0 8px 8px 0;margin:1.2rem 0;font-size:.93rem;color:#6b1c00;}
+.win-box{background:var(--teal-lt);border:1.5px solid var(--teal);border-radius:12px;padding:1rem 1.4rem;margin:1.8rem 0;color:#0a4a30;font-weight:600;font-size:.95rem;}
+.task-box{background:var(--surface);border:1.5px solid var(--border-lt);border-radius:12px;padding:1.1rem 1.4rem;margin:1rem 0;}
+.task-num{font-size:.73rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--purple);margin-bottom:.3rem;}
+.task-box p{margin:0;font-size:.92rem;color:var(--muted);}
+.task-box p strong{color:var(--text);}
+.task-box code{background:var(--surface-2);padding:.05rem .32rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--purple-dk);}
+.page-nav{display:flex;justify-content:space-between;align-items:center;max-width:960px;margin:2.5rem auto 0;padding:0 1.5rem 2rem;gap:1rem;}
+.nav-btn{display:inline-flex;align-items:center;gap:.5rem;background:var(--surface);border:1.5px solid var(--border-lt);border-radius:12px;padding:.7rem 1.2rem;text-decoration:none;font-size:.87rem;font-weight:700;color:var(--purple-dk);transition:all .18s;}
+.nav-btn:hover{border-color:var(--purple);background:var(--purple-lt);}
+.nav-btn.next{background:var(--purple);color:#fff;border-color:var(--purple);}.nav-btn.next:hover{background:var(--purple-dk);}
+.nav-btn .nav-sub{display:block;font-size:.67rem;font-weight:500;opacity:.75;font-family:'JetBrains Mono',monospace;}
+footer{background:var(--surface);border-top:1.5px solid var(--border-lt);text-align:center;padding:1.8rem 1.5rem;color:var(--muted);font-size:.86rem;}
+footer strong{color:var(--purple-dk);font-weight:700;}
+p code,li code{background:var(--surface-2);padding:.08rem .38rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.83rem;color:var(--purple-dk);}
+@media(max-width:640px){.toc ol,.topic-chips{grid-template-columns:1fr;}pre{font-size:.76rem;}.page-nav{flex-direction:column;}}
+</style>
+</head>
+<body>
+<div class="scroll-glow" id="scroll-bar"></div>
+<header class="site-header">
+  <div class="brand">MLlabswithMel</div>
+  <div class="breadcrumb"><a href="../../index.html">Portal</a> / <a href="../../phase1.html">Phase 1</a> / Lesson 1.3</div>
+  <div class="lesson-label">Lesson 1.3 of 5</div>
+  <h1>Numbers and <em>Operators</em></h1>
+  <p class="subtitle">Numbers are everywhere in Python — from counting items to calculating prices to running machine learning models. This lesson covers every number type and every operator you'll use regularly.</p>
+  <div class="tag-row">
+    <span class="tag">int</span>
+    <span class="tag">float</span>
+    <span class="tag">arithmetic</span>
+    <span class="tag">PEMDAS</span>
+    <span class="tag">augmented assignment</span>
+    <span class="tag">math module</span>
+    <span class="tag teal">Essential for everything</span>
+    <span class="tag amber">~45 minutes</span>
+  </div>
+</header>
+<div class="lesson-strip">
+  <div class="lesson-strip-inner">
+    <a href="01-variables-and-data-types.html" class="ls-item"><span class="ls-num">1.1</span>Variables &amp; Types</a>
+    <a href="02-strings-in-depth.html" class="ls-item"><span class="ls-num">1.2</span>Strings In Depth</a>
+    <a href="03-numbers-and-operators.html" class="ls-item active"><span class="ls-num">1.3</span>Numbers &amp; Operators</a>
+    <a href="04-booleans-and-comparisons.html" class="ls-item"><span class="ls-num">1.4</span>Booleans &amp; Comparisons</a>
+    <a href="05-getting-input.html" class="ls-item"><span class="ls-num">1.5</span>Getting Input</a>
+  </div>
+</div>
+<div class="progress-section">
+  <div class="progress-header"><span>Lesson progress</span><span id="prog-text">0 of 6 sections done</span></div>
+  <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
+  <div class="topic-chips">
+    <div class="chip" onclick="chipClick(this,'s1')"><div class="chip-box"><span class="chip-tick">✓</span></div>int vs float</div>
+    <div class="chip" onclick="chipClick(this,'s2')"><div class="chip-box"><span class="chip-tick">✓</span></div>All 7 operators</div>
+    <div class="chip" onclick="chipClick(this,'s3')"><div class="chip-box"><span class="chip-tick">✓</span></div>Operator precedence</div>
+    <div class="chip" onclick="chipClick(this,'s4')"><div class="chip-box"><span class="chip-tick">✓</span></div>Augmented assignment</div>
+    <div class="chip" onclick="chipClick(this,'s5')"><div class="chip-box"><span class="chip-tick">✓</span></div>Built-in number functions</div>
+    <div class="chip" onclick="chipClick(this,'s6')"><div class="chip-box"><span class="chip-tick">✓</span></div>The math module</div>
+  </div>
+</div>
+<div class="toc" style="margin-left:auto;margin-right:auto;">
+  <h3>In this lesson</h3>
+  <ol id="toc-list">
+    <li><a href="#s1">int vs float — and when it matters</a></li>
+    <li><a href="#s2">All 7 arithmetic operators</a></li>
+    <li><a href="#s3">Operator precedence (PEMDAS)</a></li>
+    <li><a href="#s4">Augmented assignment operators</a></li>
+    <li><a href="#s5">Built-in number functions</a></li>
+    <li><a href="#s6">The math module</a></li>
+    <li><a href="#s7">Mini challenge</a></li>
+    <li><a href="#s8">Practice tasks</a></li>
+  </ol>
+</div>
+
+<main>
+
+<!-- S1: INT VS FLOAT -->
+<section id="s1">
+  <h2><span class="section-num">01</span> int vs float — and when it matters <span class="done-check" onclick="toggleDone(this)"><div class="done-check-box"><span class="done-check-tick">✓</span></div>Mark done</span></h2>
+
+  <p>Python has three numeric types: <code>int</code>, <code>float</code>, and <code>complex</code>. For the vast majority of work, you'll use the first two. Knowing the difference prevents silent bugs in calculations.</p>
+
+  <div class="card analogy-card open">
+    <div class="card-header">🔁 Think in terms of money and change</div>
+    <div class="card-body">
+      <p>An <strong>integer</strong> is like a bank note — whole, complete, no fractions. You have 5 notes or 20 notes. Never 5.5 notes.</p>
+      <p>A <strong>float</strong> is like an amount in a bank account — it can have cents. You have 1,250.75. The decimal part is precise and significant.</p>
+      <p>Whenever you do real-world calculations (prices, percentages, measurements), you almost always want floats. When you're counting discrete things (students, iterations, items), you want integers.</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 int and float behaviour — run this and study the outputs</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># Integers: no decimal point, no upper limit in Python</span>
+students = <span class="nm">32</span>
+year = <span class="nm">2024</span>
+very_large = <span class="nm">10</span> ** <span class="nm">100</span>    <span class="cm"># Python handles huge integers natively</span>
+<span class="fn">print</span>(very_large)            <span class="cm"># 10000...000 (a googol)</span>
+
+<span class="cm"># Floats: always have a decimal point</span>
+price = <span class="nm">14.99</span>
+pi = <span class="nm">3.14159</span>
+rate = <span class="nm">0.075</span>               <span class="cm"># 7.5%</span>
+
+<span class="cm"># The type check</span>
+<span class="fn">print</span>(<span class="bi">type</span>(<span class="nm">10</span>))             <span class="cm"># &lt;class 'int'&gt;</span>
+<span class="fn">print</span>(<span class="bi">type</span>(<span class="nm">10.0</span>))           <span class="cm"># &lt;class 'float'&gt;</span>
+<span class="fn">print</span>(<span class="bi">type</span>(<span class="nm">10</span> / <span class="nm">2</span>))         <span class="cm"># &lt;class 'float'&gt; — division ALWAYS returns float</span>
+<span class="fn">print</span>(<span class="bi">type</span>(<span class="nm">10</span> // <span class="nm">2</span>))        <span class="cm"># &lt;class 'int'&gt;   — floor division returns int</span>
+
+<span class="cm"># int and float can mix — result becomes float</span>
+result = <span class="nm">5</span> + <span class="nm">2.0</span>
+<span class="fn">print</span>(result)                <span class="cm"># 7.0 — int + float = float</span>
+<span class="fn">print</span>(<span class="bi">type</span>(result))          <span class="cm"># &lt;class 'float'&gt;</span>
+
+<span class="cm"># Underscores in large numbers (Python 3.6+)</span>
+population = <span class="nm">1_400_000_000</span>  <span class="cm"># 1.4 billion — easier to read</span>
+<span class="fn">print</span>(population)            <span class="cm"># 1400000000</span></pre>
+  </div>
+
+  <div class="card slowdown-card">
+    <div class="card-header">🚨 Float precision is not perfect</div>
+    <div class="card-body">
+      <p>Floats in Python (and most programming languages) use binary floating-point representation. Binary can't represent all decimal fractions exactly — similar to how <code>1/3</code> can't be written exactly in decimal.</p>
+      <p>This causes small precision errors:</p>
+      <pre style="background:var(--surface-2);padding:.7rem .9rem;border-radius:8px;margin:.5rem 0;font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--coral);">print(0.1 + 0.2)  # 0.30000000000000004 — not 0.3!</pre>
+      <p>For most purposes this doesn't matter. When precision matters (financial calculations), use Python's <code>decimal</code> module or round your outputs with <code>round()</code>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- S2: ALL 7 OPERATORS -->
+<section id="s2">
+  <h2><span class="section-num">02</span> All 7 arithmetic operators <span class="done-check" onclick="toggleDone(this)"><div class="done-check-box"><span class="done-check-tick">✓</span></div>Mark done</span></h2>
+
+  <p>Python gives you seven arithmetic operators. You'll use five of them constantly. The other two (<code>//</code> and <code>%</code>) are less obvious but extremely useful once you know what they're for.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Operator</th><th>Name</th><th>Example</th><th>Result</th><th>When to use it</th></tr></thead>
+      <tbody>
+        <tr><td><code>+</code></td><td>Addition</td><td><code>8 + 3</code></td><td><code>11</code></td><td>Adding quantities, incrementing counters</td></tr>
+        <tr><td><code>-</code></td><td>Subtraction</td><td><code>8 - 3</code></td><td><code>5</code></td><td>Finding differences, decreasing values</td></tr>
+        <tr><td><code>*</code></td><td>Multiplication</td><td><code>8 * 3</code></td><td><code>24</code></td><td>Scaling values, repeating operations</td></tr>
+        <tr><td><code>/</code></td><td>Division (true)</td><td><code>8 / 3</code></td><td><code>2.666...</code></td><td>Any division — always returns float</td></tr>
+        <tr><td><code>//</code></td><td>Floor division</td><td><code>8 // 3</code></td><td><code>2</code></td><td>Whole number results, chunking, pagination</td></tr>
+        <tr><td><code>%</code></td><td>Modulo (remainder)</td><td><code>8 % 3</code></td><td><code>2</code></td><td>Even/odd check, cycling patterns, grouping</td></tr>
+        <tr><td><code>**</code></td><td>Exponentiation</td><td><code>2 ** 8</code></td><td><code>256</code></td><td>Powers, scientific notation, square roots</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 All 7 operators with practical examples</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+a = <span class="nm">17</span>
+b = <span class="nm">5</span>
+
+<span class="fn">print</span>(<span class="st">f"Addition:       {a} + {b} = {a + b}"</span>)    <span class="cm"># 22</span>
+<span class="fn">print</span>(<span class="st">f"Subtraction:    {a} - {b} = {a - b}"</span>)    <span class="cm"># 12</span>
+<span class="fn">print</span>(<span class="st">f"Multiplication: {a} * {b} = {a * b}"</span>)    <span class="cm"># 85</span>
+<span class="fn">print</span>(<span class="st">f"True division:  {a} / {b} = {a / b}"</span>)    <span class="cm"># 3.4</span>
+<span class="fn">print</span>(<span class="st">f"Floor division: {a} // {b} = {a // b}"</span>)  <span class="cm"># 3  (how many 5s fit in 17?)</span>
+<span class="fn">print</span>(<span class="st">f"Modulo:         {a} % {b} = {a % b}"</span>)    <span class="cm"># 2  (what's left over?)</span>
+<span class="fn">print</span>(<span class="st">f"Exponent:       {a} ** {b} = {a ** b}"</span>)  <span class="cm"># 1419857</span></pre>
+  </div>
+
+  <h3>Floor division and modulo — the underrated pair</h3>
+  <p>These two are confusing at first but come up constantly. Let's demystify them.</p>
+
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 Floor division (//) and modulo (%) explained</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># Floor division (//) answers: "how many times does divisor fit completely?"</span>
+<span class="cm"># It DISCARDS the remainder — always rounds DOWN (toward negative infinity)</span>
+<span class="fn">print</span>(<span class="nm">17</span> // <span class="nm">5</span>)    <span class="cm"># 3  — 5 fits into 17 exactly 3 times</span>
+<span class="fn">print</span>(<span class="nm">20</span> // <span class="nm">4</span>)    <span class="cm"># 5  — evenly divisible</span>
+<span class="fn">print</span>(<span class="nm">7</span> // <span class="nm">2</span>)     <span class="cm"># 3  — not 3.5, rounds DOWN</span>
+<span class="fn">print</span>(<span class="nm">-7</span> // <span class="nm">2</span>)    <span class="cm"># -4 — rounds DOWN (toward -infinity, not zero!)</span>
+
+<span class="cm"># Modulo (%) answers: "what's the remainder after dividing completely?"</span>
+<span class="cm"># 17 = (5 * 3) + 2 → 17 // 5 = 3,  17 % 5 = 2</span>
+<span class="fn">print</span>(<span class="nm">17</span> % <span class="nm">5</span>)     <span class="cm"># 2 — remainder</span>
+<span class="fn">print</span>(<span class="nm">20</span> % <span class="nm">4</span>)     <span class="cm"># 0 — divides evenly, no remainder</span>
+<span class="fn">print</span>(<span class="nm">7</span> % <span class="nm">2</span>)      <span class="cm"># 1 — odd number leaves remainder 1</span>
+
+<span class="cm"># PRACTICAL USE 1: Check even or odd</span>
+number = <span class="nm">42</span>
+<span class="kw">if</span> number % <span class="nm">2</span> == <span class="nm">0</span>:
+    <span class="fn">print</span>(<span class="st">f"{number} is even"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="st">f"{number} is odd"</span>)
+
+<span class="cm"># PRACTICAL USE 2: Convert seconds to hours, minutes, seconds</span>
+total_seconds = <span class="nm">3723</span>
+hours = total_seconds // <span class="nm">3600</span>
+remainder = total_seconds % <span class="nm">3600</span>
+minutes = remainder // <span class="nm">60</span>
+seconds = remainder % <span class="nm">60</span>
+<span class="fn">print</span>(<span class="st">f"{total_seconds} seconds = {hours}h {minutes}m {seconds}s"</span>)
+<span class="cm"># 3723 seconds = 1h 2m 3s</span>
+
+<span class="cm"># PRACTICAL USE 3: Pagination — how many full pages of 10 items?</span>
+total_items = <span class="nm">47</span>
+page_size = <span class="nm">10</span>
+full_pages = total_items // page_size    <span class="cm"># 4</span>
+remaining = total_items % page_size      <span class="cm"># 7 items on the last page</span>
+<span class="fn">print</span>(<span class="st">f"{full_pages} full pages + {remaining} items remaining"</span>)</pre>
+  </div>
+
+  <h3>Exponentiation — powers</h3>
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 The ** operator</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># Squares and cubes</span>
+<span class="fn">print</span>(<span class="nm">4</span> ** <span class="nm">2</span>)    <span class="cm"># 16   — 4 squared</span>
+<span class="fn">print</span>(<span class="nm">3</span> ** <span class="nm">3</span>)    <span class="cm"># 27   — 3 cubed</span>
+<span class="fn">print</span>(<span class="nm">2</span> ** <span class="nm">10</span>)   <span class="cm"># 1024 — 2 to the power of 10</span>
+
+<span class="cm"># Square root = raise to the power of 0.5</span>
+<span class="fn">print</span>(<span class="nm">25</span> ** <span class="nm">0.5</span>)  <span class="cm"># 5.0  — square root of 25</span>
+<span class="fn">print</span>(<span class="nm">64</span> ** <span class="nm">0.5</span>)  <span class="cm"># 8.0</span>
+
+<span class="cm"># Nth root = raise to the power of 1/N</span>
+<span class="fn">print</span>(<span class="nm">27</span> ** (<span class="nm">1</span>/<span class="nm">3</span>))  <span class="cm"># ≈3.0 — cube root of 27</span>
+
+<span class="cm"># Compound interest formula: P * (1 + r)^n</span>
+principal = <span class="nm">10000</span>
+rate = <span class="nm">0.08</span>        <span class="cm"># 8% annual</span>
+years = <span class="nm">5</span>
+future_value = principal * (<span class="nm">1</span> + rate) ** years
+<span class="fn">print</span>(<span class="st">f"Future value: KES {future_value:,.2f}"</span>)  <span class="cm"># KES 14,693.28</span></pre>
+  </div>
+</section>
+
+<!-- S3: OPERATOR PRECEDENCE -->
+<section id="s3">
+  <h2><span class="section-num">03</span> Operator precedence (PEMDAS) <span class="done-check" onclick="toggleDone(this)"><div class="done-check-box"><span class="done-check-tick">✓</span></div>Mark done</span></h2>
+
+  <p>When an expression has multiple operators, Python follows a specific order to evaluate them — exactly like the maths rule you learned in school: <strong>PEMDAS</strong> (Parentheses, Exponents, Multiplication/Division, Addition/Subtraction). In Python, this same order applies.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Priority</th><th>Operators</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1 (highest)</strong></td><td><code>()</code></td><td>Parentheses — evaluated first, always</td></tr>
+        <tr><td><strong>2</strong></td><td><code>**</code></td><td>Exponentiation</td></tr>
+        <tr><td><strong>3</strong></td><td><code>*</code> <code>/</code> <code>//</code> <code>%</code></td><td>Multiplication and division (left to right)</td></tr>
+        <tr><td><strong>4 (lowest)</strong></td><td><code>+</code> <code>-</code></td><td>Addition and subtraction (left to right)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 Precedence in action — predict each result before running</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># No parentheses — Python uses precedence rules</span>
+<span class="fn">print</span>(<span class="nm">2</span> + <span class="nm">3</span> * <span class="nm">4</span>)       <span class="cm"># 14  — * before +, so 3*4=12, then 2+12=14</span>
+<span class="fn">print</span>(<span class="nm">10</span> - <span class="nm">2</span> ** <span class="nm">3</span>)      <span class="cm"># 2   — ** first, so 2^3=8, then 10-8=2</span>
+<span class="fn">print</span>(<span class="nm">6</span> + <span class="nm">4</span> / <span class="nm">2</span>)        <span class="cm"># 8.0 — / first, so 4/2=2.0, then 6+2.0=8.0</span>
+<span class="fn">print</span>(<span class="nm">15</span> // <span class="nm">2</span> + <span class="nm">4</span> % <span class="nm">3</span>) <span class="cm"># 8   — // and % first: 7 + 1 = 8</span>
+
+<span class="cm"># Parentheses override everything — add them to be explicit</span>
+<span class="fn">print</span>((<span class="nm">2</span> + <span class="nm">3</span>) * <span class="nm">4</span>)      <span class="cm"># 20  — now + happens first</span>
+<span class="fn">print</span>(<span class="nm">10</span> - (<span class="nm">2</span> ** <span class="nm">3</span>))    <span class="cm"># 2   — same result but more explicit</span>
+
+<span class="cm"># Real example: salary formula without vs with parentheses</span>
+salary = <span class="nm">5000</span>
+bonus_pct = <span class="nm">0.1</span>   <span class="cm"># 10%</span>
+tax_pct = <span class="nm">0.2</span>     <span class="cm"># 20%</span>
+
+<span class="cm"># WRONG: taxes applied before adding bonus</span>
+wrong = salary + salary * bonus_pct - salary * tax_pct
+<span class="fn">print</span>(<span class="st">f"Wrong calculation: {wrong}"</span>)  <span class="cm"># Actually gets right answer here by chance</span>
+
+<span class="cm"># RIGHT: use parentheses to make your intention clear</span>
+gross = salary * (<span class="nm">1</span> + bonus_pct)    <span class="cm"># salary + 10%</span>
+net = gross * (<span class="nm">1</span> - tax_pct)          <span class="cm"># take off 20% tax</span>
+<span class="fn">print</span>(<span class="st">f"Gross: {gross}, Net: {net}"</span>)</pre>
+  </div>
+
+  <div class="callout"><strong>Rule of thumb:</strong> when in doubt, add parentheses. They make your code more readable AND guarantee the correct order. Nobody loses points for being explicit.</div>
+</section>
+
+<!-- S4: AUGMENTED ASSIGNMENT -->
+<section id="s4">
+  <h2><span class="section-num">04</span> Augmented assignment operators <span class="done-check" onclick="toggleDone(this)"><div class="done-check-box"><span class="done-check-tick">✓</span></div>Mark done</span></h2>
+
+  <p>Augmented assignment operators are a shorthand: they apply an arithmetic operation to a variable and save the result back into the same variable, all in one step.</p>
+
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 Long form vs shorthand — they do the same thing</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+counter = <span class="nm">0</span>
+
+<span class="cm"># Long form (works, but repetitive)</span>
+counter = counter + <span class="nm">1</span>   <span class="cm"># add 1, store back in counter</span>
+<span class="fn">print</span>(counter)          <span class="cm"># 1</span>
+
+<span class="cm"># Augmented shorthand (same thing, cleaner)</span>
+counter += <span class="nm">1</span>            <span class="cm"># means: counter = counter + 1</span>
+<span class="fn">print</span>(counter)          <span class="cm"># 2</span>
+
+<span class="cm"># All augmented assignment operators</span>
+x = <span class="nm">10</span>
+x += <span class="nm">3</span>    <span class="cm"># x = 10 + 3 = 13</span>
+x -= <span class="nm">2</span>    <span class="cm"># x = 13 - 2 = 11</span>
+x *= <span class="nm">2</span>    <span class="cm"># x = 11 * 2 = 22</span>
+x /= <span class="nm">4</span>    <span class="cm"># x = 22 / 4 = 5.5</span>
+x **= <span class="nm">2</span>   <span class="cm"># x = 5.5 ** 2 = 30.25</span>
+x //= <span class="nm">3</span>   <span class="cm"># x = 30.25 // 3 = 10.0</span>
+x %= <span class="nm">3</span>    <span class="cm"># x = 10.0 % 3 = 1.0</span>
+<span class="fn">print</span>(x)   <span class="cm"># 1.0</span>
+
+<span class="cm"># Practical: accumulate a total</span>
+total = <span class="nm">0</span>
+total += <span class="nm">250</span>    <span class="cm"># First purchase</span>
+total += <span class="nm">89</span>     <span class="cm"># Second purchase</span>
+total += <span class="nm">1200</span>   <span class="cm"># Third purchase</span>
+<span class="fn">print</span>(<span class="st">f"Total spent: KES {total:,}"</span>)  <span class="cm"># KES 1,539</span></pre>
+  </div>
+
+  <div class="callout"><code>+=</code> is the one you'll use most — it appears in nearly every loop that accumulates a count or sum. Memorise it immediately.</div>
+</section>
+
+<!-- S5: BUILT-IN NUMBER FUNCTIONS -->
+<section id="s5">
+  <h2><span class="section-num">05</span> Built-in number functions <span class="done-check" onclick="toggleDone(this)"><div class="done-check-box"><span class="done-check-tick">✓</span></div>Mark done</span></h2>
+
+  <p>Python includes several built-in functions (no import needed) that work directly on numbers.</p>
+
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 Built-in number functions</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># abs() — absolute value (always positive)</span>
+<span class="fn">print</span>(<span class="bi">abs</span>(<span class="nm">-42</span>))       <span class="cm"># 42</span>
+<span class="fn">print</span>(<span class="bi">abs</span>(<span class="nm">-3.7</span>))      <span class="cm"># 3.7</span>
+<span class="fn">print</span>(<span class="bi">abs</span>(<span class="nm">100</span>))        <span class="cm"># 100  — already positive, unchanged</span>
+<span class="cm"># Use case: distance is always positive regardless of direction</span>
+temperature_change = <span class="nm">-8</span>
+<span class="fn">print</span>(<span class="st">f"Change magnitude: {abs(temperature_change)} degrees"</span>)
+
+<span class="cm"># round() — round a float to N decimal places</span>
+<span class="fn">print</span>(<span class="bi">round</span>(<span class="nm">3.7</span>))        <span class="cm"># 4   — rounds to nearest int</span>
+<span class="fn">print</span>(<span class="bi">round</span>(<span class="nm">3.2</span>))        <span class="cm"># 3</span>
+<span class="fn">print</span>(<span class="bi">round</span>(<span class="nm">3.5</span>))        <span class="cm"># 4   — Python rounds 0.5 UP</span>
+<span class="fn">print</span>(<span class="bi">round</span>(<span class="nm">3.14159</span>, <span class="nm">2</span>))  <span class="cm"># 3.14 — 2 decimal places</span>
+<span class="fn">print</span>(<span class="bi">round</span>(<span class="nm">3.14159</span>, <span class="nm">4</span>))  <span class="cm"># 3.1416 — 4 decimal places</span>
+
+<span class="cm"># max() and min() — largest and smallest values</span>
+<span class="fn">print</span>(<span class="bi">max</span>(<span class="nm">10</span>, <span class="nm">25</span>, <span class="nm">7</span>, <span class="nm">43</span>, <span class="nm">12</span>))   <span class="cm"># 43</span>
+<span class="fn">print</span>(<span class="bi">min</span>(<span class="nm">10</span>, <span class="nm">25</span>, <span class="nm">7</span>, <span class="nm">43</span>, <span class="nm">12</span>))   <span class="cm"># 7</span>
+
+<span class="cm"># sum() — adds up all items in a sequence</span>
+scores = [<span class="nm">87</span>, <span class="nm">92</span>, <span class="nm">78</span>, <span class="nm">95</span>, <span class="nm">83</span>]
+<span class="fn">print</span>(<span class="bi">sum</span>(scores))          <span class="cm"># 435</span>
+average = <span class="bi">sum</span>(scores) / <span class="bi">len</span>(scores)
+<span class="fn">print</span>(<span class="st">f"Average: {average:.1f}"</span>)  <span class="cm"># Average: 87.0</span>
+
+<span class="cm"># pow(base, exp) — same as ** but can take a third argument for modulo</span>
+<span class="fn">print</span>(<span class="bi">pow</span>(<span class="nm">2</span>, <span class="nm">10</span>))         <span class="cm"># 1024</span>
+<span class="fn">print</span>(<span class="bi">pow</span>(<span class="nm">2</span>, <span class="nm">10</span>, <span class="nm">1000</span>))   <span class="cm"># 24  — (2^10) % 1000 = 1024 % 1000 = 24</span></pre>
+  </div>
+</section>
+
+<!-- S6: MATH MODULE -->
+<section id="s6">
+  <h2><span class="section-num">06</span> The math module <span class="done-check" onclick="toggleDone(this)"><div class="done-check-box"><span class="done-check-tick">✓</span></div>Mark done</span></h2>
+
+  <p>For more advanced maths, Python has a built-in <code>math</code> module. <strong>Module</strong> just means a file of extra tools — you have to import it before you can use it. Modules are covered fully in Phase 5, but you'll start using <code>math</code> right away.</p>
+
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 The math module — most useful functions</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="kw">import</span> math   <span class="cm"># This line makes all of math's tools available</span>
+
+<span class="cm"># --- Square root ---</span>
+<span class="fn">print</span>(math.<span class="fn">sqrt</span>(<span class="nm">25</span>))       <span class="cm"># 5.0</span>
+<span class="fn">print</span>(math.<span class="fn">sqrt</span>(<span class="nm">2</span>))        <span class="cm"># 1.4142... — irrational number</span>
+
+<span class="cm"># --- Floor and ceiling (rounding direction control) ---</span>
+<span class="fn">print</span>(math.<span class="fn">floor</span>(<span class="nm">3.9</span>))     <span class="cm"># 3 — round DOWN (always)</span>
+<span class="fn">print</span>(math.<span class="fn">ceil</span>(<span class="nm">3.1</span>))      <span class="cm"># 4 — round UP (always)</span>
+<span class="fn">print</span>(math.<span class="fn">floor</span>(<span class="nm">-3.2</span>))    <span class="cm"># -4 — floor goes toward -infinity</span>
+<span class="fn">print</span>(math.<span class="fn">ceil</span>(<span class="nm">-3.9</span>))     <span class="cm"># -3 — ceil goes toward +infinity</span>
+
+<span class="cm"># --- Mathematical constants ---</span>
+<span class="fn">print</span>(math.pi)              <span class="cm"># 3.141592653589793</span>
+<span class="fn">print</span>(math.e)               <span class="cm"># 2.718281828459045 (Euler's number)</span>
+<span class="fn">print</span>(math.inf)             <span class="cm"># inf  — positive infinity</span>
+<span class="fn">print</span>(-math.inf)            <span class="cm"># -inf — negative infinity</span>
+
+<span class="cm"># --- Area of a circle ---</span>
+radius = <span class="nm">7</span>
+area = math.pi * radius ** <span class="nm">2</span>
+<span class="fn">print</span>(<span class="st">f"Area: {area:.2f} cm²"</span>)  <span class="cm"># Area: 153.94 cm²</span>
+
+<span class="cm"># --- Factorial (n! = n × n-1 × n-2 × ... × 1) ---</span>
+<span class="fn">print</span>(math.<span class="fn">factorial</span>(<span class="nm">5</span>))   <span class="cm"># 120  (5! = 5×4×3×2×1)</span>
+<span class="fn">print</span>(math.<span class="fn">factorial</span>(<span class="nm">10</span>))  <span class="cm"># 3628800</span>
+
+<span class="cm"># --- Logarithms ---</span>
+<span class="fn">print</span>(math.<span class="fn">log</span>(<span class="nm">100</span>, <span class="nm">10</span>))    <span class="cm"># 2.0  — log base 10 of 100</span>
+<span class="fn">print</span>(math.<span class="fn">log2</span>(<span class="nm">8</span>))         <span class="cm"># 3.0  — log base 2 of 8</span>
+<span class="fn">print</span>(math.<span class="fn">log</span>(math.e))     <span class="cm"># 1.0  — natural log (ln) of e</span></pre>
+  </div>
+
+  <div class="win-box">You now know every arithmetic operator Python has, how they interact with int and float, the order Python evaluates them, and a library of functions for advanced calculations. This is the full mathematical toolkit for Phase 1 and well into the rest of the course.</div>
+</section>
+
+<!-- S7: CHALLENGE -->
+<section id="s7">
+  <h2><span class="section-num">07</span> Mini challenge <span class="done-check" onclick="toggleDone(this)"><div class="done-check-box"><span class="done-check-tick">✓</span></div>Mark done</span></h2>
+
+  <div class="challenge">
+    <div class="challenge-header" onclick="toggleChallenge(this)">🎯 Challenge — Invoice Calculator</div>
+    <div class="challenge-body">
+      <p class="challenge-q">Build a simple invoice calculator using everything from this lesson.</p>
+      <p>
+        Given: <code>unit_price = 1200.0</code>, <code>quantity = 7</code>, <code>vat_rate = 0.16</code>, <code>discount_pct = 0.05</code> (5%)<br><br>
+        1. Calculate subtotal: <code>unit_price * quantity</code><br>
+        2. Apply discount to subtotal<br>
+        3. Calculate VAT on the discounted subtotal<br>
+        4. Calculate total (discounted subtotal + VAT)<br>
+        5. Calculate how many full payments of KES 2,000 this total requires and how much is left over<br>
+        6. Print a formatted invoice with all values rounded to 2 decimal places and formatted with comma separators
+      </p>
+      <button class="answer-toggle" onclick="toggleAnswer(this)">Show answer</button>
+      <div class="answer-box">
+        <div class="code-block" style="margin:.4rem 0 .6rem;">
+          <div class="code-label script"><span>🟡 Solution</span></div>
+          <pre>
+<span class="cm"># Given values</span>
+unit_price = <span class="nm">1200.0</span>
+quantity = <span class="nm">7</span>
+vat_rate = <span class="nm">0.16</span>
+discount_pct = <span class="nm">0.05</span>
+
+<span class="cm"># Calculations</span>
+subtotal = unit_price * quantity                 <span class="cm"># 8400.0</span>
+discount = subtotal * discount_pct              <span class="cm"># 420.0</span>
+discounted = subtotal - discount                 <span class="cm"># 7980.0</span>
+vat = discounted * vat_rate                      <span class="cm"># 1276.8</span>
+total = discounted + vat                         <span class="cm"># 9256.8</span>
+
+payment = <span class="nm">2000</span>
+full_payments = <span class="bi">int</span>(total) // payment            <span class="cm"># 4</span>
+balance = total - (full_payments * payment)      <span class="cm"># 1256.8</span>
+
+<span class="cm"># Invoice output</span>
+<span class="fn">print</span>(<span class="st">"="</span> * <span class="nm">35</span>)
+<span class="fn">print</span>(<span class="st">"INVOICE SUMMARY"</span>)
+<span class="fn">print</span>(<span class="st">"="</span> * <span class="nm">35</span>)
+<span class="fn">print</span>(<span class="st">f"Unit Price:   KES {unit_price:>10,.2f}"</span>)
+<span class="fn">print</span>(<span class="st">f"Quantity:     {quantity:>14}"</span>)
+<span class="fn">print</span>(<span class="st">f"Subtotal:     KES {subtotal:>10,.2f}"</span>)
+<span class="fn">print</span>(<span class="st">f"Discount:     KES {discount:>10,.2f}"</span>)
+<span class="fn">print</span>(<span class="st">f"VAT (16%):    KES {vat:>10,.2f}"</span>)
+<span class="fn">print</span>(<span class="st">"="</span> * <span class="nm">35</span>)
+<span class="fn">print</span>(<span class="st">f"TOTAL:        KES {total:>10,.2f}"</span>)
+<span class="fn">print</span>(<span class="st">f"Full KES 2K payments: {full_payments}, Balance: {balance:,.2f}"</span>)</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S8: TASKS -->
+<section id="s8">
+  <h2><span class="section-num">08</span> Practice tasks <span class="done-check" onclick="toggleDone(this)"><div class="done-check-box"><span class="done-check-tick">✓</span></div>Mark done</span></h2>
+
+  <div class="task-box">
+    <div class="task-num">Task 01 — Easy</div>
+    <p>Write a program that takes a number of seconds and converts it to days, hours, minutes, and seconds. Use <code>//</code> and <code>%</code>. Test with <code>total_seconds = 90061</code>.</p>
+  </div>
+
+  <div class="task-box">
+    <div class="task-num">Task 02 — Easy</div>
+    <p>Use augmented assignment to simulate a shopping cart. Start with <code>total = 0</code>. Add items: 350, 89.5, 1200, 25, 670. Print the total after each addition and the final total.</p>
+  </div>
+
+  <div class="task-box">
+    <div class="task-num">Task 03 — Medium</div>
+    <p>Given a circle with radius 5.5 cm, calculate and print: area, circumference, and diameter. Use <code>math.pi</code>. Round all answers to 3 decimal places.</p>
+  </div>
+
+  <div class="task-box">
+    <div class="task-num">Task 04 — Medium</div>
+    <p>Write a program that checks if a number is: (a) even or odd using <code>%</code>, (b) divisible by both 3 and 5, (c) a perfect square (its square root is a whole number — use <code>math.sqrt</code> and check if the result equals its <code>int</code> version). Test with 45, 36, and 15.</p>
+  </div>
+
+  <div class="task-box">
+    <div class="task-num">Task 05 — Challenge</div>
+    <p>Build a simple temperature converter. Convert 37.5°C to Fahrenheit (formula: F = C × 9/5 + 32) and -40°F to Celsius (formula: C = (F - 32) × 5/9). Format outputs to 2 decimal places and include units in your print statements.</p>
+  </div>
+
+  <div class="task-box">
+    <div class="task-num">Task 06 — Challenge</div>
+    <p>Calculate how many years it takes for KES 5,000 invested at 12% annual compound interest to double. Use a loop (any loop you know), adding each year's interest with <code>*= 1.12</code> until the total reaches 10,000. Print the year count and final amount.</p>
+  </div>
+</section>
+
+</main>
+
+<div class="page-nav">
+  <a href="02-strings-in-depth.html" class="nav-btn"><span class="nav-sub">Previous</span>← 1.2 Strings In Depth</a>
+  <a href="04-booleans-and-comparisons.html" class="nav-btn next"><span class="nav-sub">Next lesson</span>1.4 Booleans &amp; Comparisons →</a>
+</div>
+
+<footer>
+  <strong>MLlabswithMel</strong> &mdash; Hands-on data &amp; AI education<br>
+  <span style="font-size:.8rem;margin-top:.3rem;display:block;color:var(--faint)">Phase 1 / Lesson 1.3: Numbers and Operators</span>
+</footer>
+
+<script>
+window.addEventListener('scroll',function(){var pct=window.scrollY/(document.documentElement.scrollHeight-window.innerHeight);document.getElementById('scroll-bar').style.transform='scaleX('+Math.min(pct,1)+')';},{passive:true});
+document.querySelectorAll('.card-header').forEach(function(h){h.addEventListener('click',function(){h.closest('.card').classList.toggle('open');});});
+function toggleChallenge(h){h.closest('.challenge').classList.toggle('open');}
+function toggleAnswer(btn){var box=btn.nextElementSibling;box.classList.toggle('show');btn.textContent=box.classList.contains('show')?'Hide answer':'Show answer';}
+function toggleDone(el){el.classList.toggle('checked');updateProgress();}
+function copyCode(btn){var pre=btn.closest('.code-block').querySelector('pre');navigator.clipboard.writeText(pre?pre.innerText:'').then(function(){btn.textContent='Copied!';btn.classList.add('copied');setTimeout(function(){btn.textContent='Copy';btn.classList.remove('copied');},2000);}).catch(function(){btn.textContent='Failed';setTimeout(function(){btn.textContent='Copy';},1500);});}
+function chipClick(chip,id){chip.classList.toggle('done');updateProgress();if(chip.classList.contains('done')){var el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth'});}}
+function updateProgress(){var total=document.querySelectorAll('.chip').length;var done=Math.max(document.querySelectorAll('.chip.done').length,document.querySelectorAll('.done-check.checked').length);document.getElementById('prog-fill').style.width=Math.round(done/total*100)+'%';document.getElementById('prog-text').textContent=done+' of '+total+' sections done';}
+var sections=document.querySelectorAll('main section[id]');var tocLinks=document.querySelectorAll('#toc-list a');
+function updateToc(){var y=window.scrollY+130,cur='';sections.forEach(function(s){if(s.offsetTop<=y)cur=s.id;});tocLinks.forEach(function(a){a.classList.toggle('toc-active',a.getAttribute('href')==='#'+cur);});}
+window.addEventListener('scroll',updateToc,{passive:true});updateToc();
+</script>
+</body>
+</html>

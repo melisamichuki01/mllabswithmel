@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.5 Getting Input | MLlabswithMel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#faf9ff;--surface:#f3f0ff;--surface-2:#ede9ff;--purple:#7f77dd;--purple-dk:#534ab7;--purple-lt:#e8e5ff;--teal:#1d9e75;--teal-lt:#d4f0e6;--coral:#d85a30;--coral-lt:#faecea;--amber:#ba7517;--amber-lt:#fef3dc;--text:#1a1633;--muted:#6b5fa8;--faint:#9b94cc;--code-bg:#ede9ff;--code-text:#534ab7;--border:#c4bde8;--border-lt:#e2defc;}
+html{scroll-behavior:smooth;}body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:1.05rem;line-height:1.8;}
+@keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.scroll-glow{position:fixed;top:0;left:0;width:100%;height:4px;z-index:1000;background:linear-gradient(90deg,#7f77dd,#534ab7,#9b8ff0,#7f77dd);background-size:300% 300%;animation:gradientShift 4s ease infinite;transform-origin:left;transform:scaleX(0);}
+.site-header{background:linear-gradient(135deg,var(--surface) 0%,#eceaff 60%,var(--surface) 100%);background-size:200% 200%;animation:gradientShift 8s ease infinite;border-bottom:2px solid var(--purple);padding:2rem 1.5rem 1.8rem;text-align:center;}
+.brand{font-size:.78rem;font-weight:700;color:var(--purple-dk);letter-spacing:.12em;text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin-bottom:.4rem;}
+.breadcrumb{font-size:.78rem;color:var(--faint);margin-bottom:.7rem;font-family:'JetBrains Mono',monospace;}
+.breadcrumb a{color:var(--purple);text-decoration:none;}.breadcrumb a:hover{text-decoration:underline;}
+.lesson-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;background:var(--teal);color:#fff;padding:.15rem .7rem;border-radius:999px;margin-bottom:.6rem;display:inline-block;}
+.site-header h1{font-size:clamp(1.7rem,4vw,2.6rem);font-weight:700;line-height:1.2;color:var(--text);margin-bottom:.5rem;}
+.site-header h1 em{color:var(--teal);font-style:normal;}
+.site-header .subtitle{color:var(--muted);font-size:.97rem;max-width:580px;margin:0 auto .8rem;}
+.tag-row{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;margin-top:.7rem;}
+.tag{background:var(--purple-lt);color:var(--purple-dk);font-size:.7rem;font-weight:600;padding:.18rem .65rem;border-radius:999px;font-family:'JetBrains Mono',monospace;}
+.tag.teal{background:var(--teal-lt);color:#0a4a30;}.tag.amber{background:var(--amber-lt);color:#6b3a00;}
+.lesson-strip{max-width:960px;margin:1.2rem auto 0;padding:0 1.5rem;}
+.lesson-strip-inner{display:flex;gap:.5rem;overflow-x:auto;padding-bottom:.3rem;}
+.ls-item{display:flex;align-items:center;gap:.4rem;background:var(--surface);border:1.5px solid var(--border-lt);border-radius:8px;padding:.4rem .85rem;text-decoration:none;font-size:.78rem;font-weight:600;color:var(--muted);white-space:nowrap;transition:all .15s;flex-shrink:0;}
+.ls-item:hover{border-color:var(--purple);color:var(--purple-dk);}.ls-item.active{background:var(--teal);border-color:var(--teal);color:#fff;}
+.ls-num{font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;}
+.progress-section{max-width:960px;margin:1.2rem auto 0;padding:0 1.5rem;}
+.progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;font-size:.83rem;color:var(--muted);font-weight:600;}
+.progress-track{height:7px;background:var(--surface-2);border-radius:999px;overflow:hidden;margin-bottom:1rem;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--teal),#32c78e);border-radius:999px;transition:width .4s ease;width:0%;}
+.topic-chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:.45rem;}
+.chip{display:flex;align-items:center;gap:.45rem;background:var(--surface);border:1.5px solid var(--border-lt);border-radius:7px;padding:.4rem .75rem;cursor:pointer;font-size:.78rem;font-weight:600;color:var(--muted);transition:all .15s;user-select:none;}
+.chip.done{border-color:var(--teal);background:var(--teal-lt);color:#0a4a30;}
+.chip-box{width:13px;height:13px;min-width:13px;border:1.5px solid var(--border);border-radius:3px;display:flex;align-items:center;justify-content:center;}
+.chip.done .chip-box{background:var(--teal);border-color:var(--teal);}
+.chip-tick{display:none;color:#fff;font-size:8px;font-weight:800;}.chip.done .chip-tick{display:block;}
+.toc{background:var(--surface);border:1.5px solid var(--border-lt);border-radius:12px;padding:1.3rem 1.5rem;margin:1.2rem auto;max-width:960px;}
+.toc h3{font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin-bottom:.7rem;}
+.toc ol{padding-left:1.2rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.3rem;}
+.toc ol li a{color:var(--purple-dk);text-decoration:none;font-size:.85rem;font-weight:500;}
+.toc ol li a:hover,.toc ol li a.toc-active{color:var(--teal);font-weight:700;}
+main{max-width:960px;margin:0 auto;padding:0 1.5rem 5rem;}
+section{margin-bottom:4rem;scroll-margin-top:2rem;}
+section h2{font-size:clamp(1.2rem,3vw,1.65rem);font-weight:700;color:var(--text);margin-bottom:1.2rem;padding-bottom:.6rem;border-bottom:2px solid var(--border-lt);display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;}
+.section-num{display:inline-flex;align-items:center;justify-content:center;background:var(--teal);color:#fff;font-size:.67rem;font-weight:700;width:24px;height:24px;border-radius:50%;flex-shrink:0;}
+.done-check{margin-left:auto;display:flex;align-items:center;gap:.4rem;font-size:.74rem;font-weight:600;color:var(--faint);cursor:pointer;user-select:none;}
+.done-check:hover,.done-check.checked{color:var(--teal);}
+.done-check-box{width:15px;height:15px;border:1.5px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;}
+.done-check.checked .done-check-box{background:var(--teal);border-color:var(--teal);}
+.done-check-tick{display:none;color:#fff;font-size:9px;font-weight:800;}.done-check.checked .done-check-tick{display:block;}
+section h3{font-size:1.05rem;font-weight:700;color:var(--teal);margin:2rem 0 .6rem;}
+section p{margin-bottom:1rem;color:var(--muted);}section p strong{color:var(--text);}
+section ul{padding-left:1.4rem;margin-bottom:1rem;color:var(--muted);}section li{margin-bottom:.5rem;}section li strong{color:var(--text);}
+.card{border-radius:12px;margin:1.5rem 0;overflow:hidden;border-left:4px solid transparent;}
+.card-header{padding:.75rem 1.2rem;font-size:.9rem;font-weight:700;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;gap:.5rem;}
+.card-header::after{content:'▼';font-size:.58rem;transition:transform .2s;flex-shrink:0;}.card.open .card-header::after{transform:rotate(180deg);}
+.card-body{padding:1rem 1.2rem 1.2rem;display:none;font-size:.94rem;color:var(--muted);}.card.open .card-body{display:block;}
+.card-body p{margin-bottom:.7rem;}.card-body p:last-child{margin-bottom:0;}.card-body strong{color:var(--text);}
+.card-body ul{padding-left:1.2rem;}.card-body li{margin-bottom:.35rem;}
+.card-body code{background:var(--surface-2);padding:.08rem .35rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--purple-dk);}
+.slowdown-card{background:var(--coral-lt);border-color:var(--coral);}.slowdown-card .card-header{background:#f8dcd5;color:#8b2e10;}
+.explain-card{background:var(--purple-lt);border-color:var(--purple);}.explain-card .card-header{background:#ddd9f8;color:var(--purple-dk);}
+.analogy-card{background:var(--teal-lt);border-color:var(--teal);}.analogy-card .card-header{background:#c0e8d8;color:#0a4a30;}
+.challenge{background:var(--amber-lt);border:1.5px solid #f0c060;border-radius:12px;margin:1.8rem 0;overflow:hidden;}
+.challenge-header{background:#fde8a0;padding:.7rem 1.2rem;font-size:.88rem;font-weight:700;color:#6b3a00;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;}
+.challenge-header::after{content:'▼';font-size:.58rem;transition:transform .2s;}.challenge.open .challenge-header::after{transform:rotate(180deg);}
+.challenge-body{padding:1rem 1.2rem 1.2rem;display:none;font-size:.93rem;color:var(--muted);}.challenge.open .challenge-body{display:block;}
+.challenge-body p{margin-bottom:.7rem;}.challenge-q{font-weight:700;color:#6b3a00;margin-bottom:.6rem;font-size:.95rem;}
+.answer-toggle{background:none;border:1.5px solid #d4a020;border-radius:6px;padding:.3rem .9rem;font-size:.78rem;font-weight:700;color:#8b5a00;cursor:pointer;margin-top:.4rem;font-family:'Plus Jakarta Sans',sans-serif;transition:background .15s;}
+.answer-toggle:hover{background:#fde8a0;}
+.answer-box{background:#fff8e0;border-radius:8px;padding:.85rem 1rem;margin-top:.6rem;display:none;border:1px solid #f0c060;color:var(--muted);}.answer-box.show{display:block;}
+.answer-box p{margin-bottom:.5rem;}
+.code-block{background:var(--code-bg);border-radius:12px;margin:1.2rem 0;overflow:hidden;border:1.5px solid var(--border-lt);}
+.code-label{display:flex;align-items:center;justify-content:space-between;padding:.45rem 1rem;font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:500;border-bottom:1px solid var(--border-lt);}
+.code-label.script{background:var(--amber-lt);color:#6b3a00;}.code-label.output{background:var(--surface-2);color:var(--muted);}
+.code-label.terminal{background:var(--teal-lt);color:#0a4a30;}
+.copy-btn{background:none;border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-size:.68rem;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s;}
+.copy-btn:hover{background:var(--purple-lt);color:var(--purple-dk);}.copy-btn.copied{color:var(--teal);border-color:var(--teal);}
+pre{padding:1.2rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.84rem;line-height:1.85;color:var(--code-text);white-space:pre;}
+.cm{color:#9b94cc;font-style:italic;}.kw{color:var(--purple);font-weight:600;}.st{color:var(--teal);}.fn{color:var(--amber);}.nm{color:var(--coral);}.bi{color:#534ab7;}
+.user-prompt{color:#0a4a30;font-style:italic;}
+.table-wrap{overflow-x:auto;margin:1.2rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.9rem;}
+th{background:var(--surface);color:var(--purple-dk);font-size:.77rem;font-weight:700;text-align:left;padding:.65rem 1rem;border-bottom:2px solid var(--border);}
+td{padding:.6rem 1rem;border-bottom:1px solid var(--border-lt);vertical-align:top;color:var(--muted);}td strong{color:var(--text);}
+tr:hover td{background:var(--surface);}
+td code{background:var(--surface-2);padding:.08rem .35rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--purple-dk);}
+.callout{background:var(--teal-lt);border-left:3px solid var(--teal);padding:.9rem 1.2rem;border-radius:0 8px 8px 0;margin:1.2rem 0;font-size:.93rem;color:#0a4a30;}
+.callout strong{color:var(--teal);}
+.callout-amber{background:var(--amber-lt);border-left:3px solid var(--amber);padding:.9rem 1.2rem;border-radius:0 8px 8px 0;margin:1.2rem 0;font-size:.93rem;color:#5a3800;}
+.callout-coral{background:var(--coral-lt);border-left:3px solid var(--coral);padding:.9rem 1.2rem;border-radius:0 8px 8px 0;margin:1.2rem 0;font-size:.93rem;color:#6b1c00;}
+/* flow diagram */
+.flow{display:flex;flex-direction:column;gap:.5rem;margin:1.4rem 0;max-width:480px;margin-left:auto;margin-right:auto;}
+.flow-step{display:flex;align-items:center;gap:.85rem;background:#fff;border:1.5px solid var(--border-lt);border-radius:10px;padding:.7rem 1rem;}
+.flow-icon{font-size:1.2rem;flex-shrink:0;}
+.flow-text{font-size:.88rem;color:var(--muted);}
+.flow-text strong{color:var(--text);}
+.flow-text code{background:var(--surface-2);padding:.05rem .3rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--purple-dk);}
+.flow-arrow{text-align:center;color:var(--faint);font-size:.9rem;padding:.1rem;}
+/* phase complete banner */
+.phase-complete{background:linear-gradient(135deg,var(--teal) 0%,#1cb87c 60%,var(--teal-lt) 100%);border-radius:16px;padding:2rem;margin:2.5rem 0;text-align:center;color:#fff;}
+.phase-complete h3{font-size:1.6rem;margin-bottom:.4rem;}
+.phase-complete p{opacity:.9;font-size:.97rem;margin-bottom:1rem;}
+.phase-complete .next-link{display:inline-block;background:#fff;color:var(--teal);font-weight:700;padding:.6rem 1.6rem;border-radius:8px;text-decoration:none;font-size:.92rem;}
+.phase-complete .next-link:hover{background:var(--teal-lt);}
+.win-box{background:var(--teal-lt);border:1.5px solid var(--teal);border-radius:12px;padding:1rem 1.4rem;margin:1.8rem 0;color:#0a4a30;font-weight:600;font-size:.95rem;}
+.task-box{background:var(--surface);border:1.5px solid var(--border-lt);border-radius:12px;padding:1.1rem 1.4rem;margin:1rem 0;}
+.task-num{font-size:.73rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);margin-bottom:.3rem;}
+.task-box p{margin:0;font-size:.92rem;color:var(--muted);}
+.task-box p strong{color:var(--text);}
+.task-box code{background:var(--surface-2);padding:.05rem .32rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--purple-dk);}
+.page-nav{display:flex;justify-content:space-between;align-items:center;max-width:960px;margin:2.5rem auto 0;padding:0 1.5rem 2rem;gap:1rem;}
+.nav-btn{display:inline-flex;align-items:center;gap:.5rem;background:var(--surface);border:1.5px solid var(--border-lt);border-radius:12px;padding:.7rem 1.2rem;text-decoration:none;font-size:.87rem;font-weight:700;color:var(--purple-dk);transition:all .18s;}
+.nav-btn:hover{border-color:var(--purple);background:var(--purple-lt);}
+.nav-btn.next{background:var(--teal);color:#fff;border-color:var(--teal);}.nav-btn.next:hover{background:#177a59;}
+.nav-btn .nav-sub{display:block;font-size:.67rem;font-weight:500;opacity:.75;font-family:'JetBrains Mono',monospace;}
+footer{background:var(--surface);border-top:1.5px solid var(--border-lt);text-align:center;padding:1.8rem 1.5rem;color:var(--muted);font-size:.86rem;}
+footer strong{color:var(--purple-dk);font-weight:700;}
+p code,li code{background:var(--surface-2);padding:.08rem .38rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.83rem;color:var(--purple-dk);}
+@media(max-width:640px){.toc ol,.topic-chips{grid-template-columns:1fr;}pre{font-size:.76rem;}.page-nav{flex-direction:column;}}
+</style>
+</head>
+<body>
+<div class="scroll-glow" id="scroll-bar"></div>
+<header class="site-header">
+  <div class="brand">MLlabswithMel</div>
+  <div class="breadcrumb"><a href="../../index.html">Portal</a> / <a href="../../phase1.html">Phase 1</a> / Lesson 1.5</div>
+  <div class="lesson-label">Lesson 1.5 of 5 — Phase Complete</div>
+  <h1>Getting <em>Input</em></h1>
+  <p class="subtitle">Up until now, all your data was hardcoded. Real programs talk to real people. This lesson covers input(), the most critical gotcha every beginner hits, and how to build safe, user-facing programs.</p>
+  <div class="tag-row">
+    <span class="tag">input()</span>
+    <span class="tag">type conversion</span>
+    <span class="tag">validation</span>
+    <span class="tag">isdigit()</span>
+    <span class="tag">try/except</span>
+    <span class="tag teal">First interactive programs</span>
+    <span class="tag amber">~50 minutes</span>
+  </div>
+</header>
+<div class="lesson-strip">
+  <div class="lesson-strip-inner">
+    <a href="01-variables-and-data-types.html" class="ls-item"><span class="ls-num">1.1</span>Variables &amp; Types</a>
+    <a href="02-strings-in-depth.html" class="ls-item"><span class="ls-num">1.2</span>Strings In Depth</a>
+    <a href="03-numbers-and-operators.html" class="ls-item"><span class="ls-num">1.3</span>Numbers &amp; Operators</a>
+    <a href="04-booleans-and-comparisons.html" class="ls-item"><span class="ls-num">1.4</span>Booleans &amp; Comparisons</a>
+    <a href="05-getting-input.html" class="ls-item active"><span class="ls-num">1.5</span>Getting Input</a>
+  </div>
+</div>
+<div class="progress-section">
+  <div class="progress-header"><span>Lesson progress</span><span id="prog-text">0 of 6 sections done</span></div>
+  <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
+  <div class="topic-chips">
+    <div class="chip" onclick="chipClick(this,'s1')"><div class="chip-box"><span class="chip-tick">✓</span></div>input() basics</div>
+    <div class="chip" onclick="chipClick(this,'s2')"><div class="chip-box"><span class="chip-tick">✓</span></div>Everything is a string!</div>
+    <div class="chip" onclick="chipClick(this,'s3')"><div class="chip-box"><span class="chip-tick">✓</span></div>Converting input types</div>
+    <div class="chip" onclick="chipClick(this,'s4')"><div class="chip-box"><span class="chip-tick">✓</span></div>Validating input</div>
+    <div class="chip" onclick="chipClick(this,'s5')"><div class="chip-box"><span class="chip-tick">✓</span></div>Safe try/except pattern</div>
+    <div class="chip" onclick="chipClick(this,'s6')"><div class="chip-box"><span class="chip-tick">✓</span></div>Building a real script</div>
+  </div>
+</div>
+<div class="toc" style="margin-left:auto;margin-right:auto;">
+  <h3>In this lesson</h3>
+  <ol id="toc-list">
+    <li><a href="#s1">input() — how it works</a></li>
+    <li><a href="#s2">The critical rule: everything is a string</a></li>
+    <li><a href="#s3">Converting input to the right type</a></li>
+    <li><a href="#s4">Validating input before using it</a></li>
+    <li><a href="#s5">Safe input with try/except</a></li>
+    <li><a href="#s6">Building an interactive script</a></li>
+    <li><a href="#s7">Mini challenge</a></li>
+    <li><a href="#s8">Practice tasks</a></li>
+  </ol>
+</div>
+
+<main>
+
+<!-- S1: input() BASICS -->
+<section id="s1">
+  <h2><span class="section-num">01</span> input() — how it works <span class="done-check" onclick="toggleDone(this)"><div class="done-check-box"><span class="done-check-tick">✓</span></div>Mark done</span></h2>
+
+  <p>The <code>input()</code> function pauses your program and waits for the user to type something and press Enter. Whatever they type is returned as a value you can store in a variable.</p>
+
+  <div class="card analogy-card open">
+    <div class="card-header">🔁 Like a form on a website — but in the terminal</div>
+    <div class="card-body">
+      <p>When you fill out a form online, the website stops and waits for you. You type, you hit submit, and the website receives your answer and acts on it.</p>
+      <p><code>input()</code> is exactly that — but in your terminal. Your program reaches that line, stops, puts a prompt on the screen, and waits. Once you press Enter, the program continues with whatever you typed.</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 Basic input() — run this in your terminal or Jupyter</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># input() shows a prompt and returns whatever the user types</span>
+<span class="cm"># The string inside () is what gets displayed to the user</span>
+
+name = <span class="fn">input</span>(<span class="st">"What is your name? "</span>)
+
+<span class="cm"># The program pauses here until Enter is pressed</span>
+<span class="cm"># Whatever the user typed is now stored in 'name'</span>
+
+<span class="fn">print</span>(<span class="st">f"Hello, {name}!"</span>)
+<span class="fn">print</span>(<span class="st">f"Your name has {len(name)} characters."</span>)</pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label terminal"><span>🖥️ What it looks like when running</span></div>
+    <pre>
+What is your name? <span class="user-prompt">Amara</span>
+Hello, Amara!
+Your name has 5 characters.</pre>
+  </div>
+
+  <div class="card explain-card">
+    <div class="card-header">💡 The prompt string is optional — but always include it</div>
+    <div class="card-body">
+      <p><code>input()</code> can be called with no argument: <code>user_input = input()</code>. The program will still pause and wait, but the user will see a blank terminal with no explanation — they won't know what to type.</p>
+      <p>Always provide a clear, helpful prompt. Tell the user exactly what you want. And add a space or colon at the end of your prompt string so the cursor appears after it, not right next to the last character.</p>
+      <p>✅ <code>input("Enter your age: ")</code> → cursor appears after the space<br>
+      ❌ <code>input("Enter your age:")</code> → cursor jammed against the colon</p>
+    </div>
+  </div>
+
+  <h3>Multiple inputs</h3>
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 Collecting several inputs in sequence</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># Just call input() multiple times — each one pauses the program</span>
+first_name = <span class="fn">input</span>(<span class="st">"First name: "</span>)
+last_name  = <span class="fn">input</span>(<span class="st">"Last name: "</span>)
+city       = <span class="fn">input</span>(<span class="st">"City: "</span>)
+
+<span class="cm"># Now use everything collected</span>
+<span class="fn">print</span>(<span class="st">f"\n--- Profile ---"</span>)
+<span class="fn">print</span>(<span class="st">f"Name: {first_name} {last_name}"</span>)
+<span class="fn">print</span>(<span class="st">f"City: {city}"</span>)</pre>
+  </div>
+</section>
+
+<!-- S2: EVERYTHING IS A STRING -->
+<section id="s2">
+  <h2><span class="section-num">02</span> The critical rule: everything is a string <span class="done-check" onclick="toggleDone(this)"><div class="done-check-box"><span class="done-check-tick">✓</span></div>Mark done</span></h2>
+
+  <p>This is the single most important fact about <code>input()</code>, and it trips up <em>every</em> beginner at least once:</p>
+
+  <div class="callout" style="font-size:1.05rem;font-weight:700;"><strong>input() ALWAYS returns a string.</strong> No exceptions. Even if the user types a number.</div>
+
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 Proving that input() returns a string — observe the types</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># Imagine the user types "25" when prompted</span>
+<span class="cm"># (For this example we'll simulate it with a variable)</span>
+
+raw_age = <span class="st">"25"</span>   <span class="cm"># This is what input() gives you — a STRING</span>
+
+<span class="fn">print</span>(<span class="bi">type</span>(raw_age))        <span class="cm"># &lt;class 'str'&gt; — NOT int</span>
+<span class="fn">print</span>(raw_age + <span class="nm">5</span>)          <span class="cm"># CRASH: TypeError! Can't add str and int</span></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label output"><span>Error output (this is what you'll see)</span></div>
+    <pre>
+TypeError: can only concatenate str (not "int") to str</pre>
+  </div>
+
+  <div class="card slowdown-card">
+    <div class="card-header">🚨 The classic beginner bug — every single time</div>
+    <div class="card-body">
+      <p>You ask for a number. The user types 25. You try to add 1 to it. Python crashes with a TypeError. You stare at it confused because it looks like a number. It isn't. It's the string "25".</p>
+      <p>You must <strong>convert</strong> the string to an int or float before doing any maths. This conversion step is not optional. It's not something you do sometimes. You do it <em>every time</em> you want a number from the user.</p>
+    </div>
+  </div>
+
+  <!-- FLOW DIAGRAM -->
+  <div class="flow">
+    <div class="flow-step"><span class="flow-icon">👤</span><div class="flow-text">User types: <strong>25</strong></div></div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step"><span class="flow-icon">📥</span><div class="flow-text"><code>input()</code> returns the string <strong>"25"</strong> — always text</div></div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step"><span class="flow-icon">⚠️</span><div class="flow-text"><strong>You must convert:</strong> <code>int("25")</code> → <code>25</code></div></div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step"><span class="flow-icon">✅</span><div class="flow-text">Now <code>age</code> is the integer <strong>25</strong> — maths works</div></div>
+  </div>
+</section>
+
+<!-- S3: CONVERTING INPUT -->
+<section id="s3">
+  <h2><span class="section-num">03</span> Converting input to the right type <span class="done-check" onclick="toggleDone(this)"><div class="done-check-box"><span class="done-check-tick">✓</span></div>Mark done</span></h2>
+
+  <p>The fix is simple: wrap <code>input()</code> with the appropriate conversion function. There are two patterns — wrapping directly or storing then converting.</p>
+
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 Pattern 1: Wrap input() directly</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># Convert on the same line as input()</span>
+<span class="cm"># int() wraps input() — converts the string to an integer immediately</span>
+age = <span class="bi">int</span>(<span class="fn">input</span>(<span class="st">"Enter your age: "</span>))
+
+<span class="cm"># Now age is already an integer — maths works</span>
+<span class="fn">print</span>(<span class="st">f"In 10 years you'll be {age + 10}"</span>)
+<span class="fn">print</span>(<span class="bi">type</span>(age))   <span class="cm"># &lt;class 'int'&gt;</span>
+
+<span class="cm"># For decimals — use float()</span>
+price = <span class="bi">float</span>(<span class="fn">input</span>(<span class="st">"Enter price: "</span>))
+<span class="fn">print</span>(<span class="st">f"Price with VAT: {price * 1.16:.2f}"</span>)</pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 Pattern 2: Store first, convert after (better for validation)</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># Store the raw string first</span>
+raw_age = <span class="fn">input</span>(<span class="st">"Enter your age: "</span>)
+
+<span class="cm"># Then validate BEFORE converting (we'll cover this properly in s4)</span>
+<span class="cm"># For now, just convert</span>
+age = <span class="bi">int</span>(raw_age)
+
+<span class="fn">print</span>(<span class="st">f"Age: {age}"</span>)
+<span class="fn">print</span>(<span class="st">f"Type: {type(age)}"</span>)   <span class="cm"># &lt;class 'int'&gt;</span></pre>
+  </div>
+
+  <h3>Common conversions from input</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>You want</th><th>Function</th><th>Code</th></tr></thead>
+      <tbody>
+        <tr><td>Whole number</td><td><code>int()</code></td><td><code>age = int(input("Age: "))</code></td></tr>
+        <tr><td>Decimal number</td><td><code>float()</code></td><td><code>price = float(input("Price: "))</code></td></tr>
+        <tr><td>Text (names, etc.)</td><td>Nothing — already a str</td><td><code>name = input("Name: ")</code></td></tr>
+        <tr><td>Yes/No cleaned up</td><td><code>.lower().strip()</code></td><td><code>ans = input("Continue? ").lower().strip()</code></td></tr>
+        <tr><td>Boolean from yes/no</td><td>Comparison after input</td><td><code>confirmed = input("Yes/No: ").lower() == "yes"</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 Practical: a small calculator using input()</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># Get two numbers from the user and show their sum, difference, product</span>
+<span class="fn">print</span>(<span class="st">"=== Simple Calculator ==="</span>)
+
+num1 = <span class="bi">float</span>(<span class="fn">input</span>(<span class="st">"Enter first number: "</span>))
+num2 = <span class="bi">float</span>(<span class="fn">input</span>(<span class="st">"Enter second number: "</span>))
+
+<span class="fn">print</span>(<span class="st">f"\nResults:"</span>)
+<span class="fn">print</span>(<span class="st">f"  {num1} + {num2} = {num1 + num2}"</span>)
+<span class="fn">print</span>(<span class="st">f"  {num1} - {num2} = {num1 - num2}"</span>)
+<span class="fn">print</span>(<span class="st">f"  {num1} × {num2} = {num1 * num2}"</span>)
+<span class="kw">if</span> num2 != <span class="nm">0</span>:
+    <span class="fn">print</span>(<span class="st">f"  {num1} ÷ {num2} = {num1 / num2:.4f}"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="st">"  Division not possible — second number is zero"</span>)</pre>
+  </div>
+</section>
+
+<!-- S4: VALIDATING INPUT -->
+<section id="s4">
+  <h2><span class="section-num">04</span> Validating input before using it <span class="done-check" onclick="toggleDone(this)"><div class="done-check-box"><span class="done-check-tick">✓</span></div>Mark done</span></h2>
+
+  <p>The problem with wrapping <code>int(input())</code> directly is that if the user types something that isn't a number — like "hello" or just hits Enter — your program crashes with a <code>ValueError</code>. In real programs, you must never trust user input blindly.</p>
+
+  <h3>Method 1: isdigit() check before converting</h3>
+  <p><code>isdigit()</code> checks whether every character in a string is a digit. It's quick, clean, and works well for simple whole-number validation.</p>
+
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 isdigit() — the simple validation approach</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># isdigit() returns True if the string contains ONLY digit characters</span>
+<span class="fn">print</span>(<span class="st">"25"</span>.<span class="fn">isdigit</span>())     <span class="cm"># True</span>
+<span class="fn">print</span>(<span class="st">"25.5"</span>.<span class="fn">isdigit</span>())   <span class="cm"># False — decimal point is not a digit</span>
+<span class="fn">print</span>(<span class="st">"-5"</span>.<span class="fn">isdigit</span>())     <span class="cm"># False — minus sign is not a digit</span>
+<span class="fn">print</span>(<span class="st">"abc"</span>.<span class="fn">isdigit</span>())    <span class="cm"># False</span>
+<span class="fn">print</span>(<span class="st">""</span>.<span class="fn">isdigit</span>())       <span class="cm"># False — empty string</span>
+
+<span class="cm"># Safe age input using isdigit()</span>
+raw = <span class="fn">input</span>(<span class="st">"Enter your age: "</span>)
+
+<span class="kw">if</span> raw.<span class="fn">isdigit</span>():
+    age = <span class="bi">int</span>(raw)
+    <span class="fn">print</span>(<span class="st">f"Age accepted: {age}"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="st">"That doesn't look like a valid age. Please enter a whole number."</span>)
+
+<span class="cm"># Validate a quantity input (must be positive whole number)</span>
+raw_qty = <span class="fn">input</span>(<span class="st">"How many items? "</span>)
+
+<span class="kw">if</span> raw_qty.<span class="fn">isdigit</span>() <span class="kw">and</span> <span class="bi">int</span>(raw_qty) > <span class="nm">0</span>:
+    qty = <span class="bi">int</span>(raw_qty)
+    <span class="fn">print</span>(<span class="st">f"Adding {qty} items to cart"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="st">"Please enter a positive whole number"</span>)</pre>
+  </div>
+
+  <div class="callout-amber"><strong>Limitation of isdigit():</strong> It only handles whole positive numbers. It rejects <code>-5</code>, <code>3.14</code>, and <code>1,000</code>. For floats or negative numbers, you need the <code>try/except</code> pattern from the next section.</div>
+
+  <h3>Method 2: strip() + lower() for text input</h3>
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 Cleaning text input before using it</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># Users often type with different cases or accidental spaces</span>
+<span class="cm"># Always clean text input before comparing it</span>
+
+answer = <span class="fn">input</span>(<span class="st">"Do you want to continue? (yes/no): "</span>)
+
+<span class="cm"># Clean it: remove spaces from both ends, convert to lowercase</span>
+clean_answer = answer.<span class="fn">strip</span>().<span class="fn">lower</span>()
+
+<span class="cm"># Now compare safely — works whether user typed YES, Yes, yes, " yes ", etc.</span>
+<span class="kw">if</span> clean_answer == <span class="st">"yes"</span>:
+    <span class="fn">print</span>(<span class="st">"Continuing..."</span>)
+<span class="kw">elif</span> clean_answer == <span class="st">"no"</span>:
+    <span class="fn">print</span>(<span class="st">"Stopping."</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="st">f"I didn't understand '{clean_answer}'. Please type yes or no."</span>)
+
+<span class="cm"># Shorter version — on one line</span>
+wants_receipt = <span class="fn">input</span>(<span class="st">"Print receipt? "</span>).<span class="fn">strip</span>().<span class="fn">lower</span>() == <span class="st">"yes"</span>
+<span class="fn">print</span>(<span class="st">f"Print receipt: {wants_receipt}"</span>)  <span class="cm"># True or False</span></pre>
+  </div>
+</section>
+
+<!-- S5: TRY/EXCEPT -->
+<section id="s5">
+  <h2><span class="section-num">05</span> Safe input with try/except <span class="done-check" onclick="toggleDone(this)"><div class="done-check-box"><span class="done-check-tick">✓</span></div>Mark done</span></h2>
+
+  <p>For robust number conversion — especially floats and negatives — the cleanest approach is a <code>try/except</code> block. You <em>try</em> to convert the input, and if it fails, you <em>catch</em> the error and handle it gracefully instead of crashing.</p>
+
+  <div class="card explain-card">
+    <div class="card-header">💡 Error handling is not just for advanced programmers</div>
+    <div class="card-body">
+      <p>Beginners often think <code>try/except</code> is advanced. It isn't. It's necessary. Any program that takes user input will eventually receive bad input. A program that crashes on bad input is a broken program. <code>try/except</code> is how you fix that.</p>
+      <p>You don't need to understand the full error handling system yet (that's Phase 2). Just learn this one pattern: wrap any conversion in a <code>try/except ValueError</code>.</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 The safe input pattern — use this whenever you convert input</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># The pattern: try to convert, catch the error if it fails</span>
+
+raw = <span class="fn">input</span>(<span class="st">"Enter a number: "</span>)
+
+<span class="kw">try</span>:
+    <span class="cm"># Try to convert — this runs if input is a valid number</span>
+    number = <span class="bi">float</span>(raw)
+    <span class="fn">print</span>(<span class="st">f"You entered: {number}"</span>)
+    <span class="fn">print</span>(<span class="st">f"Double: {number * 2}"</span>)
+
+<span class="kw">except</span> <span class="bi">ValueError</span>:
+    <span class="cm"># This runs ONLY if float(raw) failed — e.g. user typed "hello"</span>
+    <span class="fn">print</span>(<span class="st">f"'{raw}' is not a valid number. Please try again."</span>)
+
+<span class="cm"># The program continues normally after try/except — no crash!</span>
+<span class="fn">print</span>(<span class="st">"Program finished."</span>)</pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label terminal"><span>🖥️ If user types "hello"</span></div>
+    <pre>
+Enter a number: <span class="user-prompt">hello</span>
+'hello' is not a valid number. Please try again.
+Program finished.</pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label terminal"><span>🖥️ If user types "3.14"</span></div>
+    <pre>
+Enter a number: <span class="user-prompt">3.14</span>
+You entered: 3.14
+Double: 6.28
+Program finished.</pre>
+  </div>
+
+  <h3>Combining validation with a loop</h3>
+  <p>For a truly robust program, keep asking until you get valid input:</p>
+
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 Keep asking until the user gives valid input</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># while True loops forever. We break out only when input is valid.</span>
+<span class="cm"># (You'll learn loops fully in Phase 2 — this is a preview)</span>
+
+<span class="kw">while</span> <span class="kw">True</span>:
+    raw = <span class="fn">input</span>(<span class="st">"Enter your age (a whole number): "</span>)
+    <span class="kw">try</span>:
+        age = <span class="bi">int</span>(raw)
+        <span class="kw">if</span> age &lt; <span class="nm">0</span> <span class="kw">or</span> age > <span class="nm">120</span>:
+            <span class="fn">print</span>(<span class="st">"Age must be between 0 and 120. Try again."</span>)
+            <span class="kw">continue</span>   <span class="cm"># go back to the top of the loop</span>
+        <span class="kw">break</span>          <span class="cm"># valid! exit the loop</span>
+    <span class="kw">except</span> <span class="bi">ValueError</span>:
+        <span class="fn">print</span>(<span class="st">"That's not a valid number. Try again."</span>)
+
+<span class="fn">print</span>(<span class="st">f"Age confirmed: {age}"</span>)</pre>
+  </div>
+
+  <div class="callout"><strong>This is the gold standard pattern for user input.</strong> In real applications — web forms, CLIs, APIs — you always validate, always handle errors, always give the user a clear message. Even if your first scripts are simple, build the habit now.</div>
+</section>
+
+<!-- S6: BUILDING A REAL SCRIPT -->
+<section id="s6">
+  <h2><span class="section-num">06</span> Building an interactive script <span class="done-check" onclick="toggleDone(this)"><div class="done-check-box"><span class="done-check-tick">✓</span></div>Mark done</span></h2>
+
+  <p>Let's put everything from Phase 1 together — variables, strings, numbers, booleans, and input — into one real, working program.</p>
+
+  <div class="code-block">
+    <div class="code-label script"><span>🟡 Grade Calculator — a complete interactive script</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+    <pre>
+<span class="cm"># ============================================================</span>
+<span class="cm">#  GRADE CALCULATOR</span>
+<span class="cm">#  Collects student marks, calculates average, assigns grade</span>
+<span class="cm"># ============================================================</span>
+
+<span class="fn">print</span>(<span class="st">"="</span> * <span class="nm">40</span>)
+<span class="fn">print</span>(<span class="st">"       STUDENT GRADE CALCULATOR"</span>)
+<span class="fn">print</span>(<span class="st">"="</span> * <span class="nm">40</span>)
+
+<span class="cm"># --- Collect student information ---</span>
+student_name = <span class="fn">input</span>(<span class="st">"\nStudent name: "</span>).<span class="fn">strip</span>().<span class="fn">title</span>()
+course       = <span class="fn">input</span>(<span class="st">"Course: "</span>).<span class="fn">strip</span>()
+
+<span class="cm"># --- Collect marks with validation ---</span>
+subjects = [<span class="st">"Maths"</span>, <span class="st">"English"</span>, <span class="st">"Science"</span>]
+marks = []
+
+<span class="fn">print</span>(<span class="st">"\nEnter marks (0–100):"</span>)
+
+<span class="kw">for</span> subject <span class="kw">in</span> subjects:
+    <span class="kw">while</span> <span class="kw">True</span>:
+        raw = <span class="fn">input</span>(<span class="st">f"  {subject}: "</span>)
+        <span class="kw">try</span>:
+            mark = <span class="bi">float</span>(raw)
+            <span class="kw">if</span> <span class="nm">0</span> &lt;= mark &lt;= <span class="nm">100</span>:
+                marks.<span class="fn">append</span>(mark)
+                <span class="kw">break</span>
+            <span class="kw">else</span>:
+                <span class="fn">print</span>(<span class="st">"    Mark must be between 0 and 100."</span>)
+        <span class="kw">except</span> <span class="bi">ValueError</span>:
+            <span class="fn">print</span>(<span class="st">"    Please enter a number."</span>)
+
+<span class="cm"># --- Calculate results ---</span>
+average = <span class="bi">sum</span>(marks) / <span class="bi">len</span>(marks)
+highest = <span class="bi">max</span>(marks)
+lowest  = <span class="bi">min</span>(marks)
+
+<span class="cm"># Assign grade based on average</span>
+<span class="kw">if</span> average >= <span class="nm">90</span>:
+    grade = <span class="st">"A"</span>
+<span class="kw">elif</span> average >= <span class="nm">80</span>:
+    grade = <span class="st">"B"</span>
+<span class="kw">elif</span> average >= <span class="nm">70</span>:
+    grade = <span class="st">"C"</span>
+<span class="kw">elif</span> average >= <span class="nm">60</span>:
+    grade = <span class="st">"D"</span>
+<span class="kw">else</span>:
+    grade = <span class="st">"F"</span>
+
+passed = average >= <span class="nm">50</span>
+
+<span class="cm"># --- Print report ---</span>
+<span class="fn">print</span>(<span class="st">f"\n{'='*40}"</span>)
+<span class="fn">print</span>(<span class="st">f"  REPORT CARD"</span>)
+<span class="fn">print</span>(<span class="st">f"{'='*40}"</span>)
+<span class="fn">print</span>(<span class="st">f"  Student: {student_name}"</span>)
+<span class="fn">print</span>(<span class="st">f"  Course:  {course}"</span>)
+<span class="fn">print</span>(<span class="st">f"{'─'*40}"</span>)
+<span class="kw">for</span> i, subject <span class="kw">in</span> <span class="bi">enumerate</span>(subjects):
+    <span class="fn">print</span>(<span class="st">f"  {subject:<span class="nm">12</span>}   {marks[i]:>6.1f}"</span>)
+<span class="fn">print</span>(<span class="st">f"{'─'*40}"</span>)
+<span class="fn">print</span>(<span class="st">f"  Average:      {average:>6.1f}%"</span>)
+<span class="fn">print</span>(<span class="st">f"  Highest:      {highest:>6.1f}%"</span>)
+<span class="fn">print</span>(<span class="st">f"  Lowest:       {lowest:>6.1f}%"</span>)
+<span class="fn">print</span>(<span class="st">f"  Grade:             {grade}"</span>)
+<span class="fn">print</span>(<span class="st">f"  Passed:        {'Yes ✓' if passed else 'No ✗'}"</span>)
+<span class="fn">print</span>(<span class="st">f"{'='*40}"</span>)</pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label terminal"><span>🖥️ Example session</span></div>
+    <pre>
+========================================
+       STUDENT GRADE CALCULATOR
+========================================
+
+Student name: <span class="user-prompt">brian ochieng</span>
+Course: <span class="user-prompt">Data Science</span>
+
+Enter marks (0–100):
+  Maths: <span class="user-prompt">78</span>
+  English: <span class="user-prompt">91</span>
+  Science: <span class="user-prompt">84</span>
+
+========================================
+  REPORT CARD
+========================================
+  Student: Brian Ochieng
+  Course:  Data Science
+────────────────────────────────────────
+  Maths           78.0
+  English         91.0
+  Science         84.0
+────────────────────────────────────────
+  Average:        84.3%
+  Highest:        91.0%
+  Lowest:         78.0%
+  Grade:             B
+  Passed:        Yes ✓
+========================================</pre>
+  </div>
+
+  <div class="win-box">You just built a real interactive program that collects data, validates it, processes it, and prints a formatted report. Every concept from Phase 1 appears in that one script. That's what mastery looks like.</div>
+
+  <!-- PHASE COMPLETE BANNER -->
+  <div class="phase-complete">
+    <h3>🎉 Phase 1 Complete!</h3>
+    <p>You've covered Variables, Strings, Numbers, Booleans, and User Input. You can now write real Python programs that store data, manipulate text and numbers, make simple decisions, and interact with users.</p>
+    <a href="../../phase2.html" class="next-link">Start Phase 2: Control Flow →</a>
+  </div>
+</section>
+
+<!-- S7: CHALLENGE -->
+<section id="s7">
+  <h2><span class="section-num">07</span> Mini challenge <span class="done-check" onclick="toggleDone(this)"><div class="done-check-box"><span class="done-check-tick">✓</span></div>Mark done</span></h2>
+
+  <div class="challenge">
+    <div class="challenge-header" onclick="toggleChallenge(this)">🎯 Challenge — Shopping Cart Calculator</div>
+    <div class="challenge-body">
+      <p class="challenge-q">Build a simple shopping cart that takes 3 items from the user, calculates the total, applies a discount if one is entered, and prints a receipt.</p>
+      <p>
+        1. Ask for item name and price 3 times using a loop (hint: <code>for i in range(3):</code>)<br>
+        2. Validate each price — must be a positive number using <code>try/except</code><br>
+        3. After items, ask for an optional discount code. If they enter <code>SAVE10</code>, apply 10% discount<br>
+        4. Calculate subtotal, discount amount, and final total<br>
+        5. Print a formatted receipt with all items, subtotal, discount (if any), and total<br>
+        6. Include the item count in the receipt
+      </p>
+      <button class="answer-toggle" onclick="toggleAnswer(this)">Show answer</button>
+      <div class="answer-box">
+        <div class="code-block" style="margin:.4rem 0 .6rem;">
+          <div class="code-label script"><span>🟡 Solution</span></div>
+          <pre>
+<span class="fn">print</span>(<span class="st">"=== Shopping Cart ==="</span>)
+items = []
+
+<span class="kw">for</span> i <span class="kw">in</span> <span class="bi">range</span>(<span class="nm">1</span>, <span class="nm">4</span>):
+    name = <span class="fn">input</span>(<span class="st">f"Item {i} name: "</span>).<span class="fn">strip</span>()
+    <span class="kw">while</span> <span class="kw">True</span>:
+        <span class="kw">try</span>:
+            price = <span class="bi">float</span>(<span class="fn">input</span>(<span class="st">f"Item {i} price (KES): "</span>))
+            <span class="kw">if</span> price &lt; <span class="nm">0</span>:
+                <span class="fn">print</span>(<span class="st">"Price can't be negative."</span>)
+            <span class="kw">else</span>:
+                <span class="kw">break</span>
+        <span class="kw">except</span> <span class="bi">ValueError</span>:
+            <span class="fn">print</span>(<span class="st">"Please enter a valid number."</span>)
+    items.<span class="fn">append</span>((name, price))
+
+code = <span class="fn">input</span>(<span class="st">"\nDiscount code (or Enter to skip): "</span>).<span class="fn">strip</span>().<span class="fn">upper</span>()
+discount_pct = <span class="nm">0.10</span> <span class="kw">if</span> code == <span class="st">"SAVE10"</span> <span class="kw">else</span> <span class="nm">0</span>
+
+subtotal = <span class="bi">sum</span>(p <span class="kw">for</span> _, p <span class="kw">in</span> items)
+discount = subtotal * discount_pct
+total = subtotal - discount
+
+<span class="fn">print</span>(<span class="st">"\n"</span> + <span class="st">"="</span> * <span class="nm">35</span>)
+<span class="fn">print</span>(<span class="st">"         RECEIPT"</span>)
+<span class="fn">print</span>(<span class="st">"="</span> * <span class="nm">35</span>)
+<span class="kw">for</span> name, price <span class="kw">in</span> items:
+    <span class="fn">print</span>(<span class="st">f"  {name:<span class="nm">18</span>} KES {price:>7,.2f}"</span>)
+<span class="fn">print</span>(<span class="st">"─"</span> * <span class="nm">35</span>)
+<span class="fn">print</span>(<span class="st">f"  Subtotal ({len(items)} items) KES {subtotal:>7,.2f}"</span>)
+<span class="kw">if</span> discount > <span class="nm">0</span>:
+    <span class="fn">print</span>(<span class="st">f"  Discount (SAVE10)    KES -{discount:>6,.2f}"</span>)
+<span class="fn">print</span>(<span class="st">f"  TOTAL               KES {total:>7,.2f}"</span>)
+<span class="fn">print</span>(<span class="st">"="</span> * <span class="nm">35</span>)
+<span class="fn">print</span>(<span class="st">"  Thank you for shopping!"</span>)</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S8: TASKS -->
+<section id="s8">
+  <h2><span class="section-num">08</span> Practice tasks <span class="done-check" onclick="toggleDone(this)"><div class="done-check-box"><span class="done-check-tick">✓</span></div>Mark done</span></h2>
+
+  <div class="task-box">
+    <div class="task-num">Task 01 — Easy</div>
+    <p>Write a program that asks for someone's name and age, then prints: "Hello [Name]! You were born in approximately [year]." Calculate the birth year. Clean the name input with <code>.strip().title()</code>.</p>
+  </div>
+
+  <div class="task-box">
+    <div class="task-num">Task 02 — Easy</div>
+    <p>Ask the user to enter a word. Print: the word in all caps, the word reversed, its length, and whether it's a palindrome (reads the same forwards and backwards). Use only string methods and slicing — no imports needed.</p>
+  </div>
+
+  <div class="task-box">
+    <div class="task-num">Task 03 — Medium</div>
+    <p>BMI calculator. Get weight (kg) and height (m) from the user using <code>try/except float()</code>. Calculate BMI = weight / height². Print the BMI rounded to 1 decimal place and the category: Underweight (&lt;18.5), Normal (18.5–24.9), Overweight (25–29.9), Obese (30+).</p>
+  </div>
+
+  <div class="task-box">
+    <div class="task-num">Task 04 — Medium</div>
+    <p>Temperature converter. Ask the user to enter a temperature AND the unit (C or F). Convert appropriately. Validate: unit must be C or F (case-insensitive), temperature must be a valid number. Print the converted result with 2 decimal places and the unit.</p>
+  </div>
+
+  <div class="task-box">
+    <div class="task-num">Task 05 — Challenge</div>
+    <p>Tip calculator. Get: restaurant bill amount, number of people splitting it, and service rating (1=poor, 2=ok, 3=great). Calculate tip rate: 0% for poor, 10% for ok, 15% for great. Print: tip amount, total bill, and each person's share — all formatted to 2 decimal places with KES prefix. Validate all inputs.</p>
+  </div>
+
+  <div class="task-box">
+    <div class="task-num">Task 06 — Phase 1 Capstone</div>
+    <p>Build a personal finance tracker. Collect: monthly income, then expenses for rent, food, transport, and utilities (4 inputs). Calculate total expenses, savings (income - expenses), savings rate (%), and whether expenses exceed income. Print a formatted monthly summary. Validate all inputs. Handle the case where income is 0 (no division by zero).</p>
+  </div>
+</section>
+
+</main>
+
+<div class="page-nav">
+  <a href="04-booleans-and-comparisons.html" class="nav-btn"><span class="nav-sub">Previous</span>← 1.4 Booleans &amp; Comparisons</a>
+  <a href="../../phase2.html" class="nav-btn next"><span class="nav-sub">Up next</span>Phase 2: Control Flow →</a>
+</div>
+
+<footer>
+  <strong>MLlabswithMel</strong> &mdash; Hands-on data &amp; AI education<br>
+  <span style="font-size:.8rem;margin-top:.3rem;display:block;color:var(--faint)">Phase 1 / Lesson 1.5: Getting Input — Phase Complete ✓</span>
+</footer>
+
+<script>
+window.addEventListener('scroll',function(){var pct=window.scrollY/(document.documentElement.scrollHeight-window.innerHeight);document.getElementById('scroll-bar').style.transform='scaleX('+Math.min(pct,1)+')';},{passive:true});
+document.querySelectorAll('.card-header').forEach(function(h){h.addEventListener('click',function(){h.closest('.card').classList.toggle('open');});});
+function toggleChallenge(h){h.closest('.challenge').classList.toggle('open');}
+function toggleAnswer(btn){var box=btn.nextElementSibling;box.classList.toggle('show');btn.textContent=box.classList.contains('show')?'Hide answer':'Show answer';}
+function toggleDone(el){el.classList.toggle('checked');updateProgress();}
+function copyCode(btn){var pre=btn.closest('.code-block').querySelector('pre');navigator.clipboard.writeText(pre?pre.innerText:'').then(function(){btn.textContent='Copied!';btn.classList.add('copied');setTimeout(function(){btn.textContent='Copy';btn.classList.remove('copied');},2000);}).catch(function(){btn.textContent='Failed';setTimeout(function(){btn.textContent='Copy';},1500);});}
+function chipClick(chip,id){chip.classList.toggle('done');updateProgress();if(chip.classList.contains('done')){var el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth'});}}
+function updateProgress(){var total=document.querySelectorAll('.chip').length;var done=Math.max(document.querySelectorAll('.chip.done').length,document.querySelectorAll('.done-check.checked').length);document.getElementById('prog-fill').style.width=Math.round(done/total*100)+'%';document.getElementById('prog-text').textContent=done+' of '+total+' sections done';}
+var sections=document.querySelectorAll('main section[id]');var tocLinks=document.querySelectorAll('#toc-list a');
+function updateToc(){var y=window.scrollY+130,cur='';sections.forEach(function(s){if(s.offsetTop<=y)cur=s.id;});tocLinks.forEach(function(a){a.classList.toggle('toc-active',a.getAttribute('href')==='#'+cur);});}
+window.addEventListener('scroll',updateToc,{passive:true});updateToc();
+</script>
+</body>
+</html>
